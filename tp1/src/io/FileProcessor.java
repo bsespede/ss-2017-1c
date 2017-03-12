@@ -1,8 +1,6 @@
 package io;
 
 
-import general.Particle;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import particle.Particle;
 
 /**
  * Class created to parse data for the program to function.

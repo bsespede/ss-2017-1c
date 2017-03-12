@@ -1,14 +1,13 @@
 package main;
 
-import general.Particle;
-import io.FileProcessor;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import particle.Particle;
+
+import io.FileProcessor;
 
 /**
  * Created by Julian on 3/11/2017.

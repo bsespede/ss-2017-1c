@@ -1,11 +1,13 @@
-package general;
+package neighbours;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class CellIndex {
+import particle.Particle;
+
+public class CellIndex implements Neighbours {
 
 	private final Cell[] cells;
 	private final boolean contour;

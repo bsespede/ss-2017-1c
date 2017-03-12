@@ -1,4 +1,4 @@
-package general;
+package particle;
 
 
 public class Particle {
