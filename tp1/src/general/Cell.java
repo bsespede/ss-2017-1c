@@ -16,6 +16,11 @@ public class Cell {
 		cellParticles.add(particle);		
 	}
 	
+	
+	public List<Particle> getParticles() {
+		return cellParticles;
+	}
+	
 	public boolean hasCollision(final Particle newParticle) {
 		for (Particle particle: cellParticles) {
 			if (particle.collides(newParticle)) {

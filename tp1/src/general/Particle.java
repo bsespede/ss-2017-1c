@@ -95,7 +95,7 @@ public class Particle {
 		final float distY = y - neighbour.y;
 		final double distance = Math.sqrt(distX * distX + distY * distY);
 		
-		if (distance < integrationRadius + neighbour.integrationRadius) {
+		if (distance < integrationRadius + neighbour.radius) {
 			return true;
 		}
 		return false;
