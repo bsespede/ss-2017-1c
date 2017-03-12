@@ -78,4 +78,26 @@ public class Particle {
     public String toString() {
         return super.toString();
     }
+
+	public boolean collides(final Particle particle) {
+		final float distX = x - particle.x;
+		final float distY = y - particle.y;
+		final double distance = Math.sqrt(distX * distX + distY * distY);
+		
+		if (distance < radius + particle.radius) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isNeighbour(Particle neighbour) {
+		final float distX = x - neighbour.x;
+		final float distY = y - neighbour.y;
+		final double distance = Math.sqrt(distX * distX + distY * distY);
+		
+		if (distance < integrationRadius + neighbour.integrationRadius) {
+			return true;
+		}
+		return false;
+	}
 }
