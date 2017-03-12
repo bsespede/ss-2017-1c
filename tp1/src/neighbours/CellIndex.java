@@ -25,10 +25,15 @@ public class CellIndex implements Neighbours {
 	}
 
 	public void addParticle(final Particle particle) {
-		final int minRow = (int) ((particle.getX() - particle.getRadius() / L)) * M;
-		final int minCol = (int) ((particle.getY() - particle.getRadius() / L)) * M;
-		final int maxRow = (int) ((particle.getX() + particle.getRadius() / L)) * M;
-		final int maxCol = (int) ((particle.getY() + particle.getRadius() / L)) * M;
+		int minRow = (int) ((particle.getX() - particle.getRadius()) / L * M);
+		int minCol = (int) ((particle.getY() - particle.getRadius()) / L * M);
+		int maxRow = (int) ((particle.getX() + particle.getRadius()) / L * M);
+		int maxCol = (int) ((particle.getY() + particle.getRadius()) / L * M);
+		
+		minRow = (minRow == M) ? M - 1 : minRow;
+		minCol = (minCol == M) ? M - 1 : minCol;
+		maxRow = (maxRow == M) ? M - 1 : maxRow;
+		maxCol = (maxCol == M) ? M - 1 : maxCol;
 
 		// Add the particle only to the cells where the border of the particle lies for efficiency
 		for (int i = minRow; i <= maxRow; i++) {
