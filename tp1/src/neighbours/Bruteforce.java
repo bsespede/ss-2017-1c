@@ -12,7 +12,10 @@ public class Bruteforce implements Neighbours{
 	private Set<Particle> particles = new HashSet<Particle>();
 	
 	public void addParticle(final Particle particle) {
-		particles.add(particle);
+		if (hasCollision(particle)) {
+			throw new IllegalStateException("Particles collide");
+		}
+		particles.add(particle);		
 	}
 
 	public Map<Particle, Set<Particle>> getNeighbours() {
@@ -27,12 +30,20 @@ public class Bruteforce implements Neighbours{
 						neighbours.add(particle2);
 					}
 				}
-			}
-			
+			}			
 			neighbourMap.put(particle, neighbours);
 		}
 		
 		return neighbourMap;
+	}
+	
+	public boolean hasCollision(final Particle newParticle) {
+		for (Particle particle: particles) {
+			if (newParticle.collides(particle)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

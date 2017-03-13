@@ -3,51 +3,38 @@ package particle;
 
 public class Particle {
 
-    private float x;
-    private float y;
-    private float radius;
-    private float integrationRadius;
+	private final int id;
+    private final float x;
+    private final float y;
+    private final float radius;
+    private final float integrationRadius;
 
-    public Particle(float x, float y, float radius, float integrationRadius) {
+    public Particle(final int id, final float x, final float y, final float radius, final float integrationRadius) {
+    	this.id = id;
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.integrationRadius = integrationRadius;
     }
 
-    public Particle() {
+    public int getId() {
+    	return id;
     }
-
+    
     public float getX() {
         return x;
     }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
+    
     public float getY() {
         return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
     }
 
     public float getRadius() {
         return radius;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
-
     public float getIntegrationRadius() {
         return integrationRadius;
-    }
-
-    public void setIntegrationRadius(float integrationRadius) {
-        this.integrationRadius = integrationRadius;
     }
 
     @Override
