@@ -22,7 +22,7 @@ public class Main {
 		Set<Particle> particles = new HashSet<>();
 
 		System.out.println("Reading files...");
-		final Set<Particle> inputParticles = fp.processInputFile("./tp1/resources/Static100.txt", "./tp1/resources/Dynamic100.txt");
+		final Set<Particle> inputParticles = fp.processInputFile("./resources/Static100.txt", "./resources/Dynamic100.txt");
 		System.out.println("Creating cells...");
 		long time = System.currentTimeMillis();
 		for (Particle particle: inputParticles) {
@@ -40,6 +40,7 @@ public class Main {
 		System.out.println("Writing output...");
 		fp.writeOutputNeighboursFile(neighboursMap, "./outputNeighbours.txt");
         fp.writeOutputParticlesFile(keys, "./outputParticles.txt");
+		fp.writeExampleNeighbours(randomParticle, neighbours, "./example.txt");
 
 	}
 

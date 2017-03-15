@@ -17,7 +17,8 @@ public class FileProcessor {
 	/**
 	 * Parses the input file, which contains two positions (x and y) per line.
 	 *
-	 * @param path The path to the file.
+	 * @param staticFile The path to the Particle's static properties.
+	 * @param dynamicFile The path to the Particle's dynamic properties.
 	 * @return A set of Particles to be considered valid for the simulation, or {@code null}
 	 * on error.
 	 * @throws IOException If the Scanner can't be closed.
@@ -85,12 +86,7 @@ public class FileProcessor {
 			w.write(System.getProperty("line.separator"));
 			w.write(System.getProperty("line.separator"));
 			for (Particle p : particles) {
-				w.write(String.valueOf(p.getId()) + " ");
-				w.write(String.valueOf(p.getX()) + " ");
-				w.write(String.valueOf(p.getY()) + " ");
-				w.write(String.valueOf(0) + " ");
-				w.write(String.valueOf(p.getRadius()));
-				w.write(System.getProperty("line.separator"));
+				writeParticle(p, w, 0 , 0, 255);
 			}
 		} catch (IOException e) {
 			success = false;
@@ -98,6 +94,47 @@ public class FileProcessor {
 			if (w != null) w.close();
 		}
 		return success;
+	}
+
+	/**
+	 * Writes one Particle and its neighbours' properties to a file with the specified path.
+	 *
+	 * @param particle the partible
+	 * @param particles A collection with its neighbours.
+	 * @param path  The path of the output file.
+	 * @return {@code true} If the write was completed successfully, {@code false} on error.
+	 * @throws IOException If the write stream can't be closed.
+	 */
+	public static boolean writeExampleNeighbours(Particle particle, Collection<Particle> particles, String path) throws IOException {
+		boolean success = true;
+		FileWriter w = null;
+		try {
+			w = new FileWriter(path);
+			w.write(String.valueOf(particles.size() + 1));
+			w.write(System.getProperty("line.separator"));
+			w.write(System.getProperty("line.separator"));
+			writeParticle(particle , w , 0, 255, 0);
+			for (Particle p : particles) {
+				writeParticle(p , w, 255, 0 , 0);
+			}
+		} catch (IOException e) {
+			success = false;
+		} finally {
+			if (w != null) w.close();
+		}
+		return success;
+	}
+
+	private static void writeParticle(Particle p, FileWriter w, int r, int g, int b) throws IOException {
+		w.write(String.valueOf(p.getId()) + " ");
+		w.write(String.valueOf(p.getX()) + " ");
+		w.write(String.valueOf(p.getY()) + " ");
+		w.write(String.valueOf(0) + " ");
+		w.write(String.valueOf(p.getRadius()) + " ");
+		w.write(String.valueOf(r) + " ");
+		w.write(String.valueOf(g) + " ");
+		w.write(String.valueOf(b) + " ");
+		w.write(System.getProperty("line.separator"));
 	}
 
 }
