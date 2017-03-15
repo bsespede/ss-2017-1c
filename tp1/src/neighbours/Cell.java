@@ -12,10 +12,9 @@ public class Cell {
 	private final List<Particle> cellParticles = new LinkedList<Particle>();
 	
 	public void addParticle(final Particle particle) {
-		if (hasCollision(particle)) {
-			throw new IllegalStateException("Particles collide");
+		if (!hasCollision(particle)) {
+			cellParticles.add(particle);
 		}
-		cellParticles.add(particle);		
 	}
 	
 	public List<Particle> getParticles() {

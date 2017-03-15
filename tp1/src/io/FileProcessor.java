@@ -4,10 +4,7 @@ package io;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import particle.Particle;
 
@@ -50,17 +47,49 @@ public class FileProcessor {
 	 * @return {@code true} If the write was completed successfully, {@code false} on error.
 	 * @throws IOException If the write stream can't be closed.
 	 */
-	public static boolean writeOutputFile(Map<Particle,Set<Particle>> neighbours, String path) throws IOException {
+	public static boolean writeOutputNeighboursFile(Map<Particle,Set<Particle>> neighbours, String path) throws IOException {
 		boolean success = true;
 		FileWriter w = null;
 		Set<Particle> particles = neighbours.keySet();
 		try {
 			w = new FileWriter(path);
 			for (Particle p : particles) {
-				w.write(""+p.getId());
+				w.write(String.valueOf(p.getId()));
 				for (Particle p2 : neighbours.get(p)) {
-					w.write(String.valueOf(","+ p2.getId()));
+					w.write(","+ p2.getId());
 				}
+				w.write(System.getProperty("line.separator"));
+			}
+		} catch (IOException e) {
+			success = false;
+		} finally {
+			if (w != null) w.close();
+		}
+		return success;
+	}
+
+	/**
+	 * Writes all Particles' properties to a file with the specified path.
+	 *
+	 * @param particles A collection with the particles.
+	 * @param path  The path of the output file.
+	 * @return {@code true} If the write was completed successfully, {@code false} on error.
+	 * @throws IOException If the write stream can't be closed.
+	 */
+	public static boolean writeOutputParticlesFile(Collection<Particle> particles, String path) throws IOException {
+		boolean success = true;
+		FileWriter w = null;
+		try {
+			w = new FileWriter(path);
+			w.write(String.valueOf(particles.size()));
+			w.write(System.getProperty("line.separator"));
+			w.write(System.getProperty("line.separator"));
+			for (Particle p : particles) {
+				w.write(String.valueOf(p.getId()) + " ");
+				w.write(String.valueOf(p.getX()) + " ");
+				w.write(String.valueOf(p.getY()) + " ");
+				w.write(String.valueOf(0) + " ");
+				w.write(String.valueOf(p.getRadius()));
 				w.write(System.getProperty("line.separator"));
 			}
 		} catch (IOException e) {
