@@ -66,10 +66,10 @@ public class CellIndex implements Neighbours {
 				}
 
 				// Test neighbour cells
-				final int minRow = (int) ((particle.getX() - particle.getIntegrationRadius() / L)) * M - 1;
-				final int minCol = (int) ((particle.getY() - particle.getIntegrationRadius() / L)) * M - 1;
-				final int maxRow = (int) ((particle.getX() + particle.getIntegrationRadius() / L)) * M + 1;
-				final int maxCol = (int) ((particle.getY() + particle.getIntegrationRadius() / L)) * M + 1;
+				final int minRow = (int) ((particle.getX() - particle.getInteractionRadius() / L)) * M - 1;
+				final int minCol = (int) ((particle.getY() - particle.getInteractionRadius() / L)) * M - 1;
+				final int maxRow = (int) ((particle.getX() + particle.getInteractionRadius() / L)) * M + 1;
+				final int maxCol = (int) ((particle.getY() + particle.getInteractionRadius() / L)) * M + 1;
 
 				if (contour) {
 					for (int i = minRow; i <= maxRow; i++) {

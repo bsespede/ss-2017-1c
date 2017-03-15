@@ -7,14 +7,14 @@ public class Particle {
     private final float x;
     private final float y;
     private final float radius;
-    private final float integrationRadius;
+    private final float interactionRadius;
 
-    public Particle(final int id, final float x, final float y, final float radius, final float integrationRadius) {
+    public Particle(final int id, final float x, final float y, final float radius, final float interactionRadius) {
     	this.id = id;
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.integrationRadius = integrationRadius;
+        this.interactionRadius = interactionRadius;
     }
 
     public int getId() {
@@ -33,8 +33,8 @@ public class Particle {
         return radius;
     }
 
-    public float getIntegrationRadius() {
-        return integrationRadius;
+    public float getInteractionRadius() {
+        return interactionRadius;
     }
 
     @Override
@@ -82,9 +82,10 @@ public class Particle {
 		final float distY = y - neighbour.y;
 		final double distance = Math.sqrt(distX * distX + distY * distY);
 		
-		if (distance < integrationRadius + neighbour.radius) {
+		if (distance < interactionRadius + neighbour.radius) {
 			return true;
 		}
 		return false;
 	}
+
 }
