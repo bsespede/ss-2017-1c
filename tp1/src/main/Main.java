@@ -7,13 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import io.FileProcessor;
-import neighbours.Bruteforce;
 import neighbours.CellIndex;
 import neighbours.Neighbours;
 import particle.Particle;
 
 public class Main {
-	final static boolean CONTOUR_ON = false;
+	final static boolean CONTOUR_ON = true;
 	final static float L = 100;
 
 
@@ -27,7 +26,7 @@ public class Main {
 
 
 		final int M = 10;
-		final Neighbours neighboursMethod = new Bruteforce();
+		final Neighbours neighboursMethod = new CellIndex(CONTOUR_ON, L, M);
 		final FileProcessor fp = new FileProcessor();
 
 		System.out.println("Reading files...");

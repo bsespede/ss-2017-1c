@@ -12,8 +12,9 @@ public class Bruteforce implements Neighbours{
 	private Set<Particle> particles = new HashSet<Particle>();
 	
 	public void addParticle(final Particle particle) {
-
-		particles.add(particle);
+		if (!hasCollision(particle)) {
+			particles.add(particle);
+		}
 	}
 
 	public Map<Particle, Set<Particle>> getNeighbours() {
@@ -23,10 +24,8 @@ public class Bruteforce implements Neighbours{
 			final Set<Particle> neighbours = new HashSet<Particle>();
 			
 			for (Particle particle2: particles) {
-				if (!particle.equals(particle2)) {
-					if (particle.isNeighbour(particle2)) {
-						neighbours.add(particle2);
-					}
+				if (particle.isNeighbour(particle2) && !particle.equals(particle2)) {
+					neighbours.add(particle2);
 				}
 			}			
 			neighbourMap.put(particle, neighbours);
@@ -38,9 +37,6 @@ public class Bruteforce implements Neighbours{
 	public boolean hasCollision(final Particle newParticle) {
 		for (Particle particle: particles) {
 			if (particle.collides(newParticle)) {
-				System.out.println("old: "+particle.getX() + ", "+ particle.getY()+" r: "+ particle.getRadius());
-				System.out.println("new: "+newParticle.getX() + ", "+ newParticle.getY()+" r: "+ newParticle.getRadius());
-				System.out.println(particle.equals(newParticle));
 				return true;
 			}
 		}
