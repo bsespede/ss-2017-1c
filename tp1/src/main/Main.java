@@ -12,9 +12,8 @@ import neighbours.Neighbours;
 import particle.Particle;
 
 public class Main {
+	
 	final static boolean CONTOUR_ON = true;
-	final static float L = 100;
-
 
 	public static void main(String[] args) throws IOException {
 		//TODO hacer un switch con input de usuario para elegir cual hacer
@@ -26,16 +25,14 @@ public class Main {
 
 
 		final int M = 10;
-		final Neighbours neighboursMethod = new CellIndex(CONTOUR_ON, L, M);
 		final FileProcessor fp = new FileProcessor();
 
 		System.out.println("Reading files...");
 		final Set<Particle> inputParticles = fp.processInputFile("./resources/Static100.txt", "./resources/Dynamic100.txt");
+		final Neighbours neighboursMethod = new CellIndex(inputParticles, CONTOUR_ON, M);
+
 		System.out.println("Creating cells...");
 		long time = System.currentTimeMillis();
-		for (Particle particle: inputParticles) {
-			neighboursMethod.addParticle(particle);
-		}
 
 		System.out.println("Calculating neighbours...");
 		Map<Particle, Set<Particle>> neighboursMap = neighboursMethod.getNeighbours();
@@ -66,16 +63,13 @@ public class Main {
 			}
 		}
 		while(inputParticles.size()<=5000){
-			inputParticles.add(new Particle(100 + inputParticles.size(),(float) Math.random() * L , (float) Math.random() * L , maxRadius, maxIRadius));
+			inputParticles.add(new Particle(100 + inputParticles.size(),(float) Math.random() * inputParticles.size() , (float) Math.random() * inputParticles.size() , maxRadius, maxIRadius));
 		}
 
-		for(int m = 1; (L / maxRadius + 2 * maxIRadius ) >= m && m >= 1 ; m++){
-			final Neighbours neighboursMethod = new CellIndex(CONTOUR_ON, L, m);
+		for(int m = 1; (inputParticles.size() / maxRadius + 2 * maxIRadius ) >= m && m >= 1 ; m++){
+			final Neighbours neighboursMethod = new CellIndex(inputParticles, CONTOUR_ON, m);
 			System.out.println("Creating cells...");
 			long time = System.currentTimeMillis();
-			for (Particle particle: inputParticles) {
-				neighboursMethod.addParticle(particle);
-			}
 
 			System.out.println("Calculating neighbours...");
 			Map<Particle, Set<Particle>> neighboursMap = neighboursMethod.getNeighbours();

@@ -14,13 +14,16 @@ public class CellIndex implements Neighbours {
 	private final float L;
 	private final int M;
 
-	public CellIndex(final boolean contour, final float L, final int M) {
+	public CellIndex(final Set<Particle> particles, final boolean contour, final int M) {
 		this.contour = contour;
-		this.L = L;
+		this.L = particles.size();
 		this.M = M;
 		this.cells = new Cell[M * M];
 		for (int i = 0; i < M * M; i++) {
 			cells[i] = new Cell();
+		}
+		for (Particle particle: particles) {
+			addParticle(particle);
 		}
 	}
 

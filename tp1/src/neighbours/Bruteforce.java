@@ -11,8 +11,8 @@ public class Bruteforce implements Neighbours{
 	
 	private Set<Particle> particles = new HashSet<Particle>();
 	
-	public void addParticle(final Particle particle) {
-		if (!hasCollision(particle)) {
+	public Bruteforce(final Set<Particle> particles) {
+		for (Particle particle: particles) {
 			particles.add(particle);
 		}
 	}
