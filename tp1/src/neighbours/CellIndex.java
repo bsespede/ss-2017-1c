@@ -25,27 +25,21 @@ public class CellIndex implements Neighbours {
 	}
 
 	public void addParticle(final Particle particle) {
-		int minRow = (int) ((particle.getX() - particle.getRadius()) / L * M);
-		int minCol = (int) ((particle.getY() - particle.getRadius()) / L * M);
-		int maxRow = (int) ((particle.getX() + particle.getRadius()) / L * M);
-		int maxCol = (int) ((particle.getY() + particle.getRadius()) / L * M);
-		
-		minRow = (minRow == M) ? M - 1 : minRow;
-		minCol = (minCol == M) ? M - 1 : minCol;
-		maxRow = (maxRow == M) ? M - 1 : maxRow;
-		maxCol = (maxCol == M) ? M - 1 : maxCol;
+		int minRow = (int) (((particle.getX() - particle.getRadius()) / L) * M);
+		int minCol = (int) (((particle.getY() - particle.getRadius()) / L) * M);
+		int maxRow = (int) (((particle.getX() + particle.getRadius()) / L) * M);
+		int maxCol = (int) (((particle.getY() + particle.getRadius()) / L) * M);
 
-		// Add the particle only to the cells where the border of the particle lies for efficiency
 		for (int i = minRow; i <= maxRow; i++) {
 			for (int j = minCol; j <= maxCol; j++) {
-				if (i == minRow && j <= maxCol) {
-					cells[i * M + j].addParticle(particle);					
-				} else if (i == maxRow && j <= maxCol) {
-					cells[i * M + j].addParticle(particle);						
-				} else if (j == minCol && i < maxRow && i > minRow) {
-					cells[i * M + j].addParticle(particle);
-				} else if (j == maxCol && i < maxRow && i > minRow) {
-					cells[i * M + j].addParticle(particle);
+				if (contour) {
+					int fixedI = (i < 0) ? M - 1 : (i >= M) ? 0 : i;
+					int fixedJ = (j < 0) ? M - 1 : (j >= M) ? 0 : j;
+					cells[fixedI * M + fixedJ].addParticle(particle);
+				} else {
+					if (i >= 0 && i < M && j >= 0 && j < M) {
+						cells[i * M + j].addParticle(particle);
+					}
 				}
 			}
 		}
@@ -58,59 +52,42 @@ public class CellIndex implements Neighbours {
 			for (Particle particle: cell.getParticles()) {
 				final Set<Particle> neighbours = new HashSet<Particle>();
 
-				// First add all the particles in the same cell, they are neighbours for sure because rc < L/M
-				for (Particle particleInCell: cell.getParticles()) {
-					if (!particleInCell.equals(particle)) {
-						neighbours.add(particleInCell);
+				// Test neighbour cells
+				int minRow = (int) (((particle.getX() - (particle.getInteractionRadius() + particle.getRadius())) / L) * M);
+				int minCol = (int) (((particle.getY() - (particle.getInteractionRadius() + particle.getRadius())) / L) * M);
+				int maxRow = (int) (((particle.getX() + (particle.getInteractionRadius() + particle.getRadius())) / L) * M);
+				int maxCol = (int) (((particle.getY() + (particle.getInteractionRadius() + particle.getRadius())) / L) * M);				
+				
+				for (int i = minRow; i <= maxRow; i++) {
+					for (int j = minCol; j <= maxCol; j++) {
+						if (contour) {
+							int fixedI = (i < 0) ? M - 1 : (i >= M) ? 0 : i;
+							int fixedJ = (j < 0) ? M - 1 : (j >= M) ? 0 : j;
+							testParticleAgainstCell(particle, fixedI, fixedJ, neighbours);
+						} else {
+							if (i >=0 && i < M && j >= 0 && j < M) {
+								testParticleAgainstCell(particle, i, j, neighbours);
+							}
+						}
 					}
 				}
-
-				// Test neighbour cells
-				final int minRow = (int) ((particle.getX() - particle.getInteractionRadius() / L)) * M - 1;
-				final int minCol = (int) ((particle.getY() - particle.getInteractionRadius() / L)) * M - 1;
-				final int maxRow = (int) ((particle.getX() + particle.getInteractionRadius() / L)) * M + 1;
-				final int maxCol = (int) ((particle.getY() + particle.getInteractionRadius() / L)) * M + 1;
-
-				if (contour) {
-					for (int i = minRow; i <= maxRow; i++) {
-						for (int j = minCol; j <= maxCol; j++) {
-							// Only test on neighbour cells
-							if (i == minRow && j <= maxCol) {
-								cells[(i % M) * M + (j % M)].addParticle(particle);					
-							} else if (i == maxRow && j <= maxCol) {
-								cells[(i % M) * M + (j % M)].addParticle(particle);						
-							} else if (j == minCol && i < maxRow && i > minRow) {
-								cells[(i % M) * M + (j % M)].addParticle(particle);
-							} else if (j == maxCol && i < maxRow && i > minRow) {
-								cells[(i % M) * M + (j % M)].addParticle(particle);
-							}
-						}
-					}
-				} else {
-					for (int i = minRow; i <= maxRow; i++) {
-						for (int j = minCol; j <= maxCol; j++) {
-							if (i >= 0 && j >= 0 && i < M && j < M){	
-								// Only test on neighbour cells
-								if (i == minRow && j <= maxCol) {
-									neighbours.addAll(cells[i * M + j].getValidNeighbours(particle));				
-								} else if (i == maxRow && j <= maxCol) {
-									neighbours.addAll(cells[i * M + j].getValidNeighbours(particle));					
-								} else if (j == minCol && i < maxRow && i > minRow) {
-									neighbours.addAll(cells[i * M + j].getValidNeighbours(particle));
-								} else if (j == maxCol && i < maxRow && i > minRow) {
-									neighbours.addAll(cells[i * M + j].getValidNeighbours(particle));
-								}
-							}
-						}
-					}
-				}				
-
-				// Add the set to the map				
+				
 				neighbourMap.put(particle, neighbours);
 			}
 		}
 
 		return neighbourMap;
+	}
+
+	private void testParticleAgainstCell(Particle particle, int i, int j, Set<Particle> neighbours) {
+		Cell testCell = cells[i * M + j];
+		
+		for (Particle testParticle: testCell.getParticles()) {
+			if (particle.isNeighbour(testParticle) && !particle.equals(testParticle)) {
+				neighbours.add(testParticle);
+			}
+		}
+		
 	}
 
 }

@@ -1,10 +1,13 @@
 package main;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import io.FileProcessor;
+import neighbours.Bruteforce;
 import neighbours.CellIndex;
 import neighbours.Neighbours;
 import particle.Particle;
@@ -17,18 +20,18 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		//TODO hacer un switch con input de usuario para elegir cual hacer
 		exampleMain();
-		simulationForM();
+		//simulationForM();
 	}
 
 	private static void exampleMain() throws IOException {
 
 
 		final int M = 10;
-		final Neighbours neighboursMethod = new CellIndex(CONTOUR_ON, L, M);
+		final Neighbours neighboursMethod = new Bruteforce();
 		final FileProcessor fp = new FileProcessor();
 
 		System.out.println("Reading files...");
-		final Set<Particle> inputParticles = fp.processInputFile("./tp1/resources/Static100.txt", "./tp1/resources/Dynamic100.txt");
+		final Set<Particle> inputParticles = fp.processInputFile("./resources/Static100.txt", "./resources/Dynamic100.txt");
 		System.out.println("Creating cells...");
 		long time = System.currentTimeMillis();
 		for (Particle particle: inputParticles) {
@@ -44,15 +47,15 @@ public class Main {
 		Set<Particle> neighbours = neighboursMap.get(randomParticle);
 
 		System.out.println("Writing output...");
-		fp.writeOutputNeighboursFile(neighboursMap, "./tp1/outputNeighbours.txt");
-		fp.writeOutputParticlesFile(keys, "./tp1/outputParticles.txt");
-		fp.writeExampleNeighbours(randomParticle, neighbours, keys,"./tp1/example.txt");
+		fp.writeOutputNeighboursFile(neighboursMap, "./outputNeighbours.txt"); // este es el output viejo con vecinos nomas
+		fp.writeOutputParticlesFile(keys, "./outputParticles.txt"); // este te dice todas las particulas
+		fp.writeExampleNeighbours(randomParticle, neighbours, keys,"./example.txt"); // este supongo que te marca los vecinos del seleccionado mas el resto
 	}
 
 	private static void simulationForM() throws IOException {
 		System.out.println("Reading files...");
 		final FileProcessor fp = new FileProcessor();
-		final Set<Particle> inputParticles = fp.processInputFile("./tp1/resources/Static100.txt", "./tp1/resources/Dynamic100.txt");
+		final Set<Particle> inputParticles = fp.processInputFile("./resources/Static100.txt", "./resources/Dynamic100.txt");
 		float maxIRadius = 0;
 		float maxRadius = 0;
 		for(Particle particle: inputParticles){
