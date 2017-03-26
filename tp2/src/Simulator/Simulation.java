@@ -12,7 +12,7 @@ public class Simulation {
 
     private Cell[][] cells;
     private Set<Particle> particles = new HashSet<>();
-    private long iterations;
+    private long particleCounter = 0;
 
     public Simulation(int height, int width, int l) {
         cells = new Cell[height][width];
@@ -34,22 +34,34 @@ public class Simulation {
     }
 
     public void simulate(int n){
+        addParticles();
+        printTestCells();
         for (int i = 0; i < n; i++) {
             moveParticles();
             checkCollisions();
             if(i % 4 == 0){
                 addParticles();
             }
+            printTestCells();
             FileProcessor.outputState(cells, particles,"./output.txt");
         }
     }
 
     public void addParticles(){
         for (int i = 1; i < cells[0].length; i++) {
-            if(!cells[0][i].isSolid()){
-                cells[0][i].getParticles().add(new Particle( 0 , i, particles.size(), Direction.UR));
-                cells[0][i].getParticles().add(new Particle( 0 , i, particles.size(), Direction.R));
-                cells[0][i].getParticles().add(new Particle( 0 , i, particles.size(), Direction.BR));
+            if(!cells[i][0].isSolid()){
+
+                Particle p = new Particle( i , 0, particleCounter++, Direction.UR);
+                cells[i][0].getParticles().add(p);
+                particles.add(p);
+
+                p = new Particle( i , 0, particles.size(), Direction.R);
+                cells[i][0].getParticles().add(p);
+                particles.add(p);
+
+                p = new Particle( i , 0, particles.size(), Direction.BR);
+                cells[i][0].getParticles().add(p);
+                particles.add(p);
             }
         }
     }
@@ -57,7 +69,7 @@ public class Simulation {
     public void checkCollisions(){
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                if(cells[i][j].getParticles().size() != 0){
+                if(!cells[i][j].isSolid() && cells[i][j].getParticles().size() != 0){
                     Particle.resolveCollision(cells[i][j].getParticles().toArray(new Particle[cells[i][j].getParticles().size()]));
                 }
             }
@@ -67,25 +79,41 @@ public class Simulation {
     public void moveParticles(){
         for(Particle p : particles){
             cells[p.getX()][p.getY()].getParticles().remove(p);
-            if(p.getX() + p.getDir().getDirx() <= 0 || p.getX() + p.getDir().getDirx() >= cells.length){
-                particles.remove(p);
-                return;
+            int xDestiny = p.getX() + p.getDir().getDirx();
+            int yDestiny = p.getY() + p.getDir().getDiry();
+            if(p.getMovementCounter() % 2 == 0 && p.getDir() != Direction.R && p.getDir() != Direction.L){
+                yDestiny += 1;
             }
-            if(cells[p.getX() + p.getDir().getDirx()][p.getY() + p.getDir().getDiry()].isSolid()){
+            if(yDestiny < 0 || yDestiny >= cells[0].length || xDestiny < 0 || xDestiny >= cells.length){
+                particles.remove(p);
+                break;
+            }
+
+            if(cells[xDestiny][yDestiny].isSolid()){
+                p.resetMovementCounter();
+                boolean invertX = false;
+                boolean invertY = false;
                 if(cells[p.getX()][p.getY() + p.getDir().getDiry()].isSolid() && cells[p.getX() + p.getDir().getDirx()][p.getY()].isSolid()){
-                    p.invertX();
-                    p.invertY();
+                    invertX = true;
+                    invertY = true;
                 }else if (cells[p.getX() + p.getDir().getDirx()][p.getY()].isSolid()) {
-                    p.invertX();
+                    invertX = true;
                 }else if(cells[p.getX()][p.getY() + p.getDir().getDiry()].isSolid()){
-                    p.invertY();
+                    invertY = true;
                 }else{
+                    invertX = true;
+                    invertY = true;
+                }
+                if(invertX){
                     p.invertX();
+                }
+                if(invertY){
                     p.invertY();
                 }
             }else{
-                p.setX(p.getX() + p.getDir().getDirx());
-                p.setY(p.getY() + p.getDir().getDiry());
+                p.setX(xDestiny);
+                p.setY(yDestiny);
+                p.incMovementCounter();
             }
             cells[p.getX()][p.getY()].getParticles().add(p);
         }
@@ -95,12 +123,14 @@ public class Simulation {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 if(cells[i][j].isSolid()){
-                    System.out.print(" 1 ");
+                    System.out.print("  S   ");
                 }else{
-                    System.out.print(" 0 ");
+                    System.out.print("  "  + cells[i][j].getParticles().size() + "   ");
                 }
             }
             System.out.println();
         }
+        System.out.println();
+        System.out.println();
     }
 }

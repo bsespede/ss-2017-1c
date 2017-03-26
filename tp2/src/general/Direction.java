@@ -26,9 +26,6 @@ public enum Direction {
         return diry;
     }
 
-    public Direction getById(int id){
-        return Direction.values()[id % 6];
-    }
 }
 
 

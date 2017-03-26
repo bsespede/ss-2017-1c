@@ -1,16 +1,16 @@
 package general;
 
 
-import static general.Direction.BR;
 
 public class Particle {
 
     private int x;
     private int y;
-    private int id;
-    Direction dir;
+    private long id;
+    private Direction dir;
+    private int movementCounter = 0;
 
-    public Particle(int x, int y, int id, Direction dir) {
+    public Particle(int x, int y, long id, Direction dir) {
         this.x = x;
         this.y = y;
         this.id = id;
@@ -46,9 +46,53 @@ public class Particle {
     }
 
     public void invertX() {
-        if()
+        Direction newDir = dir;
+        if(dir == Direction.UR){
+            newDir = Direction.BR;
+        }else if (dir == Direction.BR){
+            newDir = Direction.UR;
+        }else if (dir == Direction.UL) {
+            newDir = Direction.BL;
+        }else if (dir == Direction.BL) {
+            newDir = Direction.UL;
+        }
+        dir = newDir;
     }
 
     public void invertY() {
+        Direction newDir = dir;
+        if(dir == Direction.UR){
+            newDir = Direction.UL;
+        }else if (dir == Direction.UL){
+            newDir = Direction.UR;
+        }else if (dir == Direction.R) {
+            newDir = Direction.L;
+        }else if (dir == Direction.L) {
+            newDir = Direction.R;
+        }else if (dir == Direction.BL) {
+            newDir = Direction.BR;
+        }else if (dir == Direction.BR) {
+            newDir = Direction.BL;
+        }
+        dir = newDir;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getMovementCounter() {
+        return movementCounter;
+    }
+
+    public void incMovementCounter() {
+        this.movementCounter++;
+    }
+    public void resetMovementCounter() {
+        this.movementCounter = 0;
     }
 }
