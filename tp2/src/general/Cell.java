@@ -37,4 +37,8 @@ public class Cell {
     public void updateR(){
        r = Math.random() >= 0.5 ? true : false;
     }
+
+	public int size() {
+		return particles.size();
+	}
 }
