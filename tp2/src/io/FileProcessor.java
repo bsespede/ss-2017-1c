@@ -17,8 +17,9 @@ public class FileProcessor {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
 			for (int i = 0; i < cells.length; i++) {
 				for (int j = 0; j < cells[0].length; j++) {
-					bw.write(i +","+ j +","+ cells[i][j].size() +"\n");
+					bw.write(cells[i][j].size() +" ");
 				}
+				bw.write("\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
