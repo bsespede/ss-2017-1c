@@ -82,7 +82,11 @@ public class Simulation {
             int xDestiny = p.getX() + p.getDir().getDirx();
             int yDestiny = p.getY() + p.getDir().getDiry();
             if(p.getMovementCounter() % 2 == 0 && p.getDir() != Direction.R && p.getDir() != Direction.L){
-                yDestiny += 1;
+                if(p.getDir().getDiry()>=0){
+                    yDestiny += 1;
+                }else{
+                    yDestiny -= 1;
+                }
             }
             if(yDestiny < 0 || yDestiny >= cells[0].length || xDestiny < 0 || xDestiny >= cells.length){
                 particles.remove(p);
