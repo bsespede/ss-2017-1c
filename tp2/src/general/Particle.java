@@ -95,4 +95,25 @@ public class Particle {
     public void resetMovementCounter() {
         this.movementCounter = 0;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Particle particle = (Particle) o;
+
+        if (x != particle.x) return false;
+        if (y != particle.y) return false;
+        return dir == particle.dir;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + (dir != null ? dir.hashCode() : 0);
+        return result;
+    }
 }

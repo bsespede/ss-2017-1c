@@ -17,7 +17,10 @@ public class FileProcessor {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
 			for (int i = 0; i < cells.length; i++) {
 				for (int j = 0; j < cells[0].length; j++) {
-					bw.write(cells[i][j].size() +" ");
+					if(!cells[i][j].isSolid()){
+						bw.write(cells[i][j].size() +" ");
+					}
+					bw.write("0 ");
 				}
 				bw.write("\n");
 			}

@@ -34,7 +34,6 @@ public class Simulation {
     }
 
     public void simulate(int n){
-        addParticles();
         printTestCells();
         for (int i = 0; i < n; i++) {
             moveParticles();
