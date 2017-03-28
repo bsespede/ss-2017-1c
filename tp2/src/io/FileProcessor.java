@@ -28,7 +28,7 @@ public class FileProcessor {
                     bw.write(0 + " ");
 					if(!cells[i][j].isSolid()){
                         if(cells[i][j].size() == 0){
-                            bw.write(0.01+ " ");
+                            bw.write(0.001+ " ");
                             bw.write(0 + " ");
                             bw.write(0 + " ");
                             bw.write(0 + " ");

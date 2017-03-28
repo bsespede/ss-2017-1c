@@ -47,7 +47,7 @@ public class Simulation {
     }
 
     public void addParticles(){
-        for (int i = 1; i < cells[0].length; i++) {
+        for (int i = 1; i < cells.length; i++) {
             if(!cells[i][0].isSolid()){
 
                 Particle p = new Particle( i , 0, particleCounter++, Direction.UR);

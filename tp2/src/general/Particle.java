@@ -44,6 +44,7 @@ public class Particle {
     }
 
     public static void resolveCollision(Set<Particle> particles){
+        Set<Particle> pAux = new HashSet(particles);
         switch (particles.size()){
             case 2:
                 resolve2PCollision(particles);
@@ -52,7 +53,6 @@ public class Particle {
                 if(isValid3PCollision(particles)){
                     resolve3PCollision(particles);
                 }else{
-                    Set<Particle> pAux = new HashSet(particles);
                     for(Particle p : particles){
                         pAux.remove(p);
                         resolve2PCollision(pAux);
@@ -61,7 +61,6 @@ public class Particle {
                 }
                 break;
             case 4:
-                Set<Particle> pAux = new HashSet(particles);
                 for(Particle p1 : particles){
                     for (Particle p2 : particles){
                         if(!p1.equals(p2)){
@@ -75,7 +74,21 @@ public class Particle {
                 }
                 break;
             case 5:
-
+                for(Particle p1 : particles){
+                    for (Particle p2 : particles){
+                        for(Particle p3 : particles){
+                            if(!p1.equals(p2) && !p1.equals(p3) && !p2.equals(p3)){
+                                pAux.remove(p1);
+                                pAux.remove(p2);
+                                pAux.remove(p3);
+                                resolve2PCollision(pAux);
+                                pAux.add(p1);
+                                pAux.add(p2);
+                                pAux.add(p3);
+                            }
+                        }
+                    }
+                }
                 break;
 
         }
