@@ -82,6 +82,7 @@ public class Particle {
 
     }
 
+    //Checks if every particle's V vector is 60 grades turned from the other
     private static boolean isValid3PCollision(Set<Particle> particles) {
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
 
@@ -110,11 +111,10 @@ public class Particle {
 
     private static void resolve2PCollision(Set<Particle> particles) {
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
-        if(pArray.length <= 2){
+        if(pArray.length < 2){
             return;
         }
-//        if(Direction.reverseY(Direction.reverseX(pArray[0].getDir())) == pArray[1].getDir()){
-//            System.out.println("2 collision");
+        if(Direction.reverseY(Direction.reverseX(pArray[0].getDir())) == pArray[1].getDir()){
             if(Math.random() >= .5){
                 pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
                 pArray[1].setDir(Direction.turnLeft(pArray[1].getDir()));
@@ -122,7 +122,7 @@ public class Particle {
                 pArray[0].setDir(Direction.turnRight(pArray[0].getDir()));
                 pArray[1].setDir(Direction.turnRight(pArray[1].getDir()));
             }
-//        }
+        }
     }
 
     public long getId() {

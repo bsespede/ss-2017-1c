@@ -33,7 +33,7 @@ public class FileProcessor {
                             bw.write(0 + " ");
                             bw.write(0 + " ");
                         }else{
-                            Double r = new Double(cells[i][j].size()*2);
+                            Double r = new Double(cells[i][j].size()/6);
                             bw.write( r.toString()+ " ");
                             bw.write(255 + " ");
                             bw.write(255 + " ");
