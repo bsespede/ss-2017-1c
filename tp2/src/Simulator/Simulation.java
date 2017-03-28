@@ -37,7 +37,7 @@ public class Simulation {
 //        printTestCells();
         for (int i = 0; i < n; i++) {
             moveParticles();
-//            checkCollisions();
+            checkCollisions();
             if(i % 4 == 0){
                 addParticles();
             }

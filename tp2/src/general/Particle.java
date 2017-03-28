@@ -46,26 +46,32 @@ public class Particle {
     public static void resolveCollision(Set<Particle> particles){
         switch (particles.size()){
             case 2:
-                resolve2DCollision(particles);
+                resolve2PCollision(particles);
                 break;
             case 3:
-                if(isValid3DCollision(particles)){
-                    resolve3DCollision(particles);
+                if(isValid3PCollision(particles)){
+                    resolve3PCollision(particles);
                 }else{
                     Set<Particle> pAux = new HashSet(particles);
                     for(Particle p : particles){
                         pAux.remove(p);
-                        resolve2DCollision(pAux);
+                        resolve2PCollision(pAux);
                         pAux.add(p);
                     }
                 }
                 break;
             case 4:
                 Set<Particle> pAux = new HashSet(particles);
-                for(Particle p : particles){
-                    pAux.remove(p);
-                    resolve2DCollision(pAux);
-                    pAux.add(p);
+                for(Particle p1 : particles){
+                    for (Particle p2 : particles){
+                        if(!p1.equals(p2)){
+                            pAux.remove(p1);
+                            pAux.remove(p2);
+                            resolve2PCollision(pAux);
+                            pAux.add(p1);
+                            pAux.add(p2);
+                        }
+                    }
                 }
                 break;
             case 5:
@@ -76,7 +82,7 @@ public class Particle {
 
     }
 
-    private static boolean isValid3DCollision(Set<Particle> particles) {
+    private static boolean isValid3PCollision(Set<Particle> particles) {
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
 
         return  (Direction.turnLeft(Direction.turnLeft(pArray[0].getDir())) == pArray[1].getDir() ||
@@ -88,7 +94,8 @@ public class Particle {
                 ;
     }
 
-    private static void resolve3DCollision(Set<Particle> particles) {
+    private static void resolve3PCollision(Set<Particle> particles) {
+        System.out.println("3 collision");
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
         if(Math.random() >= .5){
             pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
@@ -101,13 +108,13 @@ public class Particle {
         }
     }
 
-    private static void resolve2DCollision(Set<Particle> particles) {
+    private static void resolve2PCollision(Set<Particle> particles) {
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
         if(pArray.length <= 2){
             return;
         }
-        if(Direction.reverseX(pArray[0].getDir()) == pArray[1].getDir()){
-            System.out.println("collision");
+//        if(Direction.reverseY(Direction.reverseX(pArray[0].getDir())) == pArray[1].getDir()){
+//            System.out.println("2 collision");
             if(Math.random() >= .5){
                 pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
                 pArray[1].setDir(Direction.turnLeft(pArray[1].getDir()));
@@ -115,7 +122,7 @@ public class Particle {
                 pArray[0].setDir(Direction.turnRight(pArray[0].getDir()));
                 pArray[1].setDir(Direction.turnRight(pArray[1].getDir()));
             }
-        }
+//        }
     }
 
     public long getId() {
