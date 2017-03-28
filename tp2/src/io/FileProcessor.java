@@ -14,16 +14,40 @@ import general.Particle;
 public class FileProcessor {
 
 	public static void outputState(Cell[][] cells, Set<Particle> particles, String path) {
+        Integer size= new Integer(cells[0].length * cells.length);
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path +".output"))) {
+			bw.write(size.toString() );
+			bw.newLine();
+			bw.newLine();
 			for (int i = 0; i < cells.length; i++) {
 				for (int j = 0; j < cells[0].length; j++) {
+                    Integer id = new Integer((i * cells.length) + j);
+                    bw.write(id.toString() + " ");
+					bw.write(i*5 + " ");
+                    bw.write(j*5 + " ");
+                    bw.write(0 + " ");
 					if(!cells[i][j].isSolid()){
-						bw.write(cells[i][j].size() +" ");
+                        if(cells[i][j].size() == 0){
+                            bw.write(0.01+ " ");
+                            bw.write(0 + " ");
+                            bw.write(0 + " ");
+                            bw.write(0 + " ");
+                        }else{
+                            Double r = new Double(cells[i][j].size()*2);
+                            bw.write( r.toString()+ " ");
+                            bw.write(255 + " ");
+                            bw.write(255 + " ");
+                            bw.write(255 + " ");
+                        }
+
 					}else{
-                        bw.write("0 ");
+                        bw.write(1 + " ");
+                        bw.write(255 + " ");
+                        bw.write(0 + " ");
+                        bw.write(0 + " ");
                     }
+                    bw.newLine();
 				}
-				bw.write("\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

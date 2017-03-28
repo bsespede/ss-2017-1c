@@ -1,6 +1,8 @@
 package general;
 
 
+import java.util.HashSet;
+import java.util.Set;
 
 public class Particle {
 
@@ -41,40 +43,79 @@ public class Particle {
         this.dir = dir;
     }
 
-    public static void resolveCollision(Particle ... particles){
+    public static void resolveCollision(Set<Particle> particles){
+        switch (particles.size()){
+            case 2:
+                resolve2DCollision(particles);
+                break;
+            case 3:
+                if(isValid3DCollision(particles)){
+                    resolve3DCollision(particles);
+                }else{
+                    Set<Particle> pAux = new HashSet(particles);
+                    for(Particle p : particles){
+                        pAux.remove(p);
+                        resolve2DCollision(pAux);
+                        pAux.add(p);
+                    }
+                }
+                break;
+            case 4:
+                Set<Particle> pAux = new HashSet(particles);
+                for(Particle p : particles){
+                    pAux.remove(p);
+                    resolve2DCollision(pAux);
+                    pAux.add(p);
+                }
+                break;
+            case 5:
+
+                break;
+
+        }
 
     }
 
-    public void invertX() {
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR){
-            newDir = Direction.UR;
-        }else if (dir == Direction.UL) {
-            newDir = Direction.BL;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.UL;
-        }
-        dir = newDir;
+    private static boolean isValid3DCollision(Set<Particle> particles) {
+        Particle[] pArray = particles.toArray(new Particle[particles.size()]);
+
+        return  (Direction.turnLeft(Direction.turnLeft(pArray[0].getDir())) == pArray[1].getDir() ||
+                Direction.turnLeft(Direction.turnLeft(pArray[0].getDir())) == pArray[2].getDir()) &&
+                (Direction.turnLeft(pArray[1].getDir()) == pArray[0].getDir() ||
+                        Direction.turnLeft(pArray[1].getDir()) == pArray[2].getDir()) &&
+                (Direction.turnLeft(pArray[2].getDir()) == pArray[0].getDir() ||
+                        Direction.turnLeft(pArray[2].getDir()) == pArray[2].getDir())
+                ;
     }
 
-    public void invertY() {
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.UL;
-        }else if (dir == Direction.UL){
-            newDir = Direction.UR;
-        }else if (dir == Direction.R) {
-            newDir = Direction.L;
-        }else if (dir == Direction.L) {
-            newDir = Direction.R;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR) {
-            newDir = Direction.BL;
+    private static void resolve3DCollision(Set<Particle> particles) {
+        Particle[] pArray = particles.toArray(new Particle[particles.size()]);
+        if(Math.random() >= .5){
+            pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
+            pArray[1].setDir(Direction.turnLeft(pArray[1].getDir()));
+            pArray[2].setDir(Direction.turnLeft(pArray[2].getDir()));
+        }else{
+            pArray[0].setDir(Direction.turnRight(pArray[0].getDir()));
+            pArray[1].setDir(Direction.turnRight(pArray[1].getDir()));
+            pArray[2].setDir(Direction.turnRight(pArray[2].getDir()));
         }
-        dir = newDir;
+    }
+
+    private static void resolve2DCollision(Set<Particle> particles) {
+        Particle[] pArray = particles.toArray(new Particle[particles.size()]);
+        if(pArray.length <= 2){
+            return;
+        }
+        if(Direction.reverseX(pArray[0].getDir()) == pArray[1].getDir()){
+            System.out.println("collision");
+            if(Math.random() >= .5){
+                pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
+                pArray[1].setDir(Direction.turnLeft(pArray[1].getDir()));
+            }else{
+                pArray[0].setDir(Direction.turnRight(pArray[0].getDir()));
+                pArray[1].setDir(Direction.turnRight(pArray[1].getDir()));
+            }
+        }
     }
 
     public long getId() {

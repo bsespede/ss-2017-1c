@@ -21,12 +21,12 @@ public class Simulation {
         for(int i = 0 ; i < height ; i++){
             for (int j = 0; j < width; j++) {
                 if(i == 0 || i == height - 1){
-                    cells[i][j] = new Cell(true);
+                    cells[i][j] = new Cell(true, true, false);
                 }else{
                     if(j == ly && ( i >= lx && i < lx + l)){
-                        cells[i][j] = new Cell(true);
+                        cells[i][j] = new Cell(true, false, true);
                     }else{
-                        cells[i][j] = new Cell(false);
+                        cells[i][j] = new Cell(false, false, false);
                     }
                 }
             }
@@ -34,15 +34,15 @@ public class Simulation {
     }
 
     public void simulate(int n){
-        printTestCells();
+//        printTestCells();
         for (int i = 0; i < n; i++) {
             moveParticles();
-            checkCollisions();
+//            checkCollisions();
             if(i % 4 == 0){
                 addParticles();
             }
-            printTestCells();
-            FileProcessor.outputState(cells, particles,"./output.txt");
+//            printTestCells();
+            FileProcessor.outputState(cells, particles,"./output" + i +".txt");
         }
     }
 
@@ -68,8 +68,8 @@ public class Simulation {
     public void checkCollisions(){
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
-                if(!cells[i][j].isSolid() && cells[i][j].getParticles().size() != 0){
-                    Particle.resolveCollision(cells[i][j].getParticles().toArray(new Particle[cells[i][j].getParticles().size()]));
+                if(!cells[i][j].isSolid() && cells[i][j].getParticles().size() >= 2){
+                    Particle.resolveCollision(cells[i][j].getParticles());
                 }
             }
         }
@@ -89,29 +89,23 @@ public class Simulation {
             }
             if(yDestiny < 0 || yDestiny >= cells[0].length || xDestiny < 0 || xDestiny >= cells.length){
                 particles.remove(p);
-                break;
+                continue;
             }
 
             if(cells[xDestiny][yDestiny].isSolid()){
                 p.resetMovementCounter();
                 boolean invertX = false;
                 boolean invertY = false;
-                if(cells[p.getX()][p.getY() + p.getDir().getDiry()].isSolid() && cells[p.getX() + p.getDir().getDirx()][p.getY()].isSolid()){
+                if(cells[xDestiny][yDestiny].isWall()){
                     invertX = true;
-                    invertY = true;
-                }else if (cells[p.getX() + p.getDir().getDirx()][p.getY()].isSolid()) {
-                    invertX = true;
-                }else if(cells[p.getX()][p.getY() + p.getDir().getDiry()].isSolid()){
-                    invertY = true;
-                }else{
-                    invertX = true;
+                }else if (cells[xDestiny][yDestiny].isEdge()) {
                     invertY = true;
                 }
                 if(invertX){
-                    p.invertX();
+                    p.setDir(Direction.reverseX(p.getDir()));
                 }
                 if(invertY){
-                    p.invertY();
+                    p.setDir(Direction.reverseY(p.getDir()));
                 }
             }else{
                 p.setX(xDestiny);

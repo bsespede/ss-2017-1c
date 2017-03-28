@@ -8,34 +8,32 @@ public class Cell {
 
     private Set<Particle> particles;
     private boolean isSolid;
-    private boolean r;
+    boolean isWall;
+    boolean isEdge;
 
-    public Cell(boolean isSolid) {
+    public Cell(boolean isSolid, boolean isWall, boolean isEdge) {
         this.isSolid = isSolid;
+        this.isWall = isWall;
+        this.isEdge = isEdge;
         if(!isSolid){
             particles = new HashSet<>();
         }
-        updateR();
     }
 
     public Set<Particle> getParticles() {
         return particles;
     }
 
-    public void setParticles(Set<Particle> particles) {
-        this.particles = particles;
-    }
-
     public boolean isSolid() {
         return isSolid;
     }
 
-    public void setSolid(boolean solid) {
-        isSolid = solid;
+    public boolean isWall() {
+        return isWall;
     }
 
-    public void updateR(){
-       r = Math.random() >= 0.5 ? true : false;
+    public boolean isEdge() {
+        return isEdge;
     }
 
 	public int size() {
