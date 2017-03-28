@@ -11,3 +11,4 @@ function plotDensity(input, output)
     print(output, '-dpng');
     
 end
+

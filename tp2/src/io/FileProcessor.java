@@ -14,7 +14,7 @@ import general.Particle;
 public class FileProcessor {
 
 	public static void outputState(Cell[][] cells, Set<Particle> particles, String path) {
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path +".output"))) {
 			for (int i = 0; i < cells.length; i++) {
 				for (int j = 0; j < cells[0].length; j++) {
 					if(!cells[i][j].isSolid()){
