@@ -1,3 +1,0 @@
--Hacer un metodo para verficar que una lista de particulas es valida (que no se pase del rango de simulacion, etc)
--Hacer una demo del metodo de conseguir vecinos generando particulas aleatorias
--Ver como hacer en matlab un programa que agarre el output y lo plotee. Seleccionando una particula y pintando las cercanas (esto ultimo solo si llega a ser facil, sino de baja).

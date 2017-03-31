@@ -13,19 +13,26 @@ import simulation.method.CellIndex;
 
 public class Main {
 
+	private final static int L = 1000;
+	private final static int N = 1000;
+	private final static boolean CONTOUR = true;
+	private final static int r = 5;
+	private final static int rc = 240;
+	private final static int M = 4;
+	
 	public static void main(String[] args) throws IOException {
-		//TODO hacer un switch con input de usuario para elegir cual hacer
 		exampleMain();
-		//simulationForM();
 	}
 
 	private static void exampleMain() throws IOException {
 		
+		
+		
 		System.out.println("Generating particles...");
 		Simulation simulation;
 		//simulation = new CellIndex("./resources/Static100.txt", "./resources/Dynamic100.txt", true, 5);
-		simulation = new CellIndex(1000, 1000, true, 5, 240, 4);
-		//simulation = new Bruteforce(1000, 1000, true, 5, 240);
+		simulation = new CellIndex(L, N, CONTOUR, r, rc, M);
+		//simulation = new Bruteforce(L, N, CONTOUR, r, rc);
 		
 		long time = System.currentTimeMillis();
 		System.out.println("Calculating neighbours...");
@@ -38,7 +45,7 @@ public class Main {
 		Set<Particle> neighbours = neighboursMap.get(randomParticle);
 
 		System.out.println("Writing output...");
-		FileProcessor.writeExampleNeighbours(randomParticle, neighbours, keys,"./example.txt"); // este supongo que te marca los vecinos del seleccionado mas el resto
+		FileProcessor.writeExampleNeighbours(randomParticle, neighbours, keys,"./output.txt");
 	}
 
 }
