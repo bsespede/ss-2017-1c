@@ -1,7 +1,7 @@
 package simulation.method;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import neighbours.Cell;
 import particle.Particle;
@@ -40,19 +40,7 @@ public class CellIndex extends Simulation {
 	}
 
 	private void populateCells() {		
-		for (Particle particle: particles) {
-			for (int i = 0; i < M; i++) {
-				for (int j = 0; j < M; j++) {
-//					float minX = M * i;
-//					float maxX = M * (i + 1);
-//					float minY = M * j;
-//					float maxY = M * (j + 1);
-//					if (particle.getX() < maxX && particle.getX() > minX && particle.getY() > minY && particle.getY() < maxY) {
-//						cells[i * M + j].addParticle(particle);						
-//					}
-				}
-			}
-			
+		for (Particle particle: particles) {				
 			int row = (int) Math.floor((particle.getX()  / L) * M);
 			int col = (int) Math.floor((particle.getY() / L) * M);
 			
@@ -71,8 +59,8 @@ public class CellIndex extends Simulation {
 	}
 
 	@Override
-	protected List<Particle> getNeighbourCandidates(final Particle particle) {
-		List<Particle> candidates = new LinkedList<Particle>();
+	protected Set<Particle> getNeighbourCandidates(final Particle particle) {
+		Set<Particle> candidates = new HashSet<Particle>();
 		int row = (int) Math.floor((particle.getX()  / L) * M);
 		int col = (int) Math.floor((particle.getY() / L) * M);
 		

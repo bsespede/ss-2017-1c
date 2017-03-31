@@ -164,8 +164,8 @@ public class FileProcessor {
 		return 0;		
 	}
 
-	public static List<Particle> readParticles(final String staticInput, final String dynamicInput) {
-		final List<Particle> result = new LinkedList<Particle>();
+	public static Set<Particle> readParticles(final String staticInput, final String dynamicInput) {
+		final Set<Particle> result = new HashSet<Particle>();
 		try {
 			final Scanner staticScanner = new Scanner(new File(staticInput));
 			final Scanner dynamicScanner = new Scanner(new File(dynamicInput));

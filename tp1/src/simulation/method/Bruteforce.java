@@ -1,6 +1,6 @@
 package simulation.method;
 
-import java.util.List;
+import java.util.Set;
 
 import particle.Particle;
 import simulation.Simulation;
@@ -16,7 +16,7 @@ public class Bruteforce extends Simulation{
 	}
 
 	@Override
-	protected List<Particle> getNeighbourCandidates(Particle particle) {
+	protected Set<Particle> getNeighbourCandidates(Particle particle) {
 		return particles;
 	}
 	

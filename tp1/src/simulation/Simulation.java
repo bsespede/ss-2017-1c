@@ -2,8 +2,6 @@ package simulation;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +12,7 @@ public abstract class Simulation {
 
 	protected final boolean contour;
 	protected final int L;
-	protected final List<Particle> particles;
+	protected final Set<Particle> particles;
 
 	public Simulation(final String staticInput, final String dynamicInput, final boolean contour) {
 		this.contour = contour;
@@ -28,8 +26,8 @@ public abstract class Simulation {
 		this.particles = generateParticles(L, particlesNumber, radius, interactionRadius);
 	}
 
-	private List<Particle> generateParticles(final int L, final int particlesNumber, final double radius, final double  interactionRadius) {
-		List<Particle> generatedParticles = new LinkedList<Particle>();
+	private Set<Particle> generateParticles(final int L, final int particlesNumber, final double radius, final double  interactionRadius) {
+		Set<Particle> generatedParticles = new HashSet<Particle>();
 		double particlesDistance = L / Math.sqrt(particlesNumber);
 		int id = 1;
 		for (double x = 0; x < L ; x += particlesDistance) {
@@ -60,6 +58,6 @@ public abstract class Simulation {
 		return neighbourMap;
 	}
 
-	protected abstract List<Particle> getNeighbourCandidates(final Particle particle);
+	protected abstract Set<Particle> getNeighbourCandidates(final Particle particle);
 
 }
