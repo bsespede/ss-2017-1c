@@ -2,13 +2,13 @@ package cellIndexMethod.method;
 
 
 import cellIndexMethod.Cell;
-import cellIndexMethod.Simulation;
+import cellIndexMethod.CellIndexSimulation;
 import particle.Particle;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CellIndex extends Simulation {
+public class CellIndex extends CellIndexSimulation {
 
 	private final Cell[] cells;
 	private final int M;

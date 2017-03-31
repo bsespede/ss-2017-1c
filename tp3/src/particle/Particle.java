@@ -22,15 +22,6 @@ public class Particle {
         this.interactionRadius = interactionRadius;
     }
 
-    public double calculateContourDistance(final Particle candidateNeighbour, final double L) {
-        double lInv = 1.0 / L;
-        double dx = candidateNeighbour.x - x;
-        dx -= L * Math.round(dx * lInv);
-        double dy = candidateNeighbour.y - y;
-        dy -= L * Math.round(dy * lInv);
-        return  Math.sqrt(dx * dx + dy * dy);
-    }
-
     public double calculateDistance(final Particle candidateNeighbour) {
         final double dx = candidateNeighbour.x - x;
         final double dy = candidateNeighbour.y - y;
@@ -87,5 +78,16 @@ public class Particle {
 
     public double getMass() {
         return mass;
+    }
+
+    public double getCollisionTime(Particle p){
+        double xTime = (p.getX() - this.x) / this.vx - p.getVx();
+        double yTime = (p.getY() - this.y) / this.vy - p.getVy();
+        return xTime <= yTime ? xTime : yTime;
+    }
+
+    public void move(double time){
+        this.x = this.x + vx * time;
+        this.y = this.y + vy * time;
     }
 }

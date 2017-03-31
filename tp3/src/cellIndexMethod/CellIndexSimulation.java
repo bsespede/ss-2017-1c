@@ -8,13 +8,13 @@ import java.util.Set;
 import io.FileProcessor;
 import particle.Particle;
 
-public abstract class Simulation {
+public abstract class CellIndexSimulation {
 
 	protected final int L;
 	protected final Set<Particle> particles;
 
 
-	public Simulation(final int L, Set<Particle> particles) {
+	public CellIndexSimulation(final int L, Set<Particle> particles) {
 		this.L = L;
 		this.particles = particles;
 	}
