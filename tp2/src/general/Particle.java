@@ -109,7 +109,6 @@ public class Particle {
     }
 
     private static void resolve3PCollision(Set<Particle> particles) {
-        System.out.println("3 collision");
         Particle[] pArray = particles.toArray(new Particle[particles.size()]);
         if(Math.random() >= .5){
             pArray[0].setDir(Direction.turnLeft(pArray[0].getDir()));
