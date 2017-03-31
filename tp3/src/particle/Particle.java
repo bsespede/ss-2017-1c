@@ -3,6 +3,7 @@ package particle;
 public class Particle {
 
     private final int id;
+    private double mass;
     private double x;
     private double y;
     private double vx;
@@ -10,8 +11,9 @@ public class Particle {
     private final double radius;
     private double interactionRadius;
 
-    public Particle(int id, double x, double y, double vx, double vy, double radius, double interactionRadius) {
+    public Particle(int id, double mass, double x, double y, double vx, double vy, double radius, double interactionRadius) {
         this.id = id;
+        this.mass = mass;
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -81,5 +83,9 @@ public class Particle {
 
     public void setVy(double vy) {
         this.vy = vy;
+    }
+
+    public double getMass() {
+        return mass;
     }
 }
