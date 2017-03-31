@@ -2,9 +2,16 @@ package io;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 import particle.Particle;
 
@@ -143,6 +150,41 @@ public class FileProcessor {
 		w.write(String.valueOf(g) + " ");
 		w.write(String.valueOf(b) + " ");
 		w.write(System.getProperty("line.separator"));
+	}
+
+	public static int readL(final String staticInput) {
+		Scanner staticScanner;
+		try {
+			staticScanner = new Scanner(new File(staticInput));
+			int count = staticScanner.nextInt();
+			return staticScanner.nextInt();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return 0;		
+	}
+
+	public static List<Particle> readParticles(final String staticInput, final String dynamicInput) {
+		final List<Particle> result = new LinkedList<Particle>();
+		try {
+			final Scanner staticScanner = new Scanner(new File(staticInput));
+			final Scanner dynamicScanner = new Scanner(new File(dynamicInput));
+			int count = staticScanner.nextInt();
+			int L = staticScanner.nextInt();
+			dynamicScanner.nextLine();
+			for(int i = 1; i <= count; i++) {
+				float x = dynamicScanner.nextFloat();
+				float y = dynamicScanner.nextFloat();
+				float radius = staticScanner.nextFloat();
+				float integrationRadius = staticScanner.nextFloat();
+				result.add(new Particle(i, x, y, radius, integrationRadius));
+			}
+			return result;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
