@@ -90,4 +90,8 @@ public class Particle {
         this.x = this.x + vx * time;
         this.y = this.y + vy * time;
     }
+
+    public void resolveCollision (Particle p){
+        //TODO
+    }
 }
