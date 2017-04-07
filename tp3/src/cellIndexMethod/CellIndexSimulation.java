@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import io.FileProcessor;
-import particle.Particle;
+import general.Particle;
 
 public abstract class CellIndexSimulation {
 

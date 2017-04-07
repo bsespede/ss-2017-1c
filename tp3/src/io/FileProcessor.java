@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 
-import particle.Particle;
+import general.Particle;
 
 public class FileProcessor {
     /**

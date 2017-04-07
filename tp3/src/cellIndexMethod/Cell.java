@@ -3,7 +3,7 @@ package cellIndexMethod;
 import java.util.LinkedList;
 import java.util.List;
 
-import particle.Particle;
+import general.Particle;
 
 public class Cell {
 	

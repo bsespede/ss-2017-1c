@@ -1,4 +1,4 @@
-package particle;
+package general;
 
 public class Particle {
 
@@ -80,9 +80,17 @@ public class Particle {
         return mass;
     }
 
-    public double getCollisionTime(Particle p){
-        double xTime = (p.getX() - this.x) / this.vx - p.getVx();
-        double yTime = (p.getY() - this.y) / this.vy - p.getVy();
+    public double getParticleCollisionTime(Particle p){
+        double xTime = this.vx - p.getVx() != 0 ? (p.getX() - this.x) / this.vx - p.getVx() : Double.POSITIVE_INFINITY;
+        double yTime = this.vy - p.getVy() != 0 ? (p.getY() - this.y) / this.vy - p.getVy() : Double.POSITIVE_INFINITY;
+        return xTime <= yTime ? xTime : yTime;
+    }
+
+    public double getWallCollisionTime(final double L){
+        double xWall = this.getVx() > 0 ? L : -L;
+        double yWall = this.getVy() > 0 ? L : -L;
+        double xTime = this.getVx() !=0 ? xWall - this.getX() / this.getVx() : Double.POSITIVE_INFINITY;
+        double yTime = this.getVy() !=0 ? yWall - this.getY() / this.getVy() : Double.POSITIVE_INFINITY;
         return xTime <= yTime ? xTime : yTime;
     }
 

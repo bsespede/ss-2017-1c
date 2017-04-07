@@ -3,7 +3,7 @@ package cellIndexMethod.method;
 
 import cellIndexMethod.Cell;
 import cellIndexMethod.CellIndexSimulation;
-import particle.Particle;
+import general.Particle;
 
 import java.util.HashSet;
 import java.util.Set;
