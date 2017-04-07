@@ -1,9 +1,6 @@
 package Simulator;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import general.Cell;
 import general.Direction;
@@ -13,7 +10,7 @@ import io.FileProcessor;
 public class Simulation {
 
     private Cell[][] cells;
-    private Set<Particle> particles = new HashSet<>();
+    private List<Particle> particles = new ArrayList<>();
     private long particleCounter = 0;
     private final List<Integer> totalCollisions = new LinkedList<>();
 
@@ -41,11 +38,11 @@ public class Simulation {
         for (int i = 0; i < n; i++) {
             moveParticles();
             checkCollisions();
-            calculateFlow();
             if(i % 4 == 0){
                 addParticles();
             }
             //FileProcessor.outputState(cells, particles,"./output" + i +".txt");
+            calculateFlow();
         }
         FileProcessor.outputFlow(cells,n ,"./flow.txt");
         FileProcessor.outputCollisions(totalCollisions, "./collisions.txt");
@@ -55,6 +52,7 @@ public class Simulation {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
                 if(!cells[i][j].isSolid()){
+
                     cells[i][j].setParticlesFlowed(cells[i][j].getParticlesFlowed() + cells[i][j].getParticles().size());
                 }
             }
@@ -94,7 +92,9 @@ public class Simulation {
     }
 
     public void moveParticles(){
-        for(Particle p : particles){
+        Set<Particle> toRemove = new HashSet<Particle>();
+        for(int i = 0 ; i < particles.size(); i++){
+            Particle p = particles.get(i);
             cells[p.getX()][p.getY()].getParticles().remove(p);
             int xDestiny = p.getX() + p.getDir().getDirx();
             int yDestiny = p.getY() + p.getDir().getDiry();
@@ -106,7 +106,7 @@ public class Simulation {
                 }
             }
             if(yDestiny < 0 || yDestiny >= cells[0].length || xDestiny < 0 || xDestiny >= cells.length){
-                particles.remove(p);
+                toRemove.add(p);
                 continue;
             }
 
@@ -131,7 +131,11 @@ public class Simulation {
                 p.incMovementCounter();
             }
             cells[p.getX()][p.getY()].getParticles().add(p);
+            if(cells[p.getX()][p.getY()].getParticles().size() >= 7){
+                System.out.println(cells[p.getX()][p.getY()].getParticles());
+            }
         }
+        particles.removeAll(toRemove);
     }
 
     public void printTestCells(){

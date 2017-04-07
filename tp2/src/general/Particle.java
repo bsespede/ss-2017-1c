@@ -161,7 +161,9 @@ public class Particle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Particle particle = (Particle) o;
-        return dir.equals(particle.dir);
+        if(x != particle.getX()) return false;
+        if(y != particle.getY()) return false;
+        return dir.name().equals(particle.dir.name());
 
     }
 
