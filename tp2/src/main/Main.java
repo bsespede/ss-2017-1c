@@ -8,12 +8,12 @@ import Simulator.Simulation;
 public class Main {
 
     public static void main(String[] args) {
-    	
     	System.out.println("Started simulation");
     	long time = System.currentTimeMillis();
-        Simulation s = new Simulation(600, 300, 30);
-        s.simulate(1000);
+    	
+        Simulation s = new Simulation(40, 30, 5);
+        s.simulate(200);
+        
         System.out.println("Finished simulation in " + (System.currentTimeMillis() - time) / 1000f + " seconds...");
-
     }
 }

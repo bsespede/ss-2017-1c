@@ -15,6 +15,7 @@ public class Simulation {
     private Cell[][] cells;
     private Set<Particle> particles = new HashSet<>();
     private long particleCounter = 0;
+    private final List<Integer> totalCollisions = new LinkedList<>();
 
     public Simulation(int height, int width, int l) {
         cells = new Cell[height][width];
@@ -35,18 +36,29 @@ public class Simulation {
         }
     }
 
-    public void simulate(int n){
-    	List<Integer> totalCollisions = new LinkedList<>();
+    public void simulate(int n) {
+    	
         for (int i = 0; i < n; i++) {
             moveParticles();
-            int collisions = checkCollisions();
+            checkCollisions();
+            calculateFlow();
             if(i % 4 == 0){
                 addParticles();
             }
-            totalCollisions.add(collisions);
             //FileProcessor.outputState(cells, particles,"./output" + i +".txt");
         }
+        FileProcessor.outputFlow(cells,n ,"./flow.txt");
         FileProcessor.outputCollisions(totalCollisions, "./collisions.txt");
+    }
+
+    private void calculateFlow() {
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[0].length; j++) {
+                if(!cells[i][j].isSolid()){
+                    cells[i][j].setParticlesFlowed(cells[i][j].getParticlesFlowed() + cells[i][j].getParticles().size());
+                }
+            }
+        }        
     }
 
     public void addParticles(){
@@ -68,7 +80,7 @@ public class Simulation {
         }
     }
 
-    public int checkCollisions() {
+    public void checkCollisions() {
     	int collisionsNumber = 0;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
@@ -78,7 +90,7 @@ public class Simulation {
                 }
             }
         }
-        return collisionsNumber;
+        totalCollisions.add(collisionsNumber);
     }
 
     public void moveParticles(){

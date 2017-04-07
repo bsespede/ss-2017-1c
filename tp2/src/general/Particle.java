@@ -160,12 +160,8 @@ public class Particle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Particle particle = (Particle) o;
-
-        if (x != particle.x) return false;
-        if (y != particle.y) return false;
-        return dir == particle.dir;
+        return dir.equals(particle.dir);
 
     }
 
@@ -175,5 +171,10 @@ public class Particle {
         result = 31 * result + y;
         result = 31 * result + (dir != null ? dir.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return x + " " + y + " " + dir.name();
     }
 }
