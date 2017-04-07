@@ -53,5 +53,23 @@ public class FileProcessor {
 			e.printStackTrace();
 		}
 	}
-	
+
+    public static void outputFlow(Cell[][] cells, int n, String path) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path +".output"))) {
+            for (int i = 0; i < cells.length; i++) {
+                for (int j = 0; j < cells[0].length; j++) {
+                    if(!cells[i][j].isSolid()){
+                            bw.write(cells[i][j].getParticlesFlowed()/n + " ");
+                    }else{
+                        bw.write(0 + " ");
+                    }
+                }
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

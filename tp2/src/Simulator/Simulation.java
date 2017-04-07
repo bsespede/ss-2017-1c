@@ -37,10 +37,22 @@ public class Simulation {
         for (int i = 0; i < n; i++) {
             moveParticles();
             checkCollisions();
+            calculateFlow();
             if(i % 4 == 0){
                 addParticles();
             }
-            FileProcessor.outputState(cells, particles,"./output" + i +".txt");
+            //FileProcessor.outputState(cells, particles,"./output" + i +".txt");
+        }
+        FileProcessor.outputFlow(cells,n ,"./flow.txt");
+    }
+
+    private void calculateFlow() {
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[0].length; j++) {
+                if(!cells[i][j].isSolid()){
+                    cells[i][j].setParticlesFlowed(cells[i][j].getParticlesFlowed() + cells[i][j].getParticles().size());
+                }
+            }
         }
     }
 
