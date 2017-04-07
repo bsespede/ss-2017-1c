@@ -1,12 +1,14 @@
 package Simulator;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import general.Cell;
 import general.Direction;
 import general.Particle;
 import io.FileProcessor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class Simulation {
 
@@ -34,14 +36,17 @@ public class Simulation {
     }
 
     public void simulate(int n){
+    	List<Integer> totalCollisions = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             moveParticles();
-            checkCollisions();
+            int collisions = checkCollisions();
             if(i % 4 == 0){
                 addParticles();
             }
-            FileProcessor.outputState(cells, particles,"./output" + i +".txt");
+            totalCollisions.add(collisions);
+            //FileProcessor.outputState(cells, particles,"./output" + i +".txt");
         }
+        FileProcessor.outputCollisions(totalCollisions, "./collisions.txt");
     }
 
     public void addParticles(){
@@ -63,14 +68,17 @@ public class Simulation {
         }
     }
 
-    public void checkCollisions(){
+    public int checkCollisions() {
+    	int collisionsNumber = 0;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
                 if(!cells[i][j].isSolid() && cells[i][j].getParticles().size() >= 2){
+                	collisionsNumber += cells[i][j].getParticles().size();
                     Particle.resolveCollision(cells[i][j].getParticles());
                 }
             }
         }
+        return collisionsNumber;
     }
 
     public void moveParticles(){

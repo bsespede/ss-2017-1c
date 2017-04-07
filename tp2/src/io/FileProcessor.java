@@ -3,7 +3,11 @@ package io;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
 
 import general.Cell;
 import general.Particle;
@@ -48,6 +52,17 @@ public class FileProcessor {
                     }
                     bw.newLine();
 				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void outputCollisions(List<Integer> totalCollisions, String path) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+			for (int i = 0; i < totalCollisions.size(); i++) {
+				bw.write(i + " " + totalCollisions.get(i));
+				bw.newLine();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
