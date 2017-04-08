@@ -45,10 +45,12 @@ public class FileProcessor {
 		}
 	}
 
-	public static void outputCollisions(List<Integer> totalCollisions, String path) {
+	public static void outputData(final List<Integer> collisionHistory, final List<Double> flowHistory, final float finalTime, final String path) {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
-			for (int i = 0; i < totalCollisions.size(); i++) {
-				bw.write(i + " " + totalCollisions.get(i));
+			bw.write(finalTime + "");
+			bw.newLine();
+			for (int i = 0; i < collisionHistory.size(); i++) {
+				bw.write(i + 1 +" "+ collisionHistory.get(i) +" "+ flowHistory.get(i));
 				bw.newLine();
 			}
 		} catch (IOException e) {

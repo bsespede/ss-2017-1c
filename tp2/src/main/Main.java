@@ -5,12 +5,12 @@ import Simulator.Simulation;
 public class Main {
 
     public static void main(String[] args) {
-    	System.out.println("Started simulation");
-    	long time = System.currentTimeMillis();
-    	
-        Simulation simulation = new Simulation(300, 100, 75);
-        simulation.simulate(2000);
-        
-        System.out.println("Finished simulation in " + (System.currentTimeMillis() - time) / 1000f + " seconds...");
+    	Simulation simulation;
+        simulation = new Simulation(100, 200, 30, "primera");
+        simulation.simulate(5000);
+        simulation = new Simulation(100, 200, 50, "segunda");
+        simulation.simulate(5000);
+        simulation = new Simulation(100, 200, 70, "tercera");
+        simulation.simulate(1000);
     }
 }
