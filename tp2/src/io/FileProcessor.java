@@ -4,52 +4,39 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
+import Simulator.Simulation;
+import general.Node;
 
-import general.Cell;
-import general.Particle;
-
-/**
- * Created by julian on 23/03/17.
- */
 public class FileProcessor {
 
-	public static void outputState(Cell[][] cells, Set<Particle> particles, String path) {
-        Integer size= new Integer(cells[0].length * cells.length);
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path +".output"))) {
-			bw.write(size.toString() );
+	public static void outputState(final Simulation simulation, final String path) {        
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+			final Node[][] nodes = simulation.getNodes();
+			bw.write(simulation.getNodesNumber() + "");
 			bw.newLine();
 			bw.newLine();
-			for (int i = 0; i < cells.length; i++) {
-				for (int j = 0; j < cells[0].length; j++) {
-                    Integer id = new Integer((i * cells.length) + j);
-                    bw.write(id.toString() + " ");
-					bw.write(i*5 + " ");
-                    bw.write(j*5 + " ");
-                    bw.write(0 + " ");
-					if(!cells[i][j].isSolid()){
-                        if(cells[i][j].size() == 0){
-                            bw.write(0.001+ " ");
-                            bw.write(0 + " ");
-                            bw.write(0 + " ");
-                            bw.write(0 + " ");
-                        }else{
-                            Double r = new Double(cells[i][j].size()/6);
-                            bw.write( r.toString()+ " ");
-                            bw.write(255 + " ");
-                            bw.write(255 + " ");
-                            bw.write(255 + " ");
-                        }
-
-					}else{
-                        bw.write(1 + " ");
+			for (int i = 0; i < nodes.length; i++) {
+				for (int j = 0; j < nodes[0].length; j++) {
+					// id de la celda
+                    bw.write(i + j * nodes.length + " ");
+                    // posicion x, y
+					bw.write(i * 20 + " ");
+					bw.write(j * 20 + " ");
+					if(!nodes[i][j].isSolid()) {
+						// tamaño particula, cantidad de rojo
+						bw.write(0 + " ");
+                        bw.write(0 + " ");
+					} else {
+                        bw.write(20 + " ");
                         bw.write(255 + " ");
-                        bw.write(0 + " ");
-                        bw.write(0 + " ");
                     }
+					// vector velocidad
+					final double[] vector = nodes[i][j].getVelocityVector();
+					//bw.write((int)((nodes[i][j].getParticles().size()> 1)? 255:0) + " ");
+					bw.write(vector[0] + " ");
+					bw.write(vector[1] + " ");
+					bw.write(vector[2] + " ");
                     bw.newLine();
 				}
 			}
@@ -68,22 +55,5 @@ public class FileProcessor {
 			e.printStackTrace();
 		}
 	}
-	
-    public static void outputFlow(Cell[][] cells, int n, String path) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path +".output"))) {
-            for (int i = 0; i < cells.length; i++) {
-                for (int j = 0; j < cells[0].length; j++) {
-                    if(!cells[i][j].isSolid()){
-                            bw.write(cells[i][j].getParticlesFlowed()/n + " ");
-                    }else{
-                        bw.write(0 + " ");
-                    }
-                }
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

@@ -2,100 +2,78 @@ package general;
 
 
 public enum Direction {
-    UR(-1, 0),
-    R (0, 1),
-    BR(1, 0),
-    BL(1, -1),
-    L (0, -1),
-    UL(-1, -1);
+    UR(1, 1),
+    R (1, 0),
+    BR(1, -1),
+    BL(0, -1),
+    L (-1, 0),
+    UL(0, 1);
 
-    private int dirx;
-    private int diry;
+    final private int x;
+    final private int y;
 
-    Direction(int dirx, int diry) {
-        this.dirx = dirx;
-        this.diry = diry;
+    Direction(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-
-    public int getDirx() {
-        return dirx;
+    public int getX() {
+        return x;
     }
 
-    public int getDiry() {
-        return diry;
+    public int getY() {
+        return y;
     }
 
-    public static Direction reverseX(Direction dir) {
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR){
-            newDir = Direction.UR;
-        }else if (dir == Direction.UL) {
-            newDir = Direction.BL;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.UL;
+    public Direction reverse() {
+        switch (this) {
+	        case UR:
+	        	return Direction.BL;
+	        case BR:
+	        	return Direction.UL;
+	        case BL:
+	        	return Direction.UR;
+	        case UL:
+	        	return Direction.BR;
+	        case R:
+	        	return Direction.L;
+	        default:
+	        	return Direction.R;
         }
-        return newDir;
     }
 
-    public static Direction reverseY(Direction dir) {
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.UL;
-        }else if (dir == Direction.UL){
-            newDir = Direction.UR;
-        }else if (dir == Direction.R) {
-            newDir = Direction.L;
-        }else if (dir == Direction.L) {
-            newDir = Direction.R;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR) {
-            newDir = Direction.BL;
-        }
-       return newDir;
+    public Direction clockwise(){
+    	switch (this) {
+	        case UR:
+	        	return Direction.R;
+	        case BR:
+	        	return Direction.BL;
+	        case BL:
+	        	return Direction.L;
+	        case UL:
+	        	return Direction.UR;
+	        case R:
+	        	return Direction.BR;
+	        default:
+	        	return Direction.UL;
+	    }
     }
 
-    public static Direction turnLeft(Direction dir){
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.UL;
-        }else if (dir == Direction.UL){
-            newDir = Direction.L;
-        }else if (dir == Direction.L) {
-            newDir = Direction.BL;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR) {
-            newDir = Direction.R;
-        }else if (dir == Direction.R) {
-            newDir = Direction.UR;
-        }
-        return newDir;
-    }
-
-    public static Direction turnRight(Direction dir){
-        Direction newDir = dir;
-        if(dir == Direction.UR){
-            newDir = Direction.R;
-        }else if (dir == Direction.R){
-            newDir = Direction.BR;
-        }else if (dir == Direction.BR) {
-            newDir = Direction.BL;
-        }else if (dir == Direction.BL) {
-            newDir = Direction.L;
-        }else if (dir == Direction.L) {
-            newDir = Direction.UL;
-        }else if (dir == Direction.UL) {
-            newDir = Direction.UR;
-        }
-        return newDir;
-    }
-
+    public Direction counterClockwise(){
+    	switch (this) {
+	        case UR:
+	        	return Direction.UL;
+	        case BR:
+	        	return Direction.R;
+	        case BL:
+	        	return Direction.BR;
+	        case UL:
+	        	return Direction.L;
+	        case R:
+	        	return Direction.UR;
+	        default:
+	        	return Direction.BL;
+	    }
+	}
 
 }
-
-
-

@@ -1,155 +1,106 @@
 package Simulator;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import general.Cell;
 import general.Direction;
+import general.Node;
 import general.Particle;
 import io.FileProcessor;
 
 public class Simulation {
 
-    private Cell[][] cells;
-    private List<Particle> particles = new ArrayList<>();
-    private long particleCounter = 0;
-    private final List<Integer> totalCollisions = new LinkedList<>();
+	private final List<Particle> particles;
+    private final Node[][] nodes;
 
-    public Simulation(int height, int width, int l) {
-        cells = new Cell[height][width];
-        int lx = (int) (Math.random() * (height - l - 1 ) )+ height % 5;
-        int ly = (int) (Math.random() * width) + width % 5;
-        for(int i = 0 ; i < height ; i++){
-            for (int j = 0; j < width; j++) {
-                if(i == 0 || i == height - 1){
-                    cells[i][j] = new Cell(true, true, false);
-                }else{
-                    if(j == ly && ( i >= lx && i < lx + l)){
-                        cells[i][j] = new Cell(true, false, true);
-                    }else{
-                        cells[i][j] = new Cell(false, false, false);
-                    }
-                }
-            }
-        }
-    }
-
-    public void simulate(int n) {
+    public Simulation(final int height, final int width, final int l) {
+    	this.particles = new LinkedList<>();
+    	this.nodes = new Node[width + 1][height + 1];
     	
-        for (int i = 0; i < n; i++) {
-            moveParticles();
-            checkCollisions();
-            if(i % 4 == 0){
-                addParticles();
-            }
-            //FileProcessor.outputState(cells, particles,"./output" + i +".txt");
-            calculateFlow();
-        }
-        FileProcessor.outputFlow(cells,n ,"./flow.txt");
-        FileProcessor.outputCollisions(totalCollisions, "./collisions.txt");
-    }
-
-    private void calculateFlow() {
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[0].length; j++) {
-                if(!cells[i][j].isSolid()){
-
-                    cells[i][j].setParticlesFlowed(cells[i][j].getParticlesFlowed() + cells[i][j].getParticles().size());
-                }
-            }
-        }        
-    }
-
-    public void addParticles(){
-        for (int i = 1; i < cells.length; i++) {
-            if(!cells[i][0].isSolid()){
-
-                Particle p = new Particle( i , 0, particleCounter++, Direction.UR);
-                cells[i][0].getParticles().add(p);
-                particles.add(p);
-
-                p = new Particle( i , 0, particles.size(), Direction.R);
-                cells[i][0].getParticles().add(p);
-                particles.add(p);
-
-                p = new Particle( i , 0, particles.size(), Direction.BR);
-                cells[i][0].getParticles().add(p);
-                particles.add(p);
-            }
-        }
-    }
-
-    public void checkCollisions() {
-    	int collisionsNumber = 0;
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[0].length; j++) {
-                if(!cells[i][j].isSolid() && cells[i][j].getParticles().size() >= 2){
-                	collisionsNumber += cells[i][j].getParticles().size();
-                    Particle.resolveCollision(cells[i][j].getParticles());
-                }
-            }
-        }
-        totalCollisions.add(collisionsNumber);
-    }
-
-    public void moveParticles(){
-        Set<Particle> toRemove = new HashSet<Particle>();
-        for(int i = 0 ; i < particles.size(); i++){
-            Particle p = particles.get(i);
-            cells[p.getX()][p.getY()].getParticles().remove(p);
-            int xDestiny = p.getX() + p.getDir().getDirx();
-            int yDestiny = p.getY() + p.getDir().getDiry();
-            if(p.getMovementCounter() % 2 == 0 && p.getDir() != Direction.R && p.getDir() != Direction.L){
-                if(p.getDir().getDiry()>=0){
-                    yDestiny += 1;
+        final int wallMinY = (int) (Math.floor(height / 2.0 - l / 2.0));
+        final int wallMaxY = (int) (Math.ceil(height / 2.0 + l / 2.0));
+        final int wallX = (int) (Math.ceil(width * 0.8));
+        
+        for(int i = 0 ; i < nodes.length ; i++){
+            for (int j = 0; j < nodes[0].length; j++) {
+                if(i == wallX && j >= wallMinY && j <= wallMaxY){
+                    nodes[i][j] = new Node(true);
                 }else{
-                    yDestiny -= 1;
+                	nodes[i][j] = new Node(false);
                 }
             }
-            if(yDestiny < 0 || yDestiny >= cells[0].length || xDestiny < 0 || xDestiny >= cells.length){
-                toRemove.add(p);
-                continue;
-            }
+        }
+    }
 
-            if(cells[xDestiny][yDestiny].isSolid()){
-                p.resetMovementCounter();
-                boolean invertX = false;
-                boolean invertY = false;
-                if(cells[xDestiny][yDestiny].isWall()){
-                    invertX = true;
-                }else if (cells[xDestiny][yDestiny].isEdge()) {
-                    invertY = true;
-                }
-                if(invertX){
-                    p.setDir(Direction.reverseX(p.getDir()));
-                }
-                if(invertY){
-                    p.setDir(Direction.reverseY(p.getDir()));
-                }
-            }else{
-                p.setX(xDestiny);
-                p.setY(yDestiny);
-                p.incMovementCounter();
+    public void simulate(final int steps) {    	
+        for (int step = 0; step < steps; step++) {
+            moveParticles();
+            resolveCollisions();
+            if(step % 4 == 0){
+            	generateParticles();
             }
-            cells[p.getX()][p.getY()].getParticles().add(p);
-            if(cells[p.getX()][p.getY()].getParticles().size() >= 7){
-                System.out.println(cells[p.getX()][p.getY()].getParticles());
+            FileProcessor.outputState(this, "./outputs/output"+ step + ".txt");
+        }
+    }
+
+    public void generateParticles(){
+        for (int i = 0; i < nodes[0].length; i++) {
+            if(!nodes[0][i].isSolid()){         	
+                final Particle p1 = new Particle(0, i, Direction.UR);
+                final Particle p2 = new Particle(0, i, Direction.R);
+                final Particle p3 = new Particle(0, i, Direction.BR);
+                nodes[0][i].addParticle(p1);
+                nodes[0][i].addParticle(p2);
+                nodes[0][i].addParticle(p3);
+                particles.add(p1);                
+                particles.add(p2);                
+                particles.add(p3);
+            }
+        }
+    }
+
+    public void resolveCollisions() {
+        for (int i = 0; i < nodes.length; i++) {
+            for (int j = 0; j < nodes[0].length; j++) {
+            	nodes[i][j].resolveCollision();
+            }
+        }
+    }
+
+    public void moveParticles() {
+        List<Particle> toRemove = new LinkedList<>();
+        for (Particle particle: particles) {
+            Direction direction = particle.getDirection();
+            int x = particle.getX(); 
+            int y = particle.getY();
+            
+            nodes[x][y].removeParticle(particle);
+            
+            if(nodes[x][y].isSolid()){
+                direction = direction.reverse();
+            }
+            
+            x += direction.getX();
+            y += direction.getY();
+                        
+            if(x < 0 || x >= nodes.length || y < 0 || y >= nodes[0].length) {
+                toRemove.add(particle);
+            } else {
+            	particle.setX(x);
+            	particle.setY(y);
+            	particle.setDirection(direction);
+            	nodes[x][y].addParticle(particle); 
             }
         }
         particles.removeAll(toRemove);
     }
 
-    public void printTestCells(){
-        for (int i = 0; i < cells.length; i++) {
-            for (int j = 0; j < cells[i].length; j++) {
-                if(cells[i][j].isSolid()){
-                    System.out.print("  S   ");
-                }else{
-                    System.out.print("  "  + cells[i][j].getParticles().size() + "   ");
-                }
-            }
-            System.out.println();
-        }
-        System.out.println();
-        System.out.println();
-    }
+	public int getNodesNumber() {
+		return nodes.length * nodes[0].length;
+	}
+
+	public Node[][] getNodes() {
+		return nodes;
+	}
+    
 }
