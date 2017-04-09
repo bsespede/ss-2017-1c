@@ -194,7 +194,7 @@ public class Simulation {
 	
 	private double[][][] calculateVelocities() {
     	// Para calcular velocidad media uso coarse-graining
-    	int grainSize = 8;
+    	int grainSize = 125;
     	int grainX = width / grainSize;
     	int grainY = height / grainSize;
     	
