@@ -9,15 +9,17 @@ public class Simulation {
 	private final int[][] obstacles;
 	private final int width, height;
 	private final int grainSize;
+	private final int velocityTimeStep;
 	private final String output;
 
-    public Simulation(final int width, final int height, final int L, final int grainSize, final String output) {
+    public Simulation(final int width, final int height, final int L, final int grainSize, final int velocityTimeStep, final String output) {
     	//Arreglo 3D con posiciones y estados de la celda segun la dir
     	this.nodes = new int[width][height][6];
     	this.obstacles = new int[width][height];
     	this.width = width;
     	this.height = height;
     	this.grainSize = grainSize;
+    	this.velocityTimeStep = velocityTimeStep;
     	this.output = output;
     	
     	// Pongo mis obstaculos
@@ -42,17 +44,17 @@ public class Simulation {
     	for (int t = 0; t < steps; t++) {
     		solveCollisions();
     		moveParticles();
-    		double[][] velocities = calculateVelocities();
     		// Genero nuevas particulas cada 4 ticks
     		if (t % 4 == 0) {
     			generateParticles();
     		}
     		// Cada tanto imprimo el t para ver que no se trabo
-    		if (t % (steps / 20) == 0) {
+    		if (t % velocityTimeStep == 0) {
     			System.out.println("[INFO] En el paso " + t);
+    			double[][] velocities = calculateVelocities();
+    			FileProcessor.outputSimulation(obstacles, velocities, grainSize,  "./outputs/" + output + "-" + t +".txt");
     		}   
     		// Genero output de velocidades
-    		FileProcessor.outputSimulation(obstacles, velocities, grainSize,  "./outputs/" + output + "-" + t +".txt");
     	}
     	final long endTime = System.currentTimeMillis();
     	final double simulationSeconds = (endTime - startTime) / 1000d;
