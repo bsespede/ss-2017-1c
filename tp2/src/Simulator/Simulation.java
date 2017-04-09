@@ -48,7 +48,7 @@ public class Simulation {
     			generateParticles();
     		}
     		// Cada tanto imprimo el t para ver que no se trabo
-    		if (t % 1000 == 0) {
+    		if (t % (steps / 20) == 0) {
     			System.out.println("[INFO] En el paso " + t);
     		}   
     		// Genero output de velocidades

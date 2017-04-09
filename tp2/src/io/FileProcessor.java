@@ -21,7 +21,7 @@ public class FileProcessor {
 					bw.write(j + " ");
 					if(obstacles[i][j] == 1) {
 						// tamaño particula, cantidad de rojo
-						bw.write(20 + " ");
+						bw.write(5 + " ");
 						bw.write(255 + " ");
 					} else {
 						bw.write(0 + " ");
