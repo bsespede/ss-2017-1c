@@ -2,13 +2,15 @@ package main;
 
 import Simulator.Simulation;
 
-/**
- * Created by julian on 22/03/17.
- */
 public class Main {
 
     public static void main(String[] args) {
-        Simulation s = new Simulation(1920, 960, 80);
-        s.simulate(1000);
+    	Simulation simulation;
+        simulation = new Simulation(960, 320, 64, "primero");
+        simulation.simulate(10000);
+        simulation = new Simulation(960, 320, 128, "segundo");
+        simulation.simulate(10000);
+        simulation = new Simulation(960, 320, 256, "tercero");
+        simulation.simulate(10000);
     }
 }

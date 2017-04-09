@@ -19,5 +19,3 @@ hs_err_pid*
 .idea/
 .metadata/
 bin/
-
-/outputs/*
