@@ -2,6 +2,8 @@ package simulation;
 
 
 import cellIndexMethod.method.CellIndex;
+import general.ParticleCollision;
+import general.WallCollision;
 import io.FileProcessor;
 import general.Collision;
 import general.Particle;
@@ -43,6 +45,8 @@ public class Simulator {
     public void simulate(){
         Collision c = calculateNextCollision();
         moveToNextT(c.getT());
+        c.resolveCollision();
+
     }
 
     private void moveToNextT(double t) {
@@ -54,7 +58,8 @@ public class Simulator {
     private Collision calculateNextCollision() {
         double t = Double.POSITIVE_INFINITY;
         double aux;
-        Particle collisionP1, collisionP2;
+        boolean isWallCollision = false;
+        Particle collisionP1 = null, collisionP2 = null;
         for(Particle p1: particles){
             for(Particle p2: particles){
                 if(!p1.equals(p2)){
@@ -63,13 +68,24 @@ public class Simulator {
                         t = aux;
                         collisionP1 = p1;
                         collisionP2 = p2;
+                        isWallCollision = false;
                     }
                 }
             }
             aux = p1.getWallCollisionTime(L);
-            t = aux < t ? aux : t;
+            if(aux < t ){
+                t = aux;
+                collisionP1 = p1;
+                isWallCollision = true;
+            }
         }
-        return t;
+        Collision c = null;
+        if(isWallCollision){
+            new WallCollision(collisionP1, t);
+        }else{
+            new ParticleCollision(collisionP1, collisionP2, t);
+        }
+        return c;
     }
 
     public void generationPrint() throws IOException {

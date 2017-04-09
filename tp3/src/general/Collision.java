@@ -7,6 +7,11 @@ public abstract class Collision {
     Particle p1;
     double t;
 
+    public Collision(Particle p1, double t){
+        this.p1 = p1;
+        this.t = t;
+    }
+
     public abstract void resolveCollision();
 
     public Particle getP1() {
