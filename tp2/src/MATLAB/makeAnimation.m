@@ -10,9 +10,11 @@ function makeAnimation(inputFolder, fileName, frameRate)
     
     % make plots
     for i = 1:length(inputFiles)
-        inputFile = strcat(inputFolder, fileName, '-', num2str(i), '.txt');
+        velocitiesFile = strcat(inputFolder, fileName, '-', num2str(i), '.txt');
+        boundariesFile = strcat(inputFolder, fileName, '-boundaries.txt');
+        dataFile = strcat(inputFolder, fileName, '-data.txt');
         outputImage = strcat(imageFolder, fileName, '-', num2str(i), '.png');
-        plotVelocities(inputFile, outputImage);
+        plotVelocities(velocitiesFile, boundariesFile, dataFile, outputImage);
     end
     
     % create video file

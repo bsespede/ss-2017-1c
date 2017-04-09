@@ -8,14 +8,16 @@ public class Simulation {
 	private int[][][] nodes;
 	private final int[][] obstacles;
 	private final int width, height;
+	private final int grainSize;
 	private final String output;
 
-    public Simulation(final int width, final int height, final int L, final String output) {
+    public Simulation(final int width, final int height, final int L, final int grainSize, final String output) {
     	//Arreglo 3D con posiciones y estados de la celda segun la dir
     	this.nodes = new int[width][height][6];
     	this.obstacles = new int[width][height];
     	this.width = width;
     	this.height = height;
+    	this.grainSize = grainSize;
     	this.output = output;
     	
     	// Pongo mis obstaculos
@@ -36,24 +38,25 @@ public class Simulation {
 
     public void simulate(final int steps) {
     	System.out.println("[INFO] Comienza la simulacion");
+    	final long startTime = System.currentTimeMillis();
     	for (int t = 0; t < steps; t++) {
     		solveCollisions();
     		moveParticles();
-    		double[][][] velocities = calculateVelocities();
+    		double[][] velocities = calculateVelocities();
     		// Genero nuevas particulas cada 4 ticks
     		if (t % 4 == 0) {
     			generateParticles();
     		}
     		// Cada tanto imprimo el t para ver que no se trabo
-    		if (t % 100 == 0) {
+    		if (t % 1000 == 0) {
     			System.out.println("[INFO] En el paso " + t);
     		}   
     		// Genero output de velocidades
-    		FileProcessor.outputVelocities(velocities, "./outputs/" + output + "-" + t +".txt");
+    		FileProcessor.outputSimulation(obstacles, velocities, grainSize,  "./outputs/" + output + "-" + t +".txt");
     	}
-    	// Genero output de obstaculos
-    	FileProcessor.outputBoundaries(obstacles, "./outputs/" + output + "-boundaries.txt");
-    	System.out.println("[INFO] Ha finalizado la simulacion");
+    	final long endTime = System.currentTimeMillis();
+    	final double simulationSeconds = (endTime - startTime) / 1000d;
+    	System.out.println("[INFO] Ha finalizado la simulacion en "+ simulationSeconds + "segundos");
     }
 
 	private void solveCollisions() {
@@ -192,16 +195,12 @@ public class Simulation {
 		nodes = newNodes;
 	}
 	
-	private double[][][] calculateVelocities() {
+	private double[][] calculateVelocities() {
     	// Para calcular velocidad media uso coarse-graining
-    	int grainSize = 125;
     	int grainX = width / grainSize;
     	int grainY = height / grainSize;
     	
-    	int[] avgVelXCoords = new int[grainX * grainY];
-    	int[] avgVelYCoords = new int[grainX * grainY];
-    	double[] avgVelXComps = new double[grainX * grainY];
-    	double[] avgVelYComps = new double[grainX * grainY];
+    	double[][] velocities = new double[grainX * grainY][2];
     	
     	// Iterar sobre todo el dominio calculando los promedios
     	int curVal = 0;
@@ -234,22 +233,11 @@ public class Simulation {
     			
     			double mean = 1d / (grainSize * grainSize);
     			
-    			avgVelXComps[curVal] = mean * (velXR + velXUR + velXUL + velXL + velXBL + velXBR);
-    			avgVelYComps[curVal] = mean * (velYR + velYUR + velYUL + velYL + velYBL + velYBR);
-    			
-    			avgVelXCoords[curVal] = i;
-    			avgVelYCoords[curVal] = j;
+    			velocities[curVal][0] = mean * (velXR + velXUR + velXUL + velXL + velXBL + velXBR);
+    			velocities[curVal][1] = mean * (velYR + velYUR + velYUL + velYL + velYBL + velYBR);
     			
     			curVal++;    			
     		}
-    	}
-
-    	double[][][] velocities = new double[curVal][2][2];
-    	
-    	for (int i = 0; i < curVal; i++) {
-    		velocities[i] = new double[2][2];
-    		velocities[i][0] = new double[]{avgVelXCoords[i], avgVelXCoords[i]};
-    		velocities[i][1] = new double[]{avgVelXComps[i], avgVelYComps[i]};
     	}
     	
     	return velocities; 
