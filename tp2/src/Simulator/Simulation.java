@@ -39,7 +39,7 @@ public class Simulation {
     	for (int t = 0; t < steps; t++) {
     		solveCollisions();
     		moveParticles();
-    		calculateVelocities();
+    		double[][][] velocities = calculateVelocities();
     		// Genero nuevas particulas cada 4 ticks
     		if (t % 4 == 0) {
     			generateParticles();
@@ -49,67 +49,71 @@ public class Simulation {
     			System.out.println("[INFO] En el paso " + t);
     		}   
     		// Genero output de velocidades
-    		FileProcessor.outputBoundaries(obstacles, "./outputs/" + output + "-" + t +".txt");
+    		FileProcessor.outputVelocities(velocities, "./outputs/" + output + "-" + t +".txt");
     	}
     	// Genero output de obstaculos
     	FileProcessor.outputBoundaries(obstacles, "./outputs/" + output + "-boundaries.txt");
     	System.out.println("[INFO] Ha finalizado la simulacion");
     }
 
-    private void calculateVelocities() {
-    	// Para calcular velocidad media uso coarse-graining
-    	int grainSize = 8;
-    	int grainX = width / grainSize;
-    	int grainY = height / grainSize;
-    	
-    	int[] avgVelXCoords = new int[grainX * grainY];
-    	int[] avgVelYCoords = new int[grainX * grainY];
-    	double[] avgVelXComps = new double[grainX * grainY];
-    	double[] avgVelYComps = new double[grainX * grainY];
-    	
-    	// Iterar sobre todo el dominio calculando los promedios
-    	int curVal = 0;
-    	for (int i = 0; i < grainX; i++) {
-    		// Calculo limites en x
-    		int xLower = i * grainSize;
-    		int xUpper = (i + 1) * grainSize;
-    		for (int j = 0; j < grainY; j++) {
-    			// Lo mismo, limites en y
-    			int yLower = j * grainSize;
-    			int yUpper = (j + 1) * grainSize;
-    			
-    			// Calculo la cantidad de particulas moviendose en cada subdominio
-    			int[] np = sumCells(xLower, xUpper, yLower, yUpper);
-    			
-    			// Calculo vel promedio
-    			double velXR = np[0] * VelocityConstants.R.getX();
-    			double velXUR = np[1] * VelocityConstants.UR.getX();
-    			double velXUL = np[2] * VelocityConstants.UL.getX();
-    			double velXL = np[3] * VelocityConstants.L.getX();
-    			double velXBL = np[4] * VelocityConstants.BL.getX();
-    			double velXBR = np[5] * VelocityConstants.BR.getX();
-    			
-    			double velYR = np[0] * VelocityConstants.R.getY();
-    			double velYUR = np[1] * VelocityConstants.UR.getY();
-    			double velYUL = np[2] * VelocityConstants.UL.getY();
-    			double velYL = np[3] * VelocityConstants.L.getY();
-    			double velYBL = np[4] * VelocityConstants.BL.getY();
-    			double velYBR = np[5] * VelocityConstants.BR.getY();
-    			
-    			double mean = 1d / (grainSize * grainSize);
-    			
-    			avgVelXComps[curVal] = mean * (velXR + velXUR + velXUL + velXL + velXBL + velXBR);
-    			avgVelYComps[curVal] = mean * (velYR + velYUR + velYUL + velYL + velYBL + velYBR);
-    			
-    			avgVelXCoords[curVal] = i;
-    			avgVelYCoords[curVal] = j;
-    			
-    			curVal++;
-    			
-    		}
-    	}
+	private void solveCollisions() {
+    	// Chequeo colisiones excepto en paredes y obstaculos
+		for (int i = 0; i < width; i++) {
+			for (int j = 1; j < height - 1; j++) {
+				if (obstacles[i][j] == 0) {
+					int[] curCell = nodes[i][j];
+					// Chequear si hay colisiones
+					int sum = sum(curCell);    					
+					// Caso 3 particulas colisionan
+					if (sum == 3) {
+						if (curCell[0] == curCell[2] && curCell[2] == curCell[4]) {
+							invertCell(i, j);
+						}
+					// Caso 2 particulas colisionan
+					} else if (sum == 2) {
+						// Me fijo si la de enfrente es la otra ocupada
+						int p1 = first(curCell);
+						if (p1 < 3 && curCell[p1 + 3] == 1) {
+							// Giro ambas clockwise o counterclockwise de manera random
+							int[] newCell = new int[6];
+							if (Math.random() > 0.5) {
+								// Clockwise
+								newCell[0] = curCell[5];
+								newCell[1] = curCell[0];
+								newCell[2] = curCell[1];
+								newCell[3] = curCell[2];
+								newCell[4] = curCell[3];
+								newCell[5] = curCell[4];
+							} else {
+								// CounterClockwise
+								newCell[0] = curCell[1];
+								newCell[1] = curCell[2];
+								newCell[2] = curCell[3];
+								newCell[3] = curCell[4];
+								newCell[4] = curCell[5];
+								newCell[5] = curCell[0];
+							}
+							nodes[i][j] = newCell;
+						}
+					}
+				}    				
+			}
+		}    		
+		// Colisiones en paredes
+		for (int i = 0; i < width; i++) {
+			nodes[i][0] = new int[]{nodes[i][0][3], nodes[i][0][4], nodes[i][0][5], nodes[i][0][0], nodes[i][0][1], nodes[i][0][2]};
+			nodes[i][height-1] = new int[]{nodes[i][height-1][3], nodes[i][height-1][4], nodes[i][height-1][5], nodes[i][height-1][0], nodes[i][height-1][1], nodes[i][height-1][2]};
+		}    		
+		// Colisiones con obstaculos
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (obstacles[i][j] == 1) {
+					nodes[i][j] = new int[]{nodes[i][0][3], nodes[i][0][4], nodes[i][0][5], nodes[i][0][0], nodes[i][0][1], nodes[i][0][2]};
+				}
+			}
+		}
 	}
-
+	
 	private void moveParticles() {
     	// Creo un nuevo tablero con las particulas despues de moverse
 		int[][][] newNodes = new int[width][height][6];
@@ -187,63 +191,68 @@ public class Simulation {
 		// Updateo el tablero
 		nodes = newNodes;
 	}
+	
+	private double[][][] calculateVelocities() {
+    	// Para calcular velocidad media uso coarse-graining
+    	int grainSize = 8;
+    	int grainX = width / grainSize;
+    	int grainY = height / grainSize;
+    	
+    	int[] avgVelXCoords = new int[grainX * grainY];
+    	int[] avgVelYCoords = new int[grainX * grainY];
+    	double[] avgVelXComps = new double[grainX * grainY];
+    	double[] avgVelYComps = new double[grainX * grainY];
+    	
+    	// Iterar sobre todo el dominio calculando los promedios
+    	int curVal = 0;
+    	for (int i = 0; i < grainX; i++) {
+    		// Calculo limites en x
+    		int xLower = i * grainSize;
+    		int xUpper = (i + 1) * grainSize;
+    		for (int j = 0; j < grainY; j++) {
+    			// Lo mismo, limites en y
+    			int yLower = j * grainSize;
+    			int yUpper = (j + 1) * grainSize;
+    			
+    			// Calculo la cantidad de particulas moviendose en cada subdominio
+    			int[] np = sumCells(xLower, xUpper, yLower, yUpper);
+    			
+    			// Calculo vel promedio
+    			double velXR = np[0] * VelocityConstants.R.getX();
+    			double velXUR = np[1] * VelocityConstants.UR.getX();
+    			double velXUL = np[2] * VelocityConstants.UL.getX();
+    			double velXL = np[3] * VelocityConstants.L.getX();
+    			double velXBL = np[4] * VelocityConstants.BL.getX();
+    			double velXBR = np[5] * VelocityConstants.BR.getX();
+    			
+    			double velYR = np[0] * VelocityConstants.R.getY();
+    			double velYUR = np[1] * VelocityConstants.UR.getY();
+    			double velYUL = np[2] * VelocityConstants.UL.getY();
+    			double velYL = np[3] * VelocityConstants.L.getY();
+    			double velYBL = np[4] * VelocityConstants.BL.getY();
+    			double velYBR = np[5] * VelocityConstants.BR.getY();
+    			
+    			double mean = 1d / (grainSize * grainSize);
+    			
+    			avgVelXComps[curVal] = mean * (velXR + velXUR + velXUL + velXL + velXBL + velXBR);
+    			avgVelYComps[curVal] = mean * (velYR + velYUR + velYUL + velYL + velYBL + velYBR);
+    			
+    			avgVelXCoords[curVal] = i;
+    			avgVelYCoords[curVal] = j;
+    			
+    			curVal++;    			
+    		}
+    	}
 
-	private void solveCollisions() {
-    	// Chequeo colisiones excepto en paredes y obstaculos
-		for (int i = 0; i < width; i++) {
-			for (int j = 1; j < height - 1; j++) {
-				if (obstacles[i][j] == 0) {
-					int[] curCell = nodes[i][j];
-					// Chequear si hay colisiones
-					int sum = sum(curCell);    					
-					// Caso 3 particulas colisionan
-					if (sum == 3) {
-						if (curCell[0] == curCell[2] && curCell[2] == curCell[4]) {
-							invertCell(i, j);
-						}
-					// Caso 2 particulas colisionan
-					} else if (sum == 2) {
-						// Me fijo si la de enfrente es la otra ocupada
-						int p1 = first(curCell);
-						if (p1 < 3 && curCell[p1 + 3] == 1) {
-							// Giro ambas clockwise o counterclockwise de manera random
-							int[] newCell = new int[6];
-							if (Math.random() > 0.5) {
-								// Clockwise
-								newCell[0] = curCell[5];
-								newCell[1] = curCell[0];
-								newCell[2] = curCell[1];
-								newCell[3] = curCell[2];
-								newCell[4] = curCell[3];
-								newCell[5] = curCell[4];
-							} else {
-								// CounterClockwise
-								newCell[0] = curCell[1];
-								newCell[1] = curCell[2];
-								newCell[2] = curCell[3];
-								newCell[3] = curCell[4];
-								newCell[4] = curCell[5];
-								newCell[5] = curCell[0];
-							}
-							nodes[i][j] = newCell;
-						}
-					}
-				}    				
-			}
-		}    		
-		// Colisiones en paredes
-		for (int i = 0; i < width; i++) {
-			nodes[i][0] = new int[]{nodes[i][0][3], nodes[i][0][4], nodes[i][0][5], nodes[i][0][0], nodes[i][0][1], nodes[i][0][2]};
-			nodes[i][height-1] = new int[]{nodes[i][height-1][3], nodes[i][height-1][4], nodes[i][height-1][5], nodes[i][height-1][0], nodes[i][height-1][1], nodes[i][height-1][2]};
-		}    		
-		// Colisiones con obstaculos
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (obstacles[i][j] == 1) {
-					nodes[i][j] = new int[]{nodes[i][0][3], nodes[i][0][4], nodes[i][0][5], nodes[i][0][0], nodes[i][0][1], nodes[i][0][2]};
-				}
-			}
-		}
+    	double[][][] velocities = new double[curVal][2][2];
+    	
+    	for (int i = 0; i < curVal; i++) {
+    		velocities[i] = new double[2][2];
+    		velocities[i][0] = new double[]{avgVelXCoords[i], avgVelXCoords[i]};
+    		velocities[i][1] = new double[]{avgVelXComps[i], avgVelYComps[i]};
+    	}
+    	
+    	return velocities; 
 	}
 
 	private int[] sumCells(int xLower, int xUpper, int yLower, int yUpper) {
