@@ -81,25 +81,39 @@ public class Particle {
     }
 
     public double getParticleCollisionTime(Particle p){
-        double xTime = this.vx - p.getVx() != 0 ? (p.getX() - this.x) / this.vx - p.getVx() : Double.POSITIVE_INFINITY;
-        double yTime = this.vy - p.getVy() != 0 ? (p.getY() - this.y) / this.vy - p.getVy() : Double.POSITIVE_INFINITY;
-        return xTime <= yTime ? xTime : yTime;
+        double deltaVX = this.getVx() - p.getVx();
+        double deltaVY = this.getVy() - p.getVy();
+        double deltaX = this.getX() - p.getX();
+        double deltaY = this.getY() - p.getY();
+        double auxVR = deltaX * deltaVX + deltaY * deltaVY;
+        double auxVV = deltaVX * deltaVX + deltaVY * deltaVY;
+        double auxRR = deltaX * deltaX + deltaY * deltaY;
+
+        if(auxVR >= 0){
+            return Double.POSITIVE_INFINITY;
+        }
+
+        double d = Math.pow((auxVR),2) - (auxVV * (auxRR - Math.pow(this.getRadius() * p.getRadius(),2)));
+
+        if (d < 0){
+            return Double.POSITIVE_INFINITY;
+        }
+
+        return -1 * ((auxVR + Math.sqrt(d))/(auxVV));
+
+
     }
 
     public double getWallCollisionTime(final double L){
         double xWall = this.getVx() > 0 ? L : -L;
         double yWall = this.getVy() > 0 ? L : -L;
-        double xTime = this.getVx() !=0 ? xWall - this.getX() / this.getVx() : Double.POSITIVE_INFINITY;
-        double yTime = this.getVy() !=0 ? yWall - this.getY() / this.getVy() : Double.POSITIVE_INFINITY;
+        double xTime = this.getVx() != 0 ? (xWall - this.getX()) / this.getVx() : Double.POSITIVE_INFINITY;
+        double yTime = this.getVy() != 0 ? (yWall - this.getY()) / this.getVy() : Double.POSITIVE_INFINITY;
         return xTime <= yTime ? xTime : yTime;
     }
 
     public void move(double time){
         this.x = this.x + vx * time;
         this.y = this.y + vy * time;
-    }
-
-    public void resolveCollision (Particle p){
-        //TODO
     }
 }

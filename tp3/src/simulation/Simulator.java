@@ -9,19 +9,21 @@ import general.Collision;
 import general.Particle;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
 
 public class Simulator {
 
     Set<Particle> particles = new HashSet<>();
     double currentTime = 0;
     final int L;
-    double totalTime;
+    long totalTime;
     double maxV;
 
-    public Simulator(int n, final int L, double mass, double radius, double fluidPMass, double fluidPRadius, double totalTime, double maxV){
+    public Simulator(int n, final int L, double mass, double radius, double fluidPMass, double fluidPRadius, long totalTime, double maxV){
         this.L = L;
         this.totalTime = totalTime;
         this.maxV = maxV;
@@ -35,17 +37,26 @@ public class Simulator {
             double y = (Math.random()* L - fluidPRadius) - (L - fluidPRadius)/2;
             Particle p = new Particle(particles.size(), fluidPMass, x, y, Math.random()* 2 * maxV - maxV, Math.random()* 2 * maxV - maxV, fluidPRadius, 0);
             particles.add(p);
-            Map<Particle,Set<Particle>> neighbours = new CellIndex(L, particles, 1).getNeighbours();
-            if(neighbours.get(p).size() > 0){
-                particles.remove(p);
-            }
+//            Map<Particle,Set<Particle>> neighbours = new CellIndex(L, particles, 1).getNeighbours();
+//            if(neighbours.get(p).size() > 0){
+//                particles.remove(p);
+//            }
         }
     }
 
-    public void simulate(){
-        Collision c = calculateNextCollision();
-        moveToNextT(c.getT());
-        c.resolveCollision();
+    public void simulate() throws IOException {
+        long initialTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
+        int n = 0;
+        while(currentTime - initialTime < totalTime){
+            Collision c = calculateNextCollision();
+            moveToNextT(c.getT());
+            c.resolveCollision();
+            FileProcessor.writeOutputParticlesFile(particles, "./output" + n + ".txt");
+            n++;
+            currentTime = System.currentTimeMillis();
+        }
+
 
     }
 
@@ -79,11 +90,11 @@ public class Simulator {
                 isWallCollision = true;
             }
         }
-        Collision c = null;
+        Collision c;
         if(isWallCollision){
-            new WallCollision(collisionP1, t);
+            c = new WallCollision(collisionP1, t);
         }else{
-            new ParticleCollision(collisionP1, collisionP2, t);
+            c = new ParticleCollision(collisionP1, collisionP2, t);
         }
         return c;
     }
