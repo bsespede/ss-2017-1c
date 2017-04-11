@@ -107,8 +107,8 @@ public class Particle {
     public double getWallCollisionTime(final double L){
         double xWall = this.getVx() > 0 ? L : -L;
         double yWall = this.getVy() > 0 ? L : -L;
-        double xTime = this.getVx() != 0 ? (xWall - this.getX()) / this.getVx() : Double.POSITIVE_INFINITY;
-        double yTime = this.getVy() != 0 ? (yWall - this.getY()) / this.getVy() : Double.POSITIVE_INFINITY;
+        double xTime = this.getVx() != 0 ? (xWall - this.getX() - this.getRadius()) / this.getVx() : Double.POSITIVE_INFINITY;
+        double yTime = this.getVy() != 0 ? (yWall - this.getY() - this.getRadius() ) / this.getVy() : Double.POSITIVE_INFINITY;
         return xTime <= yTime ? xTime : yTime;
     }
 

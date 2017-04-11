@@ -21,4 +21,8 @@ public abstract class Collision {
     public double getT() {
         return t;
     }
+
+    public void setT(double t) {
+        this.t = t;
+    }
 }

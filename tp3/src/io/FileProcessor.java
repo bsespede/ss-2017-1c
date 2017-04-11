@@ -15,21 +15,31 @@ public class FileProcessor {
      * @return {@code true} If the write was completed successfully, {@code false} on error.
      * @throws IOException If the write stream can't be closed.
      */
-    public static boolean writeOutputParticlesFile(Collection<Particle> particles, String path) throws IOException {
+    public static boolean writeOutputParticlesFile(Collection<Particle> particles, String path){
         boolean success = true;
         FileWriter w = null;
         try {
             w = new FileWriter(path, true);
-            w.write(String.valueOf(particles.size()));
+            w.write(String.valueOf(particles.size() + 204));
             w.write(System.getProperty("line.separator"));
             w.write(System.getProperty("line.separator"));
             for (Particle p : particles) {
-                writeParticle(p, w, 0 , 0, 255);
+                try{
+                    writeParticle(p, w, 0 , 0, 255);
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                    return false;
+                }
             }
         } catch (IOException e) {
             success = false;
         } finally {
-            if (w != null) w.close();
+            if (w != null) try {
+                w.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -40,6 +50,43 @@ public class FileProcessor {
         w.write(String.valueOf(p.getY()) + " ");
         w.write(String.valueOf(0) + " ");
         w.write(String.valueOf(p.getRadius()) + " ");
+        w.write(String.valueOf(r) + " ");
+        w.write(String.valueOf(g) + " ");
+        w.write(String.valueOf(b) + " ");
+        w.write(System.getProperty("line.separator"));
+    }
+
+    public static void printBorders(final int L, String path) {
+        FileWriter w = null;
+        try {
+            w = new FileWriter(path, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (double i = 0; i <= L; i += ((double)L/50)) {
+            try{
+                writeBorder(i, L, 0.1, w, 0, 0, 0);
+                writeBorder(L, i, 0.1, w, 0, 0, 0);
+                writeBorder(-i, L, 0.1, w, 0, 0, 0);
+                writeBorder(L, -i, 0.1, w, 0, 0, 0);
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        try {
+            w.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeBorder(double x, double y, double radius, FileWriter w, int r, int g, int b) throws IOException {
+        w.write(String.valueOf(-1) + " ");
+        w.write(String.valueOf((double)Math.round(x * 10d) / 10d) + " ");
+        w.write(String.valueOf((double)Math.round(y * 10d) / 10d) + " ");
+        w.write(String.valueOf(0) + " ");
+        w.write(String.valueOf(radius) + " ");
         w.write(String.valueOf(r) + " ");
         w.write(String.valueOf(g) + " ");
         w.write(String.valueOf(b) + " ");

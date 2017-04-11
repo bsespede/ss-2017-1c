@@ -20,6 +20,8 @@ public class Simulator {
     final int L;
     long totalTime;
     double maxV;
+    String path= "./output.txt";
+    double timeForJump = 1;
 
     public Simulator(int n, final int L, double mass, double radius, double fluidPMass, double fluidPRadius, long totalTime, double maxV){
         this.L = L;
@@ -41,15 +43,32 @@ public class Simulator {
         }
     }
 
-    public void simulate() throws IOException {
-        long initialTime = System.currentTimeMillis();
-        long currentTime = System.currentTimeMillis();
-        while(currentTime - initialTime < totalTime){
-            Collision c = calculateNextCollision();
-            moveToNextT(c.getT());
-            c.resolveCollision();
-            FileProcessor.writeOutputParticlesFile(particles, "./output.txt");
-            currentTime = System.currentTimeMillis();
+    public void simulate(){
+        long simulationInitTime = System.currentTimeMillis();
+        long simulationCurrTime = System.currentTimeMillis();
+        double timeSinceLastJump = 0;
+        Collision c = calculateNextCollision();
+        while(simulationCurrTime - simulationInitTime < totalTime){
+            if(c.getT() >= timeForJump ){
+                moveToNextT(timeForJump);
+                c.setT(c.getT() - timeForJump);
+                FileProcessor.writeOutputParticlesFile(particles, path);
+                FileProcessor.printBorders(L, path);
+            }else{
+                while(c.getT() + timeSinceLastJump < timeForJump){
+                    moveToNextT(c.getT());
+                    c.resolveCollision();
+                    timeSinceLastJump += c.getT();
+                    c = calculateNextCollision();
+                }
+                moveToNextT(timeForJump - timeSinceLastJump);
+                c.setT(c.getT() - timeForJump - timeSinceLastJump);
+                FileProcessor.writeOutputParticlesFile(particles, path);
+                FileProcessor.printBorders(L, path);
+                timeSinceLastJump =0;
+
+            }
+            simulationCurrTime = System.currentTimeMillis();
         }
 
 
