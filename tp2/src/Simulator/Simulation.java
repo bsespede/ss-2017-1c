@@ -48,14 +48,13 @@ public class Simulation {
 		for (int t = 0; t < steps; t++) {
 			solveCollisions();
 			moveParticles();
-			// cada 4 ticks genero particulas
 			if (t % 4 == 0) {
 				generateParticles();
 			}
 			// Cada tanto imprimo el t para ver que no se trabo
 			// Y calculo las velocidades de los subdominios
 			if (t % velocityTimeStep == 0) {
-				//System.out.println("[INFO] En el paso " + t);
+				System.out.println("[INFO] En el paso " + t);
 				FileProcessor.outputSimulation(obstacles, calculateVelocities(), grainSize,  "./output/" + output + "/" + output + "-" + t +".txt");
 			}   
 		}
@@ -166,26 +165,23 @@ public class Simulation {
 				int[] curCell = nodes[i][j];
 				int neighbourX, neighbourY;    				
 				// Propago en dir R-1
-				neighbourY = j;
 				if (i != width - 1) {
+					neighbourY = j;
 					neighbourX = i + 1;
-				} else {
-					neighbourX = 0;
-				}
-				newNodes[neighbourX][neighbourY][0] = curCell[0];
+					newNodes[neighbourX][neighbourY][0] = curCell[0];
+				}			
 				// Propago en dir UR-2
 				if (j != height - 1) {
 					neighbourY = j + 1;
 					if (j % 2 == 0) {
 						if (i != width - 1) {
 							neighbourX = i + 1;
-						} else {
-							neighbourX = 0;
+							newNodes[neighbourX][neighbourY][1] = curCell[1];
 						}
 					} else {
 						neighbourX = i;
+						newNodes[neighbourX][neighbourY][1] = curCell[1];
 					}
-					newNodes[neighbourX][neighbourY][1] = curCell[1];
 				}
 				// Propago en dir UL-3
 				if (j != height - 1) {
@@ -193,13 +189,12 @@ public class Simulation {
 					if (j % 2 == 1) {
 						if (i != 0) {
 							neighbourX = i - 1;
-						} else {
-							neighbourX = width - 1;
+							newNodes[neighbourX][neighbourY][2] = curCell[2];
 						}
 					} else {
 						neighbourX = i;
+						newNodes[neighbourX][neighbourY][2] = curCell[2];
 					}
-					newNodes[neighbourX][neighbourY][2] = curCell[2];
 				}				
 				// Propago en dir L-4
 				if (i != 0) {
@@ -213,13 +208,12 @@ public class Simulation {
 					if (j % 2 == 1) {
 						if (i != 0) {
 							neighbourX = i - 1;
-						} else {
-							neighbourX = width - 1;
+							newNodes[neighbourX][neighbourY][4] = curCell[4];
 						}
 					} else {
 						neighbourX = i;
+						newNodes[neighbourX][neighbourY][4] = curCell[4];
 					}
-					newNodes[neighbourX][neighbourY][4] = curCell[4];
 				}
 				// Propago en dir BR-6
 				if (j != 0) {
@@ -227,13 +221,12 @@ public class Simulation {
 					if (j % 2 == 0) {
 						if (i != width - 1) {
 							neighbourX = i + 1;
-						} else {
-							neighbourX = 0;
+							newNodes[neighbourX][neighbourY][5] = curCell[5];
 						}
 					} else {
 						neighbourX = i;
+						newNodes[neighbourX][neighbourY][5] = curCell[5];
 					}
-					newNodes[neighbourX][neighbourY][5] = curCell[5];
 				}
 			}
 		}
