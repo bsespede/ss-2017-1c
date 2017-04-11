@@ -7,7 +7,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        new Simulator(20, 10, 5, 1, 1, 0.1, 1000000, 0.1).simulate();
+        new Simulator(20, 10, 5, 1, 1, 0.1, 10000, 0.1).simulate();
 
     }
 }

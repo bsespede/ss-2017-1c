@@ -20,8 +20,8 @@ public class ParticleCollision extends Collision{
         double auxVR = (deltaX * deltaVX) + (deltaY * deltaVY);
         double j = 2 * p1.getMass() * p2.getMass() * auxVR;
         j /= (p1.getRadius() + p2.getRadius()) * (p2.getMass() + p1.getMass()) ;
-        double jX = j * p1.getX() - p2.getX() / (p1.getRadius() + p2.getRadius());
-        double jY = j * p1.getY() - p2.getY() / (p1.getRadius() + p2.getRadius());
+        double jX = j * (p1.getX() - p2.getX()) / (p1.getRadius() + p2.getRadius());
+        double jY = j * (p1.getY() - p2.getY()) / (p1.getRadius() + p2.getRadius());
         p1.setVx(p1.getVx() - (jX / p1.getMass()));
         p2.setVx(p2.getVx() + (jX / p2.getMass()));
         p1.setVy(p1.getVy() - (jY / p1.getMass()));
