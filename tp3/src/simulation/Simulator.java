@@ -29,7 +29,7 @@ public class Simulator {
         this.maxV = maxV;
         particles.add(new Particle(0, mass, 0, 0, 0, 0, radius, 0));
 //        generateParticles(n, fluidPMass, fluidPRadius);
-        particles.add(new Particle(1, 1, 5 ,5 , -0.8, -0.8, 2, 0));
+        particles.add(new Particle(1, 5, 5 ,5 , -0.5, -0.5, 1, 0));
     }
 
     private void generateParticles(int n, double fluidPMass, double fluidPRadius) {

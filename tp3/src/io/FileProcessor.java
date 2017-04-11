@@ -20,7 +20,7 @@ public class FileProcessor {
         FileWriter w = null;
         try {
             w = new FileWriter(path, true);
-            w.write(String.valueOf(particles.size() + 204));
+            w.write(String.valueOf(particles.size() + 244));
             w.write(System.getProperty("line.separator"));
             w.write(System.getProperty("line.separator"));
             for (Particle p : particles) {
@@ -63,12 +63,12 @@ public class FileProcessor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (double i = 0; i <= L; i += ((double)L/50)) {
+        for (double i = -L; i <= L; i += ((double)L/30)) {
             try{
-                writeBorder(i, L, 0.1, w, 0, 0, 0);
-                writeBorder(L, i, 0.1, w, 0, 0, 0);
-                writeBorder(-i, L, 0.1, w, 0, 0, 0);
-                writeBorder(L, -i, 0.1, w, 0, 0, 0);
+                writeBorder(i, L, 0.1, w, 255, 255, 255);
+                writeBorder(L, i, 0.1, w, 255, 255, 255);
+                writeBorder(i, -L, 0.1, w, 255, 255, 255);
+                writeBorder(-L, i, 0.1, w, 255, 255, 255);
             }
             catch (IOException e){
                 e.printStackTrace();
