@@ -11,6 +11,11 @@ public class WallCollision extends Collision {
 
     @Override
     public void resolveCollision(){
+        if(Math.abs(p1.getX()) == 10 && Math.abs(p1.getY()) == 10){
+            p1.setVx(p1.getVx() * -1);
+            p1.setVy(p1.getVy() * -1);
+            return;
+        }
         double xf = p1.getX() * p1.getVx() * t;
         double yf = p1.getY() * p1.getVy() * t;
         if(Math.abs(xf) > Math.abs(yf)){

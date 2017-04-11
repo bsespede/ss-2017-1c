@@ -86,20 +86,20 @@ public class Particle {
         double deltaX = this.getX() - p.getX();
         double deltaY = this.getY() - p.getY();
         double auxVR = deltaX * deltaVX + deltaY * deltaVY;
-        double auxVV = deltaVX * deltaVX + deltaVY * deltaVY;
-        double auxRR = deltaX * deltaX + deltaY * deltaY;
+        double auxVV = Math.pow(deltaVX, 2) +  Math.pow(deltaVY, 2);
+        double auxRR = Math.pow(deltaX, 2) + Math.pow(deltaY, 2);
 
         if(auxVR >= 0){
             return Double.POSITIVE_INFINITY;
         }
 
-        double d = Math.pow((auxVR),2) - (auxVV * (auxRR - Math.pow(this.getRadius() * p.getRadius(),2)));
+        double d = Math.pow((auxVR),2) - auxVV * (auxRR - Math.pow(this.getRadius() + p.getRadius(),2));
 
         if (d < 0){
             return Double.POSITIVE_INFINITY;
         }
 
-        return -1 * ((auxVR + Math.sqrt(d))/(auxVV));
+        return -(auxVR + Math.sqrt(d))/auxVV;
 
 
     }

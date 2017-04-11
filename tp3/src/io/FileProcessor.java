@@ -19,7 +19,7 @@ public class FileProcessor {
         boolean success = true;
         FileWriter w = null;
         try {
-            w = new FileWriter(path);
+            w = new FileWriter(path, true);
             w.write(String.valueOf(particles.size()));
             w.write(System.getProperty("line.separator"));
             w.write(System.getProperty("line.separator"));
