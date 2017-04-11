@@ -3,6 +3,7 @@ package io;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 public class FileProcessor {
 
@@ -44,6 +45,17 @@ public class FileProcessor {
 						bw.newLine();
 					}
 				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void outputSimulation(Map<Integer, Double> collisionVelocity, String path) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+			for (Integer key:collisionVelocity.keySet()) {
+				bw.write(key + " " + collisionVelocity.get(key));
+				bw.newLine();				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

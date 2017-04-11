@@ -1,6 +1,8 @@
 package Simulator;
 
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import general.VelocityConstants;
 import io.FileProcessor;
@@ -44,9 +46,11 @@ public class Simulation {
 
 	public void simulate(final int steps) {
 		System.out.println("[INFO] Comienza la simulacion");
+		Map<Integer, Double> collisionVelocity = new LinkedHashMap<>();
+		int collisionCounter = 0;
 		final long startTime = System.currentTimeMillis();
 		for (int t = 0; t < steps; t++) {
-			solveCollisions();
+			collisionCounter += solveCollisions();
 			moveParticles();
 			if (t % 4 == 0) {
 				generateParticles();
@@ -55,9 +59,13 @@ public class Simulation {
 			// Y calculo las velocidades de los subdominios
 			if (t % velocityTimeStep == 0) {
 				System.out.println("[INFO] En el paso " + t);
-				FileProcessor.outputSimulation(obstacles, calculateVelocities(), grainSize,  "./output/" + output + "/" + output + "-" + t +".txt");
+				double[][] velocities = calculateVelocities();
+				double velocityMagnitude = avgVelocityMagnitude(velocities);
+				collisionVelocity.put(collisionCounter, velocityMagnitude);
+				FileProcessor.outputSimulation(obstacles, velocities, grainSize,  "./output/" + output + "/" + output + "-" + t +".txt");
 			}   
 		}
+		FileProcessor.outputSimulation(collisionVelocity,  "./output/" + output + "/" + output + "-cv.txt");
 		final double simulationTime = (System.currentTimeMillis() - startTime) / 1000d;
 		System.out.println("[INFO] Re = "+ calculateReynoldNumber());
 		System.out.println("[INFO] Q = "+ calculateFlow());
@@ -75,7 +83,10 @@ public class Simulation {
 	}
 
 	private double avgVelocityMagnitude() {
-		double[][] velocities = calculateVelocities();
+		return avgVelocityMagnitude(calculateVelocities());
+	}
+	
+	private double avgVelocityMagnitude(double[][] velocities) {
 		double totalMagnitude = 0;
 		for (int i = 0; i < velocities.length; i++) {
 			totalMagnitude += velocities[i][2];
@@ -106,7 +117,8 @@ public class Simulation {
 		return avgVelocityMagnitude() * (Math.PI * L * L / 4);
 	}
 
-	private void solveCollisions() {
+	private int solveCollisions() {
+		int collisionCount = 0;
 		// Chequeo colisiones excepto en paredes y obstaculos
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -118,8 +130,10 @@ public class Simulation {
 					if (sum == 3) {
 						if (curCell[0] == curCell[2] && curCell[2] == curCell[4]) {
 							invertCell(i, j);
+							collisionCount++;
 						} else if (curCell[1] == curCell[3] && curCell[3] == curCell[5]) {
 							invertCell(i, j);
+							collisionCount++;
 						}
 						// Caso 2 particulas colisionan
 					} else if (sum == 2) {
@@ -127,6 +141,7 @@ public class Simulation {
 						int p1 = first(curCell);
 						if (p1 < 3 && curCell[p1 + 3] == 1) {
 							// Giro ambas clockwise o counterclockwise de manera random
+							collisionCount++;
 							int[] newCell = new int[6];
 							if (Math.random() > 0.5) {
 								// Clockwise
@@ -154,6 +169,7 @@ public class Simulation {
 				}
 			}
 		}
+		return collisionCount;
 	}
 
 	private void moveParticles() {
@@ -165,23 +181,26 @@ public class Simulation {
 				int[] curCell = nodes[i][j];
 				int neighbourX, neighbourY;    				
 				// Propago en dir R-1
+				neighbourY = j;
 				if (i != width - 1) {
-					neighbourY = j;
 					neighbourX = i + 1;
-					newNodes[neighbourX][neighbourY][0] = curCell[0];
-				}			
+				} else {
+					neighbourX = 0;
+				}
+				newNodes[neighbourX][neighbourY][0] = curCell[0];
 				// Propago en dir UR-2
 				if (j != height - 1) {
 					neighbourY = j + 1;
 					if (j % 2 == 0) {
 						if (i != width - 1) {
 							neighbourX = i + 1;
-							newNodes[neighbourX][neighbourY][1] = curCell[1];
+						} else {
+							neighbourX = 0;
 						}
 					} else {
 						neighbourX = i;
-						newNodes[neighbourX][neighbourY][1] = curCell[1];
 					}
+					newNodes[neighbourX][neighbourY][1] = curCell[1];
 				}
 				// Propago en dir UL-3
 				if (j != height - 1) {
@@ -189,12 +208,13 @@ public class Simulation {
 					if (j % 2 == 1) {
 						if (i != 0) {
 							neighbourX = i - 1;
-							newNodes[neighbourX][neighbourY][2] = curCell[2];
+						} else {
+							neighbourX = width - 1;
 						}
 					} else {
 						neighbourX = i;
-						newNodes[neighbourX][neighbourY][2] = curCell[2];
 					}
+					newNodes[neighbourX][neighbourY][2] = curCell[2];
 				}				
 				// Propago en dir L-4
 				if (i != 0) {
@@ -208,12 +228,13 @@ public class Simulation {
 					if (j % 2 == 1) {
 						if (i != 0) {
 							neighbourX = i - 1;
-							newNodes[neighbourX][neighbourY][4] = curCell[4];
+						} else {
+							neighbourX = width - 1;
 						}
 					} else {
 						neighbourX = i;
-						newNodes[neighbourX][neighbourY][4] = curCell[4];
 					}
+					newNodes[neighbourX][neighbourY][4] = curCell[4];
 				}
 				// Propago en dir BR-6
 				if (j != 0) {
@@ -221,12 +242,13 @@ public class Simulation {
 					if (j % 2 == 0) {
 						if (i != width - 1) {
 							neighbourX = i + 1;
-							newNodes[neighbourX][neighbourY][5] = curCell[5];
+						} else {
+							neighbourX = 0;
 						}
 					} else {
 						neighbourX = i;
-						newNodes[neighbourX][neighbourY][5] = curCell[5];
 					}
+					newNodes[neighbourX][neighbourY][5] = curCell[5];
 				}
 			}
 		}
