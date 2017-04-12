@@ -28,8 +28,7 @@ public class Simulator {
         this.totalTime = totalTime;
         this.maxV = maxV;
         particles.add(new Particle(0, mass, 0, 0, 0, 0, radius, 0));
-//        generateParticles(n, fluidPMass, fluidPRadius);
-        particles.add(new Particle(1, 5, 5 ,5 , -0.5, -0.5, 1, 0));
+        generateParticles(n, fluidPMass, fluidPRadius);
     }
 
     private void generateParticles(int n, double fluidPMass, double fluidPRadius) {
@@ -46,7 +45,6 @@ public class Simulator {
     public void simulate(){
         long simulationInitTime = System.currentTimeMillis();
         long simulationCurrTime = System.currentTimeMillis();
-        double timeSinceLastJump = 0;
         Collision c = calculateNextCollision();
         while(simulationCurrTime - simulationInitTime < totalTime){
             if(c.getT() >= timeForJump ){
@@ -55,6 +53,7 @@ public class Simulator {
                 FileProcessor.writeOutputParticlesFile(particles, path);
                 FileProcessor.printBorders(L, path);
             }else{
+                double timeSinceLastJump = 0;
                 while(c.getT() + timeSinceLastJump < timeForJump){
                     moveToNextT(c.getT());
                     c.resolveCollision();
@@ -62,10 +61,9 @@ public class Simulator {
                     c = calculateNextCollision();
                 }
                 moveToNextT(timeForJump - timeSinceLastJump);
-                c.setT(c.getT() - timeForJump - timeSinceLastJump);
+                c.setT(c.getT() - (timeForJump - timeSinceLastJump));
                 FileProcessor.writeOutputParticlesFile(particles, path);
                 FileProcessor.printBorders(L, path);
-                timeSinceLastJump =0;
 
             }
             simulationCurrTime = System.currentTimeMillis();
