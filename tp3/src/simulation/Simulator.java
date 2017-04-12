@@ -22,6 +22,7 @@ public class Simulator {
     double maxV;
     String path= "./output.txt";
     double timeForJump = 2;
+    double k = 1.38064852 * Math.pow(10,-23);
 
     public Simulator(int n, final int L, double mass, double radius, double fluidPMass, double fluidPRadius, long totalTime, double maxV){
         this.L = L;
@@ -122,5 +123,14 @@ public class Simulator {
             }
         }
         return false;
+    }
+
+    private double getTemperature(Collection<Particle> ps) {
+        double ret = 0;
+        for (Particle p : ps) {
+            double squaredV = Math.pow(p.getVx(), 2) + Math.pow(p.getVy(), 2);
+            ret += (squaredV * p.getMass() / 1000) / k;
+        }
+        return ret;
     }
 }
