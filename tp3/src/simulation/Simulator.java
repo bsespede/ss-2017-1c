@@ -21,7 +21,7 @@ public class Simulator {
     long totalTime;
     double maxV;
     String path= "./output.txt";
-    double timeForJump = 1;
+    double timeForJump = 2;
 
     public Simulator(int n, final int L, double mass, double radius, double fluidPMass, double fluidPRadius, long totalTime, double maxV){
         this.L = L;

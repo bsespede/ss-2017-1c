@@ -109,6 +109,9 @@ public class Particle {
         double yWall = vy > 0 ? L : -L;
         double xTime = vx != 0 ? (xWall - x - (Math.signum(vx) * radius)) / vx : Double.POSITIVE_INFINITY;
         double yTime = vy != 0 ? (yWall - y - (Math.signum(vy) * radius)) / vy : Double.POSITIVE_INFINITY;
+        if(xTime <0 || yTime <0 ){
+            return 0;
+        }
         return xTime <= yTime ? xTime : yTime;
     }
 

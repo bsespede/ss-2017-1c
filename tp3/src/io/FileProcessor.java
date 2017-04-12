@@ -25,7 +25,11 @@ public class FileProcessor {
             w.write(System.getProperty("line.separator"));
             for (Particle p : particles) {
                 try{
-                    writeParticle(p, w, 0 , 0, 255);
+                    if(p.getId() == 0){
+                        writeParticle(p, w, 255 , 0, 0);
+                    }else{
+                        writeParticle(p, w, 0 , 255, 0);
+                    }
                 }
                 catch (IOException e){
                     e.printStackTrace();
