@@ -60,14 +60,14 @@ public class FileProcessor {
         w.write(System.getProperty("line.separator"));
     }
 
-    public static void printBorders(final int L, String path) {
+    public static void printBorders(final double L, String path) {
         FileWriter w = null;
         try {
             w = new FileWriter(path, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (double i = -L; i <= L; i += ((double)L/30)) {
+        for (double i = -L; i <= L; i += L/30) {
             try{
                 writeBorder(i, L, 0.1, w, 255, 255, 255);
                 writeBorder(L, i, 0.1, w, 255, 255, 255);
@@ -96,4 +96,25 @@ public class FileProcessor {
         w.write(String.valueOf(b) + " ");
         w.write(System.getProperty("line.separator"));
     }
+    public static void writeParticlePosition(Particle p, String path){
+        FileWriter w = null;
+        try {
+            w = new FileWriter(path, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try{
+            w.write(String.valueOf((double)Math.round(p.getX() * 10d) / 10d) + " ");
+            w.write(String.valueOf((double)Math.round(p.getY() * 10d) / 10d) + " ");
+            w.write(System.getProperty("line.separator"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            w.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
