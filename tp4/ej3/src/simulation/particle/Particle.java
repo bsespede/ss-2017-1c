@@ -1,16 +1,16 @@
 package simulation.particle;
 
-import math.Vector3d;
+import math.Vector2d;
 
 public class Particle {
 
 	private final String name;
-    private Vector3d position;
-    private Vector3d velocity;
+    private Vector2d position;
+    private Vector2d velocity;
     private final double mass;
     private final double radius;
     
-    public Particle(final String name, final Vector3d position, final Vector3d velocity, final double radius, final double mass) {
+    public Particle(final String name, final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
     	this.name = name;
 		this.position = position;
 		this.velocity = velocity;
@@ -22,11 +22,11 @@ public class Particle {
 		return name;
 	}
 
-	public Vector3d getPosition() {
+	public Vector2d getPosition() {
     	return position;
     }
 
-    public Vector3d getVelocity() {
+    public Vector2d getVelocity() {
         return velocity;
     }
     
@@ -38,11 +38,11 @@ public class Particle {
         return radius;
     }
 
-    public void setPosition(final Vector3d position) {
+    public void setPosition(final Vector2d position) {
     	this.position = position;
     }
 
-    public void setVelocity(final Vector3d velocity) {
+    public void setVelocity(final Vector2d velocity) {
     	this.velocity = velocity;
     }
     
@@ -78,24 +78,10 @@ public class Particle {
 		if (getClass() != obj.getClass())
 			return false;
 		Particle other = (Particle) obj;
-		if (Double.doubleToLongBits(mass) != Double.doubleToLongBits(other.mass))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (position == null) {
-			if (other.position != null)
-				return false;
-		} else if (!position.equals(other.position))
-			return false;
-		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius))
-			return false;
-		if (velocity == null) {
-			if (other.velocity != null)
-				return false;
-		} else if (!velocity.equals(other.velocity))
 			return false;
 		return true;
 	}
