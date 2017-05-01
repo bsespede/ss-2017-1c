@@ -1,5 +1,6 @@
 package simulation;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class Simulation {
 	}
 
 	public void simulate() {
+		new File("../output").mkdirs();
 		try {
 			int count = 0;
 			for (double time = 0; time < maxTime; time += interval) {			
