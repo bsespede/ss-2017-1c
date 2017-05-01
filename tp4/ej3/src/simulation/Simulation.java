@@ -38,8 +38,8 @@ public class Simulation {
 
 		particles.add(sun);
 		particles.add(earth);
-		particles.add(mars);
-		particles.add(spaceship);
+		//particles.add(mars);
+		//particles.add(spaceship);
 	}
 
 	public void simulate() {

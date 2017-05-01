@@ -12,7 +12,7 @@ public class Gravity {
 	public static Vector2d gravitationalForceBetween(final Particle p1, final Particle p2) {		
 		final Vector2d r = p2.getPosition().substract(p1.getPosition());
 		double module = G * p1.getMass() * p2.getMass() / Math.pow(r.module(), 2);
-		return r.scale(module);
+		return r.normalize().scale(module);
 	}
 	
 	public static Vector2d gravitationalForceBetween(final Particle p1, final List<Particle> particles) {	
