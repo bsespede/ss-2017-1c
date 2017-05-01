@@ -43,6 +43,7 @@ public class Simulation {
 
 	public void simulate() {
 		try {
+			int count = 0;
 			for (double time = 0; time < maxTime; time += interval) {			
 				if (checkCollisions(time)) {
 					break;
@@ -50,7 +51,7 @@ public class Simulation {
 				for (Particle particle : particles) {
 					integrator.move(particle, particles, interval);
 				}
-				OutputWriter.write("../output/output-" + time + ".dat", (double) time, particles);
+				OutputWriter.write("../output/output-" + count++ + ".dat", (double) time, particles);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
