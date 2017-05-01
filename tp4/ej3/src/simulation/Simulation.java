@@ -53,7 +53,9 @@ public class Simulation {
 				for (Particle particle : particles) {
 					integrator.move(particle, particles, interval);
 				}
-				OutputWriter.write("../output/output-" + count++ + ".dat", (double) time, particles);
+				//if (count++ % 1 == 0) {
+					OutputWriter.write("../output/output-" + count++ + ".dat", (double) time, particles);
+				//}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

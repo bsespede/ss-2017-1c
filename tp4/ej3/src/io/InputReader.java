@@ -18,10 +18,10 @@ public class InputReader {
 			String[] input;
 			input = br.readLine().split(" ");
 			final String name = input[0];
-			final Vector2d position = new Vector2d(Double.valueOf(input[1]) * scale, Double.valueOf(input[2]) * scale);
-			final Vector2d velocity = new Vector2d(Double.valueOf(input[3]) * scale, Double.valueOf(input[4]) * scale);
-			final double radius = Double.valueOf(input[5]) * scale;
-			final double mass = Double.valueOf(input[6]) * scale;
+			final Vector2d position = new Vector2d(Double.valueOf(input[1]), Double.valueOf(input[2]));
+			final Vector2d velocity = new Vector2d(Double.valueOf(input[3]), Double.valueOf(input[4]));
+			final double radius = Double.valueOf(input[5]);
+			final double mass = Double.valueOf(input[6]);
 			final Particle particle = new Particle(name, position, velocity, radius, mass);
 			
 			br.close();

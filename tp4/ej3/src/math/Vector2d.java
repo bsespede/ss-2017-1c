@@ -36,8 +36,8 @@ public class Vector2d {
 	}
 	
 	public double distance(final Vector2d v2) {
-		double distX = x - v2.x;
-		double distY = y - v2.y;
+		double distX = v2.x - x;
+		double distY = v2.y - y;
 		return Math.sqrt(distX * distX + distY * distY);
 	}
 

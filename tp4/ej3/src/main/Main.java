@@ -5,8 +5,8 @@ import simulation.integrator.VerletIntegrator;
 
 public class Main {
 
-	private final static double INTERVAL = 0.5;
-	private final static double MAX_STEPS = 1000;
+	private final static double INTERVAL = 100;
+	private final static double MAX_STEPS = 10000;
 	private final static Integrator INTEGRATOR = new VerletIntegrator();
 
 	public static void main(String[] args) {
