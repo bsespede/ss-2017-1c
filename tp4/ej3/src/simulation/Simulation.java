@@ -1,107 +1,67 @@
 package simulation;
 
-import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
-import io.OutputWriter;
+import io.InputReader;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
 
 public class Simulation {
 
 	private static final double G = 6.693*Math.pow(10.0,-11.0);
-	private final SimpleSolarSystem system;
+    private static final double HOUR = 3600;
+    private static final double DAY = 24 * HOUR;
+    private static final double YEAR = 365 * DAY;
+	
+	private final List<Particle> particles = new LinkedList<Particle>();
+	
 	private final Integrator integrator;
-	private final Double interval;
-	private Double time = 0.0;
-	private final OutputWriter writer;
+	private final double interval;
+	private final double maxTime;
+	
+	private double time = 0;
 	private long count = 0;
-	private static final String ENERGY_OUTPUT_FILE="system_energy.csv";
-	private DlmWriter energyDataWriter;
 
-	public Simulation(SimpleSolarSystem system, Integrator integrator, Double interval, ParticleWriter writer) {
-		super();
-		this.system = system;
+	public Simulation(final Integrator integrator, final int interval, final int maxTime) {
 		this.integrator = integrator;
 		this.interval = interval;
-		this.writer = writer;
-		try {
-			this.energyDataWriter=new DlmWriter(ENERGY_OUTPUT_FILE);
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
+		this.maxTime = maxTime;
+		generateSystem();
 	}
 
-	public Simulation(Integrator integrator, Double interval, ParticleWriter writer) {
-		super();
-
-		String id = "sim";
-		Double sunMass = 2 * Math.pow(10, 30);
-		Double sunRadius = Math.pow(10, 6);
-		Integer initialParticlesCant = 1000;
-		Double minDistanceFromSun = Math.pow(10, 9);
-		Double maxDistanceFromSun = Math.pow(10, 10);
-		Double maxParticleMass = null;
-		Double minParticleMass = null;
-
-		this.system = SimpleSolarSystem.randomSolarSysyem(id, sunMass, sunRadius, initialParticlesCant,
-				minDistanceFromSun, maxDistanceFromSun, minParticleMass, maxParticleMass);
-		this.integrator = integrator;
-		this.interval = interval;
-		this.writer = writer;
-		try {
-			this.energyDataWriter=new DlmWriter(ENERGY_OUTPUT_FILE);
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
+	private void generateSystem() {
+		final Particle sun = InputReader.read("./resources/sun.dat");
+		final Particle earth = InputReader.read("./resources/earth.dat");
+		final Particle mars = InputReader.read("./resources/mars.dat");
+		final Particle spaceship = generateSpaceship(earth, sun);
+		
+		particles.add(sun);
+		particles.add(earth);
+		particles.add(mars);
+		particles.add(spaceship);
 	}
 
-	public void simulate(int currentStep) {
-
-		Particle sun = system.getSun();
-		system.setParticles(Collider.collisions(system.getParticles(),sun));
-		for (Particle particle : system.getParticles()) {
-			integrator.next(particle, system.getParticles(), sun, interval);
-		}
-		if(count % 100 == 0) {
-			//count = 0;
-			//System.out.println(system.getParticles().size());
-			try {
-				writer.write(time, sun, system.getParticles());
-				double totalKinetic=getTotalKineticEnergy();
-				double totalPotential=getTotalPotentialEnergy();
-				double totalEnergy=totalKinetic+totalPotential;
-				double[][] energyData={{currentStep*interval,totalKinetic,totalPotential,totalEnergy}};
-				energyDataWriter.write(energyData, 1, 4);
-				
-			}catch(IOException e) {
-				e.printStackTrace();
+	public void simulate() {
+		for (int time = 0; time < maxTime; time += interval) {
+			
+			if (checkCollisions())
+				break;
+			}
+		
+			for (Particle particle : particles) {
+				integrator.move(particle, particles, interval);
 			}
 		}
-		count++;
-		time = time + interval;
+	
+	private Particle generateSpaceship(Particle earth, Particle sun) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean checkCollisions() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
-	
-	private double getTotalKineticEnergy(){
-		double ans=0.0;
-		
-		for(Particle particle:system.getParticles()){
-			ans+=particle.getKineticEnergy();
-		}
-		return ans;
-		
-	}
-	
-	private double getTotalPotentialEnergy(){
-		double ans=0.0;
-		
-		for(Particle particle:system.getParticles()){
-			double sunMass=system.getSun().getMass();
-			
-			ans+=particle.getPotentialEnergy(G, sunMass);
-		}
-		return ans;		
-	}
 }

@@ -1,32 +1,32 @@
 package simulation.particle;
 
-import math.Vector2d;
+import math.Vector3d;
 
 public class Particle {
 
-	private final double id;
-    private Vector2d position;
-    private Vector2d velocity;
+	private final String name;
+    private Vector3d position;
+    private Vector3d velocity;
     private final double mass;
     private final double radius;
     
-    public Particle(final double id, final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
+    public Particle(final String name, final Vector3d position, final Vector3d velocity, final double radius, final double mass) {
+    	this.name = name;
 		this.position = position;
 		this.velocity = velocity;
 		this.radius = radius;
-		this.id = id;
 		this.mass = mass;
 	}
-
-    public double getId() {
-        return id;
-    }
     
-    public Vector2d getPosition() {
+    public String getName() {
+		return name;
+	}
+
+	public Vector3d getPosition() {
     	return position;
     }
 
-    public Vector2d getVelocity() {
+    public Vector3d getVelocity() {
         return velocity;
     }
     
@@ -38,11 +38,11 @@ public class Particle {
         return radius;
     }
 
-    public void setPosition(final Vector2d position) {
+    public void setPosition(final Vector3d position) {
     	this.position = position;
     }
 
-    public void setVelocity(final Vector2d velocity) {
+    public void setVelocity(final Vector3d velocity) {
     	this.velocity = velocity;
     }
     
@@ -59,10 +59,9 @@ public class Particle {
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp = Double.doubleToLongBits(id);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		temp = Double.doubleToLongBits(mass);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
 		temp = Double.doubleToLongBits(radius);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -79,9 +78,12 @@ public class Particle {
 		if (getClass() != obj.getClass())
 			return false;
 		Particle other = (Particle) obj;
-		if (Double.doubleToLongBits(id) != Double.doubleToLongBits(other.id))
-			return false;
 		if (Double.doubleToLongBits(mass) != Double.doubleToLongBits(other.mass))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
 			return false;
 		if (position == null) {
 			if (other.position != null)
@@ -100,8 +102,8 @@ public class Particle {
 
 	@Override
 	public String toString() {
-		return "Particle [id=" + id + ", position=" + position + ", speed=" + velocity + ", mass=" + mass + ", radius="
-				+ radius + "]";
+		return "Particle [name=" + name + ", position=" + position + ", velocity=" + velocity + ", mass=" + mass
+				+ ", radius=" + radius + "]";
 	}
 	
 }
