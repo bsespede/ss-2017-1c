@@ -10,6 +10,8 @@ import simulation.particle.Particle;
 
 public class OutputWriter {
 
+	private final static double SCALE = 0.0001;
+	
 	public static void write(final String fileName, final Double time, final List<Particle> particles) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 		int count = 1;
@@ -23,7 +25,7 @@ public class OutputWriter {
 
 	private static String formatParticle(final int count, final Particle p) {
 		final Vector2d position = p.getPosition();
-		return String.format("%d %.2f %.2f %.2f\n", count, position.x, position.y, p.getRadius());
+		return String.format("%d %.2f %.2f %.2f\n", count, position.x * SCALE, position.y * SCALE, p.getRadius());
 	}
 
 }

@@ -5,8 +5,8 @@ import simulation.integrator.Integrator;
 
 public class Main {
 
-	private final static double INTERVAL = 0.01;
-	private final static double MAX_STEPS = 1000;
+	private final static double INTERVAL = 0.1;
+	private final static double MAX_STEPS = 10000;
 	private final static Integrator INTEGRATOR = new BeemanIntegrator();
 
 	public static void main(String[] args) {

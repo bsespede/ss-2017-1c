@@ -53,7 +53,7 @@ public class Simulation {
 
 		particles.add(sun);
 		particles.add(earth);
-		//particles.add(mars);
+		particles.add(mars);
 		//particles.add(spaceship);
 	}
 
@@ -68,7 +68,7 @@ public class Simulation {
 				for (Particle particle : particles) {
 					integrator.move(particle, particles, interval);
 				}
-				OutputWriter.write("../output/output-" + count + ".dat", (double) time, particles);
+					OutputWriter.write("../output/output-" + count + ".dat", (double) time, particles);
 				count++;
 			}
 		} catch (IOException e) {
