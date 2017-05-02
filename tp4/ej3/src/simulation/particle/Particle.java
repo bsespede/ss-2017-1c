@@ -5,15 +5,23 @@ import math.Vector2d;
 public class Particle {
 
 	private final String name;
-    private Vector2d position;
+	private Vector2d position;
     private Vector2d velocity;
+    private Vector2d prevPosition;
+    private Vector2d prevVelocity;
+    private Vector2d nextPosition;
+    private Vector2d nextVelocity;
     private final double mass;
     private final double radius;
     
     public Particle(final String name, final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
     	this.name = name;
-		this.position = position;
+    	this.position = position;
 		this.velocity = velocity;
+		this.prevPosition = position;
+		this.prevVelocity = velocity;
+		this.nextPosition = position;
+		this.nextVelocity = velocity;
 		this.radius = radius;
 		this.mass = mass;
 	}
@@ -30,20 +38,52 @@ public class Particle {
         return velocity;
     }
     
-    public double getMass() {
+    public Vector2d getPrevPosition() {
+		return prevPosition;
+	}
+
+	public Vector2d getPrevVelocity() {
+		return prevVelocity;
+	}
+	
+	public Vector2d getNextPosition() {
+		return nextPosition;
+	}
+
+	public void setNextPosition(Vector2d nextPosition) {
+		this.nextPosition = nextPosition;
+	}
+
+	public Vector2d getNextVelocity() {
+		return nextVelocity;
+	}
+
+	public void setNextVelocity(Vector2d nextVelocity) {
+		this.nextVelocity = nextVelocity;
+	}
+
+	public void setPosition(Vector2d position) {
+		this.position = position;
+	}
+
+	public void setVelocity(Vector2d velocity) {
+		this.velocity = velocity;
+	}
+
+	public void setPrevPosition(Vector2d prevPosition) {
+		this.prevPosition = prevPosition;
+	}
+
+	public void setPrevVelocity(Vector2d prevVelocity) {
+		this.prevVelocity = prevVelocity;
+	}
+
+	public double getMass() {
         return mass;
     }
     
     public double getRadius() {
         return radius;
-    }
-
-    public void setPosition(final Vector2d position) {
-    	this.position = position;
-    }
-
-    public void setVelocity(final Vector2d velocity) {
-    	this.velocity = velocity;
     }
     
     public double getKineticEnergy(){    	
