@@ -9,8 +9,6 @@ public class Particle {
     private Vector2d velocity;
     private Vector2d prevPosition;
     private Vector2d prevVelocity;
-    private Vector2d nextPosition;
-    private Vector2d nextVelocity;
     private final double mass;
     private final double radius;
     
@@ -18,10 +16,8 @@ public class Particle {
     	this.name = name;
     	this.position = position;
 		this.velocity = velocity;
-		this.prevPosition = position;
-		this.prevVelocity = velocity;
-		this.nextPosition = position;
-		this.nextVelocity = velocity;
+		this.prevPosition = null;
+		this.prevVelocity = null;
 		this.radius = radius;
 		this.mass = mass;
 	}
@@ -44,22 +40,6 @@ public class Particle {
 
 	public Vector2d getPrevVelocity() {
 		return prevVelocity;
-	}
-	
-	public Vector2d getNextPosition() {
-		return nextPosition;
-	}
-
-	public void setNextPosition(Vector2d nextPosition) {
-		this.nextPosition = nextPosition;
-	}
-
-	public Vector2d getNextVelocity() {
-		return nextVelocity;
-	}
-
-	public void setNextVelocity(Vector2d nextVelocity) {
-		this.nextVelocity = nextVelocity;
 	}
 
 	public void setPosition(Vector2d position) {
@@ -128,8 +108,8 @@ public class Particle {
 
 	@Override
 	public String toString() {
-		return "Particle [name=" + name + ", position=" + position + ", velocity=" + velocity + ", mass=" + mass
-				+ ", radius=" + radius + "]";
+		return "Particle [name=" + name + ", position=" + position + ", velocity=" + velocity + ", prevPosition="
+				+ prevPosition + ", prevVelocity=" + prevVelocity + ", mass=" + mass + ", radius=" + radius + "]";
 	}
 	
 }

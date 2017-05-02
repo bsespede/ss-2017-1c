@@ -8,6 +8,7 @@ import java.util.List;
 import io.InputReader;
 import io.OutputWriter;
 import math.Vector2d;
+import simulation.force.Gravity;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
 
@@ -28,6 +29,20 @@ public class Simulation {
 		this.interval = interval;
 		this.maxTime = maxTime;
 		generateSystem();
+		calculatePrevious(particles, interval);
+	}
+
+	private void calculatePrevious(List<Particle> particles, double dt) {
+		for (Particle particle: particles) {
+			final Vector2d force = Gravity.gravitationalForceBetween(particle, particles);
+			final Vector2d acceleration = force.scale(1.0 / particle.getMass());
+			
+			final Vector2d prevPosition = particle.getPosition().substract(particle.getVelocity().scale(dt)).add(acceleration.scale(Math.pow(dt, 2) / 2));
+			final Vector2d prevVelocity = particle.getVelocity().substract(acceleration.scale(dt));
+			
+			particle.setPrevPosition(prevPosition);
+			particle.setPrevVelocity(prevVelocity);
+		}
 	}
 
 	private void generateSystem() {
