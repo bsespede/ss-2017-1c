@@ -9,9 +9,7 @@ import simulation.particle.Particle;
 
 public class InputReader {
 	
-	public static Particle read(final String path) {
-		double scale = 0.00001;
-		
+	public static Particle read(final String path) {		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			

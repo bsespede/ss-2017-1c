@@ -45,5 +45,9 @@ public class Vector2d {
 	public String toString() {
 		return "Vector2d [x=" + x + ", y=" + y + "]";
 	}
+
+	public Vector2d add(double s) {
+		return new Vector2d(x + s, y + s);
+	}
 	
 }
