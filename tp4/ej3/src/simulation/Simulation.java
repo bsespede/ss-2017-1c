@@ -17,7 +17,6 @@ import simulation.particle.Particle;
 
 public class Simulation {
 	
-	private static final double V0 = 7;
 	private static final double SPATIAL_STATION_DISTANCE = 1500 * 1000;
 	private static final double SPACESHIP_RADIUS = 50;
 	
@@ -32,6 +31,7 @@ public class Simulation {
 	private final double dt;
 	private final double dt2;
 	private final double maxTime;
+	private double V0;
 	private double angle;
 	private double launchTime;
 	
@@ -42,6 +42,7 @@ public class Simulation {
 	private Particle spaceship;
 	
 	private final Map<Double, Double> spaceshipMarsDistance;
+	private double[] minDistance = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
 
 	public Simulation(final String name, final Integrator integrator, final double dt, final double dt2, final double maxTime) {
 		this.name = name;
@@ -60,12 +61,14 @@ public class Simulation {
 		this.spaceshipMarsDistance = new HashMap<Double, Double>();
 		this.angle = 180;
 		this.launchTime = MONTH;
+		this.V0 = 3 * 1000;
 	}
 	
-	public Simulation(final String name, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double angle, final double launchTime) {
+	public Simulation(final String name, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double angle, final double launchTime, final double V0) {
 		this(name, integrator, dt, dt2, maxTime);
 		this.angle = angle;
 		this.launchTime = launchTime;
+		this.V0 = V0;
 	}
 
 	private void calculatePrevious(List<Particle> particles, double dt) {
@@ -74,7 +77,7 @@ public class Simulation {
 		}
 	}
 
-	public void simulate() {
+	public double[] simulate() {
 		for (double time = 0; time < maxTime; time += dt) {
 			if (checkCollisions(time)) {
 				break;
@@ -88,6 +91,7 @@ public class Simulation {
 			}
 		}
 		generateDistanceOutput();
+		return minDistance;
 	}
 	
 	private void generateDistanceOutput() {
@@ -123,8 +127,13 @@ public class Simulation {
 				double distance = p1.getPosition().distance(p2.getPosition());
 				if (time % dt2 == 0 && (p1.equals(spaceship) && p2.equals(mars) )|| (p1.equals(mars) && p2.equals(spaceship))) {
 					spaceshipMarsDistance.put(time / YEAR, distance);
+					if (distance < minDistance[0]) {
+						minDistance[0] = distance;
+						minDistance[1] = time;
+						minDistance[2] = spaceship.getVelocity().module();
+					}
 				}
-				if (distance < p1.getRadius() + p2.getRadius() + 1500) {
+				if (distance < p1.getRadius() + p2.getRadius()) {
 					System.out.println("[INFO] " + p1.getName() + " colisiono con " + p2.getName() + " en " + time);
 					return true;
 				}
@@ -138,15 +147,17 @@ public class Simulation {
 	}
 	
 	public void launchSpaceship(double dt) {
-		Vector2d stationDirection = earth.getPosition().substract(sun.getPosition());
+		Particle from = mars;
+		
+		Vector2d stationDirection = from.getPosition().substract(sun.getPosition());
 		double launchAngle = Math.atan2(stationDirection.x, stationDirection.y) + Math.toRadians(angle);
 
-		double distanceFromEarth = earth.getRadius() + SPATIAL_STATION_DISTANCE + SPACESHIP_RADIUS;
+		double distanceFromEarth = from.getRadius() + SPATIAL_STATION_DISTANCE + SPACESHIP_RADIUS;
 		Vector2d adjustAngle = new Vector2d(Math.cos(launchAngle), Math.sin(launchAngle)).scale(distanceFromEarth);
-		Vector2d spaceshipPosition = earth.getPosition().add(adjustAngle);
+		Vector2d spaceshipPosition = from.getPosition().add(adjustAngle);
 
-		Vector2d velocityAdjust = new Vector2d(Math.cos((Math.PI / 2) + launchAngle), Math.sin((Math.PI / 2) + launchAngle)).scale(V0 * 1000);				
-		Vector2d spaceshipVelocity = earth.getVelocity().add(velocityAdjust);
+		Vector2d velocityAdjust = new Vector2d(Math.cos((Math.PI / 2) + launchAngle), Math.sin((Math.PI / 2) + launchAngle)).scale(V0);				
+		Vector2d spaceshipVelocity = from.getVelocity().add(velocityAdjust);
 
 		Particle spaceship = new Particle("SPACESHIP", spaceshipPosition, spaceshipVelocity, SPACESHIP_RADIUS, 2 * Math.pow(10, 5));
 		calculatePrevious(spaceship, dt);
@@ -166,7 +177,7 @@ public class Simulation {
 	public void generateOutput(double time) {
 		try {
 			Files.createDirectories(Paths.get("../output/"));
-			OutputWriter.writeParticles("../output/" + name + "-" + time + ".dat", (double) time, particles);
+			OutputWriter.writeParticles("../output/" + name + "-" + (int)time + ".dat", (double) time, particles);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

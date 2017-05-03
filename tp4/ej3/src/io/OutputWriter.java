@@ -54,4 +54,14 @@ public class OutputWriter {
 		writer.close();
 	}
 
+	public static void writeVelocities(String fileName, Map<Double, Double> minDists) throws IOException {
+		BufferedWriter writer;
+		writer = new BufferedWriter(new FileWriter(fileName));
+		for (Double velocity: minDists.keySet()) {
+			writer.write(String.format("%.2f %.2f\n", velocity, minDists.get(velocity)));
+		}
+		writer.flush();		
+		writer.close();
+	}
+
 }
