@@ -16,21 +16,21 @@ public class Main {
 	
 	private final static double MAX_TIME = YEAR * 5;
 	private final static double MAX_FLIGHT_TIME = YEAR;
-	private final static double INTERVAL = 100;
+	private final static double LAUNCH_FREQUENCY = MONTH;
+	private final static double INTERVAL = 10;
 	private final static double INTERVAL_OUTPUT = DAY / 2;
 	private final static Integrator INTEGRATOR = new BeemanIntegrator();
 
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulations");
 		final OutputWriter writer = new OutputWriter("../results.dat");
-		for (int v = 0; v < 10; v += 3) {
+		for (int v = 0; v <= 30; v += 3) {
 			for (int angle = 0; angle < 360; angle += 45) {
 				System.out.println("[INFO] Launching simulations for VELOCITY " + v + " and ANGLE " + angle);
-				for (int i = 0; i < MAX_TIME / MONTH; i++) {
-					System.out.println("[INFO] Launching simulation for MONTH " + i);
+				for (int i = 0; i < MAX_TIME / LAUNCH_FREQUENCY; i++) {
 					final String particlesOutputPath = "../output/dia-" + i +"/velocidad-" + v + "/angulo-" + angle;
 					new File(particlesOutputPath).mkdirs();
-					final Simulation simulation = new Simulation(particlesOutputPath, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, MAX_FLIGHT_TIME, angle, i * MONTH, v);    
+					final Simulation simulation = new Simulation(particlesOutputPath, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, MAX_FLIGHT_TIME, angle, i * LAUNCH_FREQUENCY, v);    
 					final Result result = simulation.simulate();
 					writer.writeSimulationResult(result, angle, v);
 				}

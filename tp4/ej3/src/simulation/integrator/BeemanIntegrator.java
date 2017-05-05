@@ -12,7 +12,7 @@ public class BeemanIntegrator implements Integrator{
 		final Vector2d force = Gravity.gravitationalForceBetween(particle, particles);
         final Vector2d acceleration = force.scale(1.0 / particle.getMass());
         
-        final Particle previous = new Particle(particle.getName(), particle.getPrevPosition(), particle.getPrevVelocity(), particle.getRadius(), particle.getMass());
+        final Particle previous = new Particle(particle.getBody(), particle.getPrevPosition(), particle.getPrevVelocity(), particle.getRadius(), particle.getMass());
         final Vector2d prevAcceleration = Gravity.gravitationalForceBetween(previous, particles).scale(1.0 / particle.getMass());
 
         final Vector2d nextPosition = particle.getPosition().add(particle.getVelocity().scale(dt)).add(acceleration.scale((2.0 / 3.0) * Math.pow(dt, 2))).substract(prevAcceleration.scale((1.0 / 6.0) * Math.pow(dt, 2)));

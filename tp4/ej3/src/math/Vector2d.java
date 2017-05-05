@@ -49,5 +49,12 @@ public class Vector2d {
 	public Vector2d add(double s) {
 		return new Vector2d(x + s, y + s);
 	}
+
+	public Vector2d rotateCounterClockwise(double angle) {
+		double theta = Math.toRadians(angle);
+		double cos = Math.cos(theta);
+		double sin = Math.sin(theta);
+		return new Vector2d(x * cos - y * sin, x * sin + y * cos);
+	}
 	
 }

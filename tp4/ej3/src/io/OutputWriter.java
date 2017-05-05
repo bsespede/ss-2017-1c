@@ -1,6 +1,5 @@
 package io;
 
-import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class OutputWriter {
 	}
 	public void writeSimulationResult(final Result result, final double angle, final double velocity){
 		try {
-			results.write(String.format("%.2f %.2f %.2f %.2f %.2f %.2f\n", velocity, angle, result.getLaunchDay(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
+			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", result.spaceshipCollidedMars(), velocity, angle, result.getLaunchTime(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
 			results.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,20 +56,7 @@ public class OutputWriter {
 
 	private static String formatParticle(final int count, final Particle p) {
 		final Vector2d position = p.getPosition();
-		final Color color = colorGetter(p);
-		return String.format("%d %.2f %.2f %.2f %d %d %d\n", count, position.x * SCALE, position.y * SCALE, p.getRadius() * 0.1, color.getRed(), color.getGreen(), color.getBlue());
+		return String.format("%d %.2f %.2f %.2f %d %d %d\n", count, position.x * SCALE, position.y * SCALE, p.getRadius() * 0.1, p.getBody().getRed(), p.getBody().getGreen(), p.getBody().getBlue());
 	}
 
-	private static Color colorGetter(final Particle particle) {
-		switch (particle.getName()) {
-		case "EARTH":
-			return new Color(0, 0, 255);
-		case "SUN":
-			return new Color(255, 0, 0);
-		case "MARS":
-			return new Color(255, 0, 255);
-		default:
-			return new Color(0, 255, 0);
-		}
-	}
 }

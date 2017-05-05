@@ -3,25 +3,25 @@ package simulation;
 public class Result {
 
 	final boolean spaceshipCollidedMars;	
-	final double launchDay;
+	final double launchTime;
 	final double relativeSpeed;
 	final double minDistance;
 	final double travelTime;
 	
-	public Result(boolean spaceshipCollidedMars, double launchDay, double relativeSpeed, double minDistance, double travelTime) {
+	public Result(boolean spaceshipCollidedMars, double launchTime, double relativeSpeed, double minDistance, double travelTime) {
 		this.spaceshipCollidedMars = spaceshipCollidedMars;
-		this.launchDay = launchDay;
+		this.launchTime = launchTime;
 		this.relativeSpeed = relativeSpeed;
 		this.minDistance = minDistance;
 		this.travelTime = travelTime;
 	}
 
-	public boolean isSpaceshipCollidedMars() {
+	public boolean spaceshipCollidedMars() {
 		return spaceshipCollidedMars;
 	}
 
-	public double getLaunchDay() {
-		return launchDay;
+	public double getLaunchTime() {
+		return launchTime;
 	}
 
 	public double getRelativeSpeed() {

@@ -6,6 +6,7 @@ import java.util.List;
 import io.InputReader;
 import io.OutputWriter;
 import math.Vector2d;
+import simulation.bodies.Body;
 import simulation.force.Gravity;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
@@ -70,7 +71,7 @@ public class Simulation {
 				if (time % dt2 < EPSILON) {
 					generateOutput(time);
 				}
-				double marsDistance = spaceship.getPosition().distance(mars.getPosition());
+				double marsDistance = spaceship.distance(mars);
 				if (marsDistance < minDistance) {
 					minDistance = marsDistance;
 				}
@@ -110,13 +111,17 @@ public class Simulation {
 			for (int j = i + 1; j < particles.size(); j++) {
 				final Particle p1 = particles.get(i);
 				final Particle p2 = particles.get(j);
-				double distance = p1.getPosition().distance(p2.getPosition());
-				if (distance < p1.getRadius() + p2.getRadius()) {
-					return new Collision(p1, p2);
+				double distance = p1.distance(p2);
+				if (distance < 0 ) {
+					if ((p1.getBody().equals(Body.SPACESHIP) && p2.getBody().equals(Body.MARS)) || (p1.getBody().equals(Body.MARS) && p2.getBody().equals(Body.SPACESHIP))) {
+						return new Collision(true, p1, p2);
+					} else {
+						return new Collision(false, p1, p2);
+					}
 				}
 			}
 		}
-		return new Collision(null, null);
+		return new Collision(false, null, null);
 	}
 	
 	public void launchSpaceship(double dt) {
@@ -126,22 +131,18 @@ public class Simulation {
 		double distanceFromEarth = from.getRadius() + SPATIAL_STATION_DISTANCE + SPACESHIP_RADIUS;
 		Vector2d fromEarthToParticle = stationDirection.scale(distanceFromEarth);		
 		Vector2d spaceshipPosition = from.getPosition().add(fromEarthToParticle);
-
-		double theta = Math.toRadians(angle);
-		double cos = Math.cos(theta);
-		double sin = Math.sin(theta);
 		
-		Vector2d velocityAdjust = stationDirection.scale(V0 + SPACESHIP_ORBITAL_VELOCITY);				
-		Vector2d rotatedVelocity = new Vector2d(velocityAdjust.x * cos - velocityAdjust.y * sin, velocityAdjust.x * sin + velocityAdjust.y * cos);
-		Vector2d spaceshipVelocity = earth.getVelocity().add(rotatedVelocity);
+		Vector2d orbitVelocity = stationDirection.scale(SPACESHIP_ORBITAL_VELOCITY).rotateCounterClockwise(90);
+		Vector2d spaceshipVelocity = stationDirection.scale(V0).rotateCounterClockwise(angle);
+		spaceshipVelocity = earth.getVelocity().add(spaceshipVelocity).add(orbitVelocity);
 		
-		Particle spaceship = new Particle("SPACESHIP", spaceshipPosition, spaceshipVelocity, SPACESHIP_RADIUS, 2 * Math.pow(10, 5));
+		Particle spaceship = new Particle(Body.SPACESHIP, spaceshipPosition, spaceshipVelocity, SPACESHIP_RADIUS, 2 * Math.pow(10, 5));
 		calculatePrevious(spaceship, dt);
 
 		this.spaceship = spaceship;
 		particles.add(spaceship);
 	}
-
+	
 	public boolean shouldLaunchSpaceship(double time) {
 		return !hasLaunchedSpaceship() && time >= launchTime;
 	}
@@ -156,17 +157,18 @@ public class Simulation {
 	
 	private class Collision {		
 		
+		private final boolean spaceshipCollidedMars;
 		private final Particle p1;
 		private final Particle p2;
 		
-		public Collision(Particle p1, Particle p2) {
-			super();
+		public Collision(final boolean spaceshipCollidedMars, final Particle p1, final Particle p2) {
+			this.spaceshipCollidedMars = spaceshipCollidedMars;
 			this.p1 = p1;
 			this.p2 = p2;
 		}
 
 		public boolean spaceshipCollidedMars() {
-			return hasCollided() && ((p1.getName().equals("SPACESHIP") && p2.getName().equals("MARS")) || (p1.getName().equals("MARS") && p2.getName().equals("SPACESHIP")));
+			return spaceshipCollidedMars;
 		}
 
 		public boolean hasCollided() {

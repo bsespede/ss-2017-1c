@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import math.Vector2d;
+import simulation.bodies.Body;
 import simulation.particle.Particle;
 
 public class InputReader {
@@ -15,12 +16,12 @@ public class InputReader {
 			
 			String[] input;
 			input = br.readLine().split(" ");
-			final String name = input[0];
+			final Body body = Body.getBodyFromName(input[0]);
 			final Vector2d position = new Vector2d(Double.valueOf(input[1]), Double.valueOf(input[2]));
 			final Vector2d velocity = new Vector2d(Double.valueOf(input[3]), Double.valueOf(input[4]));
 			final double radius = Double.valueOf(input[5]);
 			final double mass = Double.valueOf(input[6]);
-			final Particle particle = new Particle(name, position, velocity, radius, mass);
+			final Particle particle = new Particle(body, position, velocity, radius, mass);
 
 			br.close();
 			return particle;
