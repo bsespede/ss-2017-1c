@@ -7,7 +7,7 @@ import simulation.particle.Particle;
 
 public class Gravity {
 	
-	public final static double G = 6.74 * Math.pow(10, -11);
+	public final static double G = 6.67384 * Math.pow(10, -20);
 
 	public static Vector2d gravitationalForceBetween(final Particle p1, final Particle p2) {
 		final Vector2d r = p2.getPosition().substract(p1.getPosition());

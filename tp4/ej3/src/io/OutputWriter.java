@@ -5,24 +5,54 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import math.Vector2d;
+import simulation.Result;
 import simulation.particle.Particle;
 
 public class OutputWriter {
 
-	private final static double SCALE = 0.000001;
-
-	public static void writeParticles(final String fileName, final Double time, final List<Particle> particles) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-		int count = 1;
-		writer.write(String.format("%d\n%g\n", particles.size(), time));
-		for (Particle particle : particles) {
-			writer.write(formatParticle(count++, particle));
+	private final static double SCALE = 0.001;	
+	
+	private BufferedWriter results;
+	
+	public OutputWriter(final String path) {
+		try {
+			results = new BufferedWriter(new FileWriter(path));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		writer.flush();		
-		writer.close();
+	}
+	public void writeSimulationResult(final Result result, final double angle, final double velocity){
+		try {
+			results.write(String.format("%.2f %.2f %.2f %.2f %.2f %.2f\n", velocity, angle, result.getLaunchDay(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
+			results.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public void close() {
+		try {
+			results.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public static void writeParticles(final String fileName, final Double time, final List<Particle> particles){
+		try {
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+			int count = 1;
+			writer.write(String.format("%d\n%g\n", particles.size(), time));
+			for (Particle particle : particles) {
+				writer.write(formatParticle(count++, particle));
+			}
+			writer.flush();		
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static String formatParticle(final int count, final Particle p) {
@@ -43,25 +73,4 @@ public class OutputWriter {
 			return new Color(0, 255, 0);
 		}
 	}
-
-	public static void writeDistances(String fileName, Map<Double, Double> spaceshipMarsDistance) throws IOException {
-		BufferedWriter writer;
-		writer = new BufferedWriter(new FileWriter(fileName));
-		for (Double time: spaceshipMarsDistance.keySet()) {
-			writer.write(String.format("%.2f %.2f\n", time, spaceshipMarsDistance.get(time)));
-		}
-		writer.flush();		
-		writer.close();
-	}
-
-	public static void writeVelocities(String fileName, Map<Double, Double> minDists) throws IOException {
-		BufferedWriter writer;
-		writer = new BufferedWriter(new FileWriter(fileName));
-		for (Double velocity: minDists.keySet()) {
-			writer.write(String.format("%.2f %.2f\n", velocity, minDists.get(velocity)));
-		}
-		writer.flush();		
-		writer.close();
-	}
-
 }

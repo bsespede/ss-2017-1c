@@ -21,7 +21,7 @@ public class InputReader {
 			final double radius = Double.valueOf(input[5]);
 			final double mass = Double.valueOf(input[6]);
 			final Particle particle = new Particle(name, position, velocity, radius, mass);
-			
+
 			br.close();
 			return particle;
 		} catch (IOException e) {
