@@ -13,8 +13,8 @@ public class Main {
 	private static final double DAY = HOUR * 24;
 	private static final double YEAR = DAY * 365;
 	
-	private final static double MAX_LAUNCH_TIME = YEAR * 2;
-	private final static double MAX_FLIGHT_TIME = YEAR * 3;
+	private final static double MAX_LAUNCH_TIME = YEAR * 5;
+	private final static double MAX_FLIGHT_TIME = YEAR;
 	private final static double LAUNCH_FREQUENCY = DAY;
 	private final static double INTERVAL = 100;
 	private final static double INTERVAL_OUTPUT = DAY / 2;

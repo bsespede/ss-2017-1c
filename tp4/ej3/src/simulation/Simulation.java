@@ -88,7 +88,7 @@ public class Simulation {
 	}
 
 	public Result getCurrentResult() {
-		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, spaceship.getVelocity().module() - mars.getVelocity().module(), minDistance, (minDistanceTime - launchTime) / DAY);
+		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, spaceship.getVelocity().substract(mars.getVelocity()).module(), minDistance, (minDistanceTime - launchTime) / DAY);
 	}
 	
 	private void calculatePrevious(Particle particle, double dt) {
