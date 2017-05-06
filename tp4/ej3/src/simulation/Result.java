@@ -2,16 +2,22 @@ package simulation;
 
 public class Result {
 
-	final double launchTime;
-	final double relativeSpeed;
-	final double minDistance;
-	final double travelTime;
+	private final boolean passedMarsOrbit;
+	private final double launchTime;
+	private final double relativeSpeed;
+	private final double minDistance;
+	private final double travelTime;
 	
-	public Result(double launchTime, double relativeSpeed, double minDistance, double travelTime) {
+	public Result(boolean passedMarsOrbit, double launchTime, double relativeSpeed, double minDistance, double travelTime) {
+		this.passedMarsOrbit = passedMarsOrbit;
 		this.launchTime = launchTime;
 		this.relativeSpeed = relativeSpeed;
 		this.minDistance = minDistance;
 		this.travelTime = travelTime;
+	}
+	
+	public boolean hasPassedMarsOrbit() {
+		return passedMarsOrbit;
 	}
 
 	public double getLaunchTime() {

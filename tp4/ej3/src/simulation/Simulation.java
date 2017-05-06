@@ -13,6 +13,7 @@ import simulation.particle.Particle;
 
 public class Simulation {
 	
+	private static final double AREOSTATIC_ORBIT = 17031;
 	private static final double SPACESHIP_ORBITAL_VELOCITY = 7.12;
 	private static final double SPATIAL_STATION_DISTANCE = 1500;
 	private static final double SPACESHIP_RADIUS = 0.5;
@@ -60,7 +61,7 @@ public class Simulation {
 	}
 
 	public Result simulate() {
-		for (double time = 0; time < maxTime; time += dt) {
+		for (double time = 0; time < maxTime + maxFlightTime; time += dt) {
 			final Collision collision = checkCollisions(time);
 			if (collision.hasCollided()) {
 				return getCurrentResult();				
@@ -87,7 +88,7 @@ public class Simulation {
 	}
 
 	public Result getCurrentResult() {
-		return new Result(launchTime / DAY, spaceship.getVelocity().module() - mars.getVelocity().module(), minDistance, (minDistanceTime - launchTime) / DAY);
+		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, spaceship.getVelocity().module() - mars.getVelocity().module(), minDistance, (minDistanceTime - launchTime) / DAY);
 	}
 	
 	private void calculatePrevious(Particle particle, double dt) {

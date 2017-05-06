@@ -12,7 +12,6 @@ import simulation.particle.Particle;
 public class OutputWriter {
 
 	private static final double SCALE = 0.001;
-	private static final double AREOSTATIC_ORBIT = 17031;
 	
 	private BufferedWriter results;
 	
@@ -25,7 +24,7 @@ public class OutputWriter {
 	}
 	public void writeSimulationResult(final Result result, final double angle, final double velocity){
 		try {
-			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", (result.getMinDistance() < AREOSTATIC_ORBIT)? true : false , velocity, angle, result.getLaunchTime(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
+			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", result.hasPassedMarsOrbit(), velocity, angle, result.getLaunchTime(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
 			results.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
