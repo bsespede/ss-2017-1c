@@ -37,6 +37,7 @@ public class Simulation {
 	private Particle spaceship;
 	private double minDistance;
 	private double minDistanceTime;
+	private double minDistanceRelativeVelocity;
 	
 	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double maxFlightTime, final double angle, final double launchTime, final double V0) {
 		this.resultPath = resultPath;
@@ -50,6 +51,7 @@ public class Simulation {
 		this.V0 = V0;
 		this.minDistance = Double.MAX_VALUE;
 		this.minDistanceTime = Double.MAX_VALUE;
+		this.minDistanceRelativeVelocity = Double.MAX_VALUE;
 		this.particles = new LinkedList<Particle>();
 		this.sun = InputReader.read("../resources/sun.dat");
 		this.earth = InputReader.read("../resources/earth.dat");
@@ -62,8 +64,7 @@ public class Simulation {
 
 	public Result simulate() {
 		for (double time = 0; time < maxTime + maxFlightTime; time += dt) {
-			final Collision collision = checkCollisions(time);
-			if (collision.hasCollided()) {
+			if (checkCollisions(time)) {
 				return getCurrentResult();				
 			}
 			if (shouldLaunchSpaceship(time)) {
@@ -74,10 +75,15 @@ public class Simulation {
 				if (time % dt2 < EPSILON) {
 					generateOutput(time);
 				}
-				double marsDistance = spaceship.distance(mars);
-				if (marsDistance < minDistance) {
-					minDistance = marsDistance;
+				double marsOrbitDistance = spaceship.distance(mars);				
+				if (marsOrbitDistance < minDistance) {
+					minDistance = marsOrbitDistance;
 					minDistanceTime = time;
+					minDistanceRelativeVelocity = spaceship.getVelocity().substract(mars.getVelocity()).module();
+					if (marsOrbitDistance < 0) {
+						marsOrbitDistance = 0;
+						return getCurrentResult();
+					}
 				}
 				if (time - launchTime > maxFlightTime) {
 					return getCurrentResult();
@@ -88,7 +94,7 @@ public class Simulation {
 	}
 
 	public Result getCurrentResult() {
-		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, spaceship.getVelocity().substract(mars.getVelocity()).module(), minDistance, (minDistanceTime - launchTime) / DAY);
+		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, minDistanceRelativeVelocity, minDistance, (minDistanceTime - launchTime) / DAY);
 	}
 	
 	private void calculatePrevious(Particle particle, double dt) {
@@ -114,18 +120,18 @@ public class Simulation {
 		}
 	}
 
-	public Collision checkCollisions(double time) {
+	public boolean checkCollisions(double time) {
 		for (int i = 0; i < particles.size(); i++) {
 			for (int j = i + 1; j < particles.size(); j++) {
 				final Particle p1 = particles.get(i);
 				final Particle p2 = particles.get(j);
 				double distance = p1.distance(p2);
 				if (distance < 0 ) {
-					new Collision(p1, p2);
+					return true;
 				}
 			}
 		}
-		return new Collision(null, null);
+		return false;
 	}
 	
 	public void launchSpaceship(double dt) {
@@ -157,22 +163,6 @@ public class Simulation {
 	
 	public void generateOutput(double time) {
 		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", (double) time, particles);
-	}
-	
-	private class Collision {	
-		
-		private final Particle p1;
-		private final Particle p2;
-		
-		public Collision(final Particle p1, final Particle p2) {
-			this.p1 = p1;
-			this.p2 = p2;
-		}
-
-		public boolean hasCollided() {
-			return p1 != null && p2 != null;
-		}
-		
 	}
 	
 }

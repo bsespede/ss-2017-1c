@@ -24,7 +24,7 @@ public class OutputWriter {
 	}
 	public void writeSimulationResult(final Result result, final double angle, final double velocity){
 		try {
-			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", result.hasPassedMarsOrbit(), velocity, angle, result.getLaunchTime(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelTime()));
+			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", result.hasPassedMarsOrbit(), velocity, angle, result.getLaunchDay(), result.getMinDistance(), result.getRelativeSpeed(), result.getTravelDays()));
 			results.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
