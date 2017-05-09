@@ -15,7 +15,7 @@ public class Simulation {
 	
 	private static final double SPACESHIP_ORBITAL_VELOCITY = 1.58;
 	private static final double SPATIAL_STATION_DISTANCE = 1500;
-	private static final double ORBIT_DISTANCE = SPATIAL_STATION_DISTANCE;
+	private static final double ORBIT_DISTANCE = 35786;
 	private static final double SPACESHIP_RADIUS = 0.5;
 	private static final double EPSILON = 0.01;
 	private static final double DAY = 3600 * 24;
@@ -40,6 +40,7 @@ public class Simulation {
 	private double minDistanceRelativeVelocity;
 	
 	private Particle from;
+	private Particle to;
 	
 	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double maxFlightTime, final double angle, final double launchTime, final double V0) {
 		this.resultPath = resultPath;
@@ -59,6 +60,7 @@ public class Simulation {
 		this.earth = InputReader.read("../resources/earth.dat");
 		this.mars = InputReader.read("../resources/mars.dat");
 		this.from = mars;
+		this.to = earth;
 		particles.add(earth);
 		particles.add(sun);
 		particles.add(mars);
@@ -78,11 +80,11 @@ public class Simulation {
 //				if (time % dt2 < EPSILON) {
 //					generateOutput(time);
 //				}
-				double distanceToSpaceship = spaceship.distance(from);				
+				double distanceToSpaceship = spaceship.distance(to);				
 				if (distanceToSpaceship < minDistance) {
 					minDistance = distanceToSpaceship;
 					minDistanceTime = time;
-					minDistanceRelativeVelocity = spaceship.getVelocity().substract(from.getVelocity()).module();
+					minDistanceRelativeVelocity = spaceship.getVelocity().substract(to.getVelocity()).module();
 					if (distanceToSpaceship < 0) {
 						distanceToSpaceship = 0;
 						return getCurrentResult();
