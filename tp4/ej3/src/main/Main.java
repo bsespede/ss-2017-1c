@@ -13,8 +13,8 @@ public class Main {
 	private static final double DAY = HOUR * 24;
 	private static final double YEAR = DAY * 365;
 	
-	private final static double MAX_LAUNCH_TIME = YEAR * 3;
-	private final static double MAX_FLIGHT_TIME = YEAR * 2;
+	private final static double MAX_LAUNCH_TIME = YEAR * 5;
+	private final static double MAX_FLIGHT_TIME = YEAR * 1;
 	private final static double LAUNCH_FREQUENCY = DAY;
 	private final static double INTERVAL = 100;
 	private final static double INTERVAL_OUTPUT = DAY / 2;
@@ -23,13 +23,13 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulations");
 		final OutputWriter writer = new OutputWriter("../results.dat");
-		for (int v = 3; v <= 8; v += 5) {
+		for (int v = 3; v <= 15; v += 6) {
 			for (int angle = 0; angle < 360; angle += 45) {
 				System.out.println("[INFO] Launching simulations for VELOCITY " + v + " and ANGLE " + angle);
 				for (int i = 0; i < MAX_LAUNCH_TIME / LAUNCH_FREQUENCY; i++) {
 					System.out.println("[INFO] Launching simulation [" + i + "/" + (int)(MAX_LAUNCH_TIME / LAUNCH_FREQUENCY) + "]");
 					final String particlesOutputPath = "../output/velocidad-" + v + "/angulo-" + angle + "/dia-" + i;
-					new File(particlesOutputPath).mkdirs();
+					//new File(particlesOutputPath).mkdirs();
 					final Simulation simulation = new Simulation(particlesOutputPath, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_LAUNCH_TIME, MAX_FLIGHT_TIME, angle, i * LAUNCH_FREQUENCY, v);    
 					final Result result = simulation.simulate();
 					writer.writeSimulationResult(result, angle, v);

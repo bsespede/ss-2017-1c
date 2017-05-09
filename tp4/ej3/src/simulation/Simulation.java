@@ -72,9 +72,9 @@ public class Simulation {
 			}
 			move(integrator, dt);
 			if (hasLaunchedSpaceship()) {
-				if (time % dt2 < EPSILON) {
-					generateOutput(time);
-				}
+//				if (time % dt2 < EPSILON) {
+//					generateOutput(time);
+//				}
 				double marsOrbitDistance = spaceship.distance(mars);				
 				if (marsOrbitDistance < minDistance) {
 					minDistance = marsOrbitDistance;
@@ -135,15 +135,15 @@ public class Simulation {
 	}
 	
 	public void launchSpaceship(double dt) {
-		final Particle from = earth;
+		final Particle from = mars;
 		
 		Vector2d stationDirection = from.getPosition().substract(sun.getPosition()).normalize();
 		double distanceFromEarth = from.getRadius() + SPATIAL_STATION_DISTANCE + SPACESHIP_RADIUS;
 		Vector2d fromEarthToParticle = stationDirection.scale(distanceFromEarth);		
 		Vector2d spaceshipPosition = from.getPosition().add(fromEarthToParticle);
 		
-		Vector2d orbitVelocity = stationDirection.scale(SPACESHIP_ORBITAL_VELOCITY).rotateCounterClockwise(90);
-		Vector2d spaceshipVelocity = stationDirection.scale(V0).rotateCounterClockwise(angle);
+		Vector2d orbitVelocity = stationDirection.rotateCounterClockwise(90).scale(SPACESHIP_ORBITAL_VELOCITY);
+		Vector2d spaceshipVelocity = stationDirection.rotateCounterClockwise(angle).scale(V0);
 		spaceshipVelocity = earth.getVelocity().add(spaceshipVelocity).add(orbitVelocity);
 		
 		Particle spaceship = new Particle(Body.SPACESHIP, spaceshipPosition, spaceshipVelocity, SPACESHIP_RADIUS, 2 * Math.pow(10, 5));
