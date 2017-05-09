@@ -13,9 +13,9 @@ import simulation.particle.Particle;
 
 public class Simulation {
 	
-	private static final double AREOSTATIC_ORBIT = 17031;
 	private static final double SPACESHIP_ORBITAL_VELOCITY = 1.58;
 	private static final double SPATIAL_STATION_DISTANCE = 1500;
+	private static final double ORBIT_DISTANCE = 20000;
 	private static final double SPACESHIP_RADIUS = 0.5;
 	private static final double EPSILON = 0.01;
 	private static final double DAY = 3600 * 24;
@@ -39,6 +39,8 @@ public class Simulation {
 	private double minDistanceTime;
 	private double minDistanceRelativeVelocity;
 	
+	private Particle from;
+	
 	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double maxFlightTime, final double angle, final double launchTime, final double V0) {
 		this.resultPath = resultPath;
 		this.integrator = integrator;
@@ -56,6 +58,7 @@ public class Simulation {
 		this.sun = InputReader.read("../resources/sun.dat");
 		this.earth = InputReader.read("../resources/earth.dat");
 		this.mars = InputReader.read("../resources/mars.dat");
+		this.from = mars;
 		particles.add(earth);
 		particles.add(sun);
 		particles.add(mars);
@@ -75,13 +78,13 @@ public class Simulation {
 //				if (time % dt2 < EPSILON) {
 //					generateOutput(time);
 //				}
-				double marsOrbitDistance = spaceship.distance(mars);				
-				if (marsOrbitDistance < minDistance) {
-					minDistance = marsOrbitDistance;
+				double distanceToSpaceship = spaceship.distance(from);				
+				if (distanceToSpaceship < minDistance) {
+					minDistance = distanceToSpaceship;
 					minDistanceTime = time;
-					minDistanceRelativeVelocity = spaceship.getVelocity().substract(mars.getVelocity()).module();
-					if (marsOrbitDistance < 0) {
-						marsOrbitDistance = 0;
+					minDistanceRelativeVelocity = spaceship.getVelocity().substract(from.getVelocity()).module();
+					if (distanceToSpaceship < 0) {
+						distanceToSpaceship = 0;
 						return getCurrentResult();
 					}
 				}
@@ -94,7 +97,7 @@ public class Simulation {
 	}
 
 	public Result getCurrentResult() {
-		return new Result(minDistance < AREOSTATIC_ORBIT, launchTime / DAY, minDistanceRelativeVelocity, minDistance, (minDistanceTime - launchTime) / DAY);
+		return new Result(minDistance < ORBIT_DISTANCE, launchTime / DAY, minDistanceRelativeVelocity, minDistance, (minDistanceTime - launchTime) / DAY);
 	}
 	
 	private void calculatePrevious(Particle particle, double dt) {
@@ -134,9 +137,7 @@ public class Simulation {
 		return false;
 	}
 	
-	public void launchSpaceship(double dt) {
-		final Particle from = mars;
-		
+	public void launchSpaceship(double dt) {		
 		Vector2d stationDirection = from.getPosition().substract(sun.getPosition()).normalize();
 		double distanceFromEarth = from.getRadius() + SPATIAL_STATION_DISTANCE + SPACESHIP_RADIUS;
 		Vector2d fromEarthToParticle = stationDirection.scale(distanceFromEarth);		
