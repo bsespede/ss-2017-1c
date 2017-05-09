@@ -1,6 +1,4 @@
 package main;
-import java.io.File;
-
 import io.OutputWriter;
 import simulation.Result;
 import simulation.Simulation;
@@ -13,6 +11,7 @@ public class Main {
 	private static final double DAY = HOUR * 24;
 	private static final double YEAR = DAY * 365;
 	
+	private final static boolean FROM_EARTH_TO_MARS = true;
 	private final static double MAX_LAUNCH_TIME = YEAR * 5;
 	private final static double MAX_FLIGHT_TIME = YEAR * 1;
 	private final static double LAUNCH_FREQUENCY = DAY;
@@ -29,8 +28,7 @@ public class Main {
 				for (int i = 0; i < MAX_LAUNCH_TIME / LAUNCH_FREQUENCY; i++) {
 					System.out.println("[INFO] Launching simulation [" + i + "/" + (int)(MAX_LAUNCH_TIME / LAUNCH_FREQUENCY) + "]");
 					final String particlesOutputPath = "../output/velocidad-" + v + "/angulo-" + angle + "/dia-" + i;
-					//new File(particlesOutputPath).mkdirs();
-					final Simulation simulation = new Simulation(particlesOutputPath, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_LAUNCH_TIME, MAX_FLIGHT_TIME, angle, i * LAUNCH_FREQUENCY, v);    
+					final Simulation simulation = new Simulation(null, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_LAUNCH_TIME, MAX_FLIGHT_TIME, angle, i * LAUNCH_FREQUENCY, v, FROM_EARTH_TO_MARS);    
 					final Result result = simulation.simulate();
 					writer.writeSimulationResult(result, angle, v);
 				}

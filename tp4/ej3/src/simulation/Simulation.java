@@ -1,5 +1,6 @@
 package simulation;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,10 +40,10 @@ public class Simulation {
 	private double minDistanceTime;
 	private double minDistanceRelativeVelocity;
 	
-	private Particle from;
-	private Particle to;
+	private final Particle from;
+	private final Particle to;
 	
-	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double maxFlightTime, final double angle, final double launchTime, final double V0) {
+	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double maxFlightTime, final double angle, final double launchTime, final double V0, final boolean fromEarthToMars) {
 		this.resultPath = resultPath;
 		this.integrator = integrator;
 		this.dt = dt;
@@ -59,8 +60,16 @@ public class Simulation {
 		this.sun = InputReader.read("../resources/sun.dat");
 		this.earth = InputReader.read("../resources/earth.dat");
 		this.mars = InputReader.read("../resources/mars.dat");
-		this.from = mars;
-		this.to = earth;
+		if (resultPath != null) {
+			new File(resultPath).mkdirs();
+		}
+		if (fromEarthToMars) {
+			this.from = earth;
+			this.to = mars;
+		} else {
+			this.from = mars;
+			this.to = earth;
+		}		
 		particles.add(earth);
 		particles.add(sun);
 		particles.add(mars);
@@ -77,9 +86,9 @@ public class Simulation {
 			}
 			move(integrator, dt);
 			if (hasLaunchedSpaceship()) {
-//				if (time % dt2 < EPSILON) {
-//					generateOutput(time);
-//				}
+				if (resultPath != null &&time % dt2 < EPSILON) {
+					generateOutput(time);
+				}
 				double distanceToSpaceship = spaceship.distance(to);				
 				if (distanceToSpaceship < minDistance) {
 					minDistance = distanceToSpaceship;
