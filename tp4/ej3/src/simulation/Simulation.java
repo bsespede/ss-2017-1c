@@ -15,7 +15,7 @@ public class Simulation {
 	
 	private static final double SPACESHIP_ORBITAL_VELOCITY = 1.58;
 	private static final double SPATIAL_STATION_DISTANCE = 1500;
-	private static final double ORBIT_DISTANCE = 20000;
+	private static final double ORBIT_DISTANCE = SPATIAL_STATION_DISTANCE;
 	private static final double SPACESHIP_RADIUS = 0.5;
 	private static final double EPSILON = 0.01;
 	private static final double DAY = 3600 * 24;
