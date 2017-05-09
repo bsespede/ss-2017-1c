@@ -14,7 +14,7 @@ import simulation.particle.Particle;
 public class Simulation {
 	
 	private static final double AREOSTATIC_ORBIT = 17031;
-	private static final double SPACESHIP_ORBITAL_VELOCITY = 7.12;
+	private static final double SPACESHIP_ORBITAL_VELOCITY = 1.58;
 	private static final double SPATIAL_STATION_DISTANCE = 1500;
 	private static final double SPACESHIP_RADIUS = 0.5;
 	private static final double EPSILON = 0.01;
