@@ -144,7 +144,7 @@ public class Simulation {
 		
 		Vector2d orbitVelocity = stationDirection.rotateCounterClockwise(90).scale(SPACESHIP_ORBITAL_VELOCITY);
 		Vector2d spaceshipVelocity = stationDirection.rotateCounterClockwise(angle).scale(V0);
-		spaceshipVelocity = earth.getVelocity().add(spaceshipVelocity).add(orbitVelocity);
+		spaceshipVelocity = from.getVelocity().add(spaceshipVelocity).add(orbitVelocity);
 		
 		Particle spaceship = new Particle(Body.SPACESHIP, spaceshipPosition, spaceshipVelocity, SPACESHIP_RADIUS, 2 * Math.pow(10, 5));
 		calculatePrevious(spaceship, dt);
