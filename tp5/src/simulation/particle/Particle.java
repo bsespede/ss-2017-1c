@@ -1,11 +1,9 @@
 package simulation.particle;
 
 import math.Vector2d;
-import simulation.bodies.Body;
 
-public class Particle {
+public class Particle implements Collisionable {
 
-	private final Body body;
 	private Vector2d position;
     private Vector2d velocity;
     private Vector2d prevPosition;
@@ -13,18 +11,13 @@ public class Particle {
     private final double mass;
     private final double radius;
     
-    public Particle(final Body body, final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
-    	this.body = body;
+    public Particle(final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
     	this.position = position;
 		this.velocity = velocity;
 		this.prevPosition = null;
 		this.prevVelocity = null;
 		this.radius = radius;
 		this.mass = mass;
-	}
-    
-    public Body getBody() {
-		return body;
 	}
 
 	public Vector2d getPosition() {
@@ -70,16 +63,12 @@ public class Particle {
     public double getKineticEnergy(){    	
 		return 0.5 * mass * (velocity.x * velocity.x + velocity.y * velocity.y);
 	}
-	
-	public double getPotentialEnergy(double G, double sunMass){
-		return (-G) * sunMass * mass / position.module();
-	}
 
 	public double distance(final Particle p2) {
 		double centerDistance = position.distance(p2.getPosition());
 		return centerDistance - radius - p2.getRadius();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -87,8 +76,9 @@ public class Particle {
 		long temp;
 		temp = Double.doubleToLongBits(mass);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((body == null) ? 0 : body.hashCode());
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		result = prime * result + ((prevPosition == null) ? 0 : prevPosition.hashCode());
+		result = prime * result + ((prevVelocity == null) ? 0 : prevVelocity.hashCode());
 		temp = Double.doubleToLongBits(radius);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((velocity == null) ? 0 : velocity.hashCode());
@@ -104,18 +94,43 @@ public class Particle {
 		if (getClass() != obj.getClass())
 			return false;
 		Particle other = (Particle) obj;
-		if (body == null) {
-			if (other.body != null)
+		if (Double.doubleToLongBits(mass) != Double.doubleToLongBits(other.mass))
+			return false;
+		if (position == null) {
+			if (other.position != null)
 				return false;
-		} else if (!body.equals(other.body))
+		} else if (!position.equals(other.position))
+			return false;
+		if (prevPosition == null) {
+			if (other.prevPosition != null)
+				return false;
+		} else if (!prevPosition.equals(other.prevPosition))
+			return false;
+		if (prevVelocity == null) {
+			if (other.prevVelocity != null)
+				return false;
+		} else if (!prevVelocity.equals(other.prevVelocity))
+			return false;
+		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius))
+			return false;
+		if (velocity == null) {
+			if (other.velocity != null)
+				return false;
+		} else if (!velocity.equals(other.velocity))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Particle [name=" + body + ", position=" + position + ", velocity=" + velocity + ", prevPosition="
-				+ prevPosition + ", prevVelocity=" + prevVelocity + ", mass=" + mass + ", radius=" + radius + "]";
+		return "Particle [position=" + position + ", velocity=" + velocity + ", prevPosition=" + prevPosition
+				+ ", prevVelocity=" + prevVelocity + ", mass=" + mass + ", radius=" + radius + "]";
 	}
+
+	@Override
+	public boolean collides(Collisionable body) {
+		// TODO Auto-generated method stub
+		return false;
+	}	
 	
 }

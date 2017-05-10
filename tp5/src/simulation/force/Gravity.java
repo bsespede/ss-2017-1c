@@ -1,27 +1,13 @@
 package simulation.force;
-
-import java.util.List;
-
 import math.Vector2d;
-import simulation.particle.Particle;
+import simulation.particle.Collisionable;
 
 public class Gravity {
 	
-	public final static double G = 6.67384 * Math.pow(10, -20);
+	public final static double G = 9.81;
 
-	public static Vector2d gravitationalForceBetween(final Particle p1, final Particle p2) {
-		final Vector2d r = p2.getPosition().substract(p1.getPosition());
-		double module = G * p1.getMass() * p2.getMass() / Math.pow(r.module(), 2);
-		return r.normalize().scale(module);
+	public static Vector2d getForce(final Collisionable body) {
+		return new Vector2d(0, G * body.getMass());
 	}
-	
-	public static Vector2d gravitationalForceBetween(final Particle p1, final List<Particle> particles) {	
-		Vector2d sumForces = new Vector2d(0, 0);
-		for (Particle p2: particles) {
-			if (!p1.equals(p2)) {
-				sumForces = sumForces.add(Gravity.gravitationalForceBetween(p1, p2));
-			}
-		}
-		return sumForces;
-	}
+
 }
