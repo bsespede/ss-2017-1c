@@ -1,22 +1,21 @@
 package simulation.force;
 
 import java.util.List;
-
 import math.Vector2d;
 import simulation.particle.Particle;
-import simulation.particle.Walls;
+import simulation.silo.Silo;
 
 public class Force {
 
-	public static Vector2d getTotalForce(final Particle p1, final List<Particle> particles, final Walls walls) {
-		Vector2d totalForce = Gravity.getForce(p1);
-		for (Particle p2: particles) {
-			if (p1.collides(p2)) {
-				totalForce = totalForce.add(Elastic.getForce(p1, p2));
+	public static Vector2d getTotalForce(final Particle particle, final List<Particle> particles, final Silo silo) {
+		Vector2d totalForce = Gravity.getForce(particle);
+		for (Particle otherParticle: particles) {
+			if (particle.collides(otherParticle)) {
+				totalForce = totalForce.add(Elastic.getForce(particle, otherParticle));
 			}
 		}
-		if (p1.collides(walls)) {
-			totalForce = totalForce.add(Elastic.getForce(p1, walls));	
+		if (silo.collides(particle)) {
+			totalForce = totalForce.add(Elastic.getForce(particle, silo));
 		}
 		return totalForce;
 	}

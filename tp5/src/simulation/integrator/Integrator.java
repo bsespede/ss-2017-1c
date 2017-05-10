@@ -3,10 +3,10 @@ package simulation.integrator;
 import java.util.List;
 
 import simulation.particle.Particle;
-import simulation.particle.Walls;
+import simulation.silo.Silo;
 
 public interface Integrator {
 
-	public void move(final Particle particle, final List<Particle> particles, final Walls walls, final double dt);
+	public void move(final Particle particle, List<Particle> particles, final Silo silo, final double dt);
 
 }

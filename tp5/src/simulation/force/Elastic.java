@@ -1,11 +1,17 @@
 package simulation.force;
 
 import math.Vector2d;
-import simulation.particle.Collisionable;
+import simulation.particle.Particle;
+import simulation.silo.Silo;
 
 public class Elastic {
 
-	public static Vector2d getForce(final Collisionable body1, final Collisionable body2) {
+	public static Vector2d getForce(final Particle particle, final Particle otherParticle) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static Vector2d getForce(final Particle particle, final Silo silo) {
 		// TODO Auto-generated method stub
 		return null;
 	}

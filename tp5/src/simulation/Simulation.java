@@ -8,46 +8,55 @@ import math.Vector2d;
 import simulation.force.Gravity;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
-import simulation.particle.Walls;
+import simulation.silo.Silo;
 
 public class Simulation {
 	
 	private static final double EPSILON = 0.01;
 
+	private final List<Particle> particles;
 	private final String resultPath;
 	private final Integrator integrator;
 	private final double dt;
 	private final double dt2;
 	private final double maxTime;
-	private final Walls walls;
+	private final Silo silo;
 	
-	private final List<Particle> particles;
-	
-	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double L, final double W, final double D, final double maxRandGenTime) {
+	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double L, final double W, final double D, final int N, final double maxRandGenTime) {
 		this.resultPath = resultPath;
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
 		this.maxTime = maxTime;
-		this.walls = new Walls(L, W, D);
+		this.silo = new Silo(L, W, D);
+		silo.generateParticles(N, maxRandGenTime);
 		this.particles = new LinkedList<Particle>();
-		particles.addAll(walls.generateParticles(maxRandGenTime));
+		particles.addAll(silo.generateParticles(N, maxRandGenTime));
 		calculatePrevious(particles, dt);
 	}
 
 	public Result simulate() {
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
-			if (resultPath != null &&time % dt2 < EPSILON) {
-				generateOutput(time);
+			checkParticles();
+			if (resultPath != null && time % dt2 < EPSILON) {
+				generateParticlesOutput(time);
 			}
 		}
 		return null;
 	}
 	
+	private void checkParticles() {
+		for (Particle particle: particles) {
+			if (!silo.containsParticle(particle)) {
+				silo.resetParticle(particle);
+			}
+		}
+	}
+
 	public void move(final Integrator integrator, final double dt) {
 		for (Particle particle : particles) {
-			integrator.move(particle, particles, walls, dt);
+			integrator.move(particle, particles, silo, dt);
 		}
 	}
 	
@@ -68,8 +77,8 @@ public class Simulation {
 		particle.setPrevVelocity(prevVelocity);
 	}
 
-	public void generateOutput(double time) {
-		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", (double) time, particles);
+	public void generateParticlesOutput(double time) {
+		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", particles, silo);
 	}
 	
 }

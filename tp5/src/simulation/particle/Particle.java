@@ -2,7 +2,7 @@ package simulation.particle;
 
 import math.Vector2d;
 
-public class Particle implements Collisionable {
+public class Particle {
 
 	private Vector2d position;
     private Vector2d velocity;
@@ -36,19 +36,19 @@ public class Particle implements Collisionable {
 		return prevVelocity;
 	}
 
-	public void setPosition(Vector2d position) {
+	public void setPosition(final Vector2d position) {
 		this.position = position;
 	}
 
-	public void setVelocity(Vector2d velocity) {
+	public void setVelocity(final Vector2d velocity) {
 		this.velocity = velocity;
 	}
 
-	public void setPrevPosition(Vector2d prevPosition) {
+	public void setPrevPosition(final Vector2d prevPosition) {
 		this.prevPosition = prevPosition;
 	}
 
-	public void setPrevVelocity(Vector2d prevVelocity) {
+	public void setPrevVelocity(final Vector2d prevVelocity) {
 		this.prevVelocity = prevVelocity;
 	}
 
@@ -127,8 +127,7 @@ public class Particle implements Collisionable {
 				+ ", prevVelocity=" + prevVelocity + ", mass=" + mass + ", radius=" + radius + "]";
 	}
 
-	@Override
-	public boolean collides(Collisionable body) {
+	public boolean collides(final Particle particle) {
 		// TODO Auto-generated method stub
 		return false;
 	}	
