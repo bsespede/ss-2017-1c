@@ -22,10 +22,10 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulations");
 		final OutputWriter writer = new OutputWriter("../results.dat");
-		for (int v = 20; v <= 25; v += 5) {
+		for (int v = 3; v <= 13; v += 5) {
 			for (int angle = 0; angle < 360; angle += 45) {
 				System.out.println("[INFO] Launching simulations for VELOCITY " + v + " and ANGLE " + angle);
-				for (int i = 518; i < MAX_LAUNCH_TIME / LAUNCH_FREQUENCY; i++) {
+				for (int i = 0; i < MAX_LAUNCH_TIME / LAUNCH_FREQUENCY; i++) {
 					System.out.println("[INFO] Launching simulation [" + i + "/" + (int)(MAX_LAUNCH_TIME / LAUNCH_FREQUENCY) + "]");
 					final String particlesOutputPath = "../output/velocidad-" + v + "/angulo-" + angle + "/dia-" + i;
 					final Simulation simulation = new Simulation(null, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_LAUNCH_TIME, MAX_FLIGHT_TIME, angle, i * LAUNCH_FREQUENCY, v, FROM_EARTH_TO_MARS);    
