@@ -128,8 +128,11 @@ public class Particle {
 	}
 
 	public boolean collides(final Particle particle) {
-		// TODO Auto-generated method stub
-		return false;
+		if (distance(particle) < 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}	
 	
 }

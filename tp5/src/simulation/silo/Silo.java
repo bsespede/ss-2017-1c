@@ -24,13 +24,17 @@ public class Silo {
 	}
 
 	public boolean collides(final Particle particle) {
-		// TODO Auto-generated method stub
-		return false;
+		final boolean atHole = isHole(particle.getPosition());
+		if (!atHole && (intersectsBottom() || intersectsLeft() || intersectsRight()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public boolean containsParticle(Particle particle) {
-		// TODO Auto-generated method stub
-		return false;
+	// El 0,0 esta arriba a la izq
+	public boolean escapedSilo(Particle particle) {
+		return particle.getPosition().y > L + D;
 	}
 
 	public void resetParticle(Particle particle) {
