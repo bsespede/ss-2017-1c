@@ -7,6 +7,6 @@ import simulation.silo.Silo;
 
 public interface Integrator {
 
-	public void move(final Particle particle, List<Particle> particles, final Silo silo, final double dt);
+	void move(final Particle particle, List<Particle> particles, final Silo silo, final double dt);
 
 }

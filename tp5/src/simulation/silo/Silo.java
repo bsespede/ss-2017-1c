@@ -25,11 +25,20 @@ public class Silo {
 
 	public boolean collides(final Particle particle) {
 		final boolean atHole = isHole(particle.getPosition());
-		if (!atHole && (intersectsBottom() || intersectsLeft() || intersectsRight()) {
-			return true;
-		} else {
-			return false;
-		}
+        return !atHole && (intersectsBottom(particle) || intersectsLeft(particle) || intersectsRight(particle));
+	}
+
+    private boolean intersectsRight(Particle particle) {
+        return particle.getPosition().x + particle.getRadius() > W;
+	}
+
+    private boolean intersectsLeft(Particle particle) {
+        return particle.getPosition().x - particle.getRadius() < 0;
+	}
+
+	//TODO Review
+    private boolean intersectsBottom(Particle particle) {
+        return particle.getPosition().y + particle.getRadius() > L;
 	}
 
 	// El 0,0 esta arriba a la izq
@@ -53,12 +62,8 @@ public class Silo {
 	public boolean isHole(final Vector2d position) {
 		final double holeFrom = W / 2 - D / 2;
 		final double holeTo = W /2 + D / 2;
-		
-		if (position.x >= holeFrom && position.x <= holeTo && Math.abs(position.y - L) < EPSILON) {
-			return true;
-		} else {
-			return false;
-		}
+
+        return position.x >= holeFrom && position.x <= holeTo && Math.abs(position.y - L) < EPSILON;
 	}
 
 }

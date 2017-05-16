@@ -128,11 +128,7 @@ public class Particle {
 	}
 
 	public boolean collides(final Particle particle) {
-		if (distance(particle) < 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return distance(particle) < 0;
 	}	
 	
 }

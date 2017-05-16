@@ -7,7 +7,7 @@ public class Gravity {
 	public final static double G = 9.81;
 
 	public static Vector2d getForce(final Particle particle) {
-		return new Vector2d(0, -G * particle.getMass());
+		return new Vector2d(0, G * particle.getMass());
 	}
 
 }

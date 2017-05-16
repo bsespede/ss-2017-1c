@@ -45,7 +45,7 @@ public class Simulation {
 		}
 		return null;
 	}
-	
+
 	private void checkParticles() {
 		for (Particle particle: particles) {
 			if (!silo.escapedSilo(particle)) {

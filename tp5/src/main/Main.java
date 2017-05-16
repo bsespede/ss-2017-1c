@@ -11,6 +11,8 @@ public class Main {
 	private final static double L = 3;
 	private final static double W = 2;
 	private final static double D = 1;
+	public final static double kn = 1E5;
+	public final static double kt = 2 * kn;
 	
 	private final static double MAX_RAND_GEN_TIME = 30;
 
