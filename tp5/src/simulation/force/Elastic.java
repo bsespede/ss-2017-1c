@@ -15,10 +15,30 @@ public class Elastic {
 
 	public static Vector2d getForce(final Particle particle, final Silo silo) {
 		Vector2d intersectionPoint = silo.getIntersectionPoint(particle);
+		double fX = 0;
+		double fY = 0;
+		Particle otherParticle;
 		if (intersectionPoint != null){
-
+			//left wall
+			if(intersectionPoint.x == 0){
+				otherParticle = new Particle(new Vector2d(-particle.getRadius(), intersectionPoint.y), new Vector2d(0,0), particle.getRadius(), particle.getMass());
+			}
+			//right wall
+			if(intersectionPoint.x == silo.getWidth()){
+				otherParticle = new Particle(new Vector2d(particle.getRadius() + silo.getWidth(), intersectionPoint.y), new Vector2d(0,0), particle.getRadius(), particle.getMass());
+			}
+			//bottom wall
+			if(intersectionPoint.y == silo.getHeight()){
+				otherParticle = new Particle(new Vector2d(intersectionPoint.x, silo.getHeight() + particle.getRadius()), new Vector2d(0,0), particle.getRadius(), particle.getMass());
+			}
+			//end wall
+			else{
+				otherParticle = new Particle(new Vector2d(intersectionPoint.x, silo.getHeight() + Main.BOTTOM_DISTANCE + particle.getRadius()), new Vector2d(0,0), particle.getRadius(), particle.getMass());
+			}
+			fX = getNf(particle, otherParticle) * getEnx(particle, otherParticle) + getTf(particle, otherParticle) * (-(getEny(particle, otherParticle)));
+			fY = getNf(particle, otherParticle) * getEny(particle, otherParticle) + getTf(particle, otherParticle) * getEnx(particle, otherParticle);
 		}
-		return new Vector2d(0,0);
+		return new Vector2d(fX,fY);
 	}
 
 	private static double getEny(Particle p, Particle particle) {

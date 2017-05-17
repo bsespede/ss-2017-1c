@@ -8,8 +8,8 @@ import simulation.integrator.Integrator;
 public class Main {
 
 	private final static int N = 50;
-	private final static double L = 3;
-	private final static double W = 2;
+	public final static double L = 3;
+	public final static double W = 2;
 	private final static double D = 1;
 	public final static double kn = 1E5;
 	public final static double kt = 2 * kn;

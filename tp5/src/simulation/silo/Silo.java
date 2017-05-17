@@ -1,5 +1,6 @@
 package simulation.silo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import main.Main;
@@ -20,8 +21,9 @@ public class Silo {
 	}
 
 	public List<Particle> generateParticles(final int N, final double maxRandGenTime) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Particle> particles = new ArrayList<>();
+		particles.add(new Particle(new Vector2d(W/2,L), new Vector2d(0,0), 0.5, 1));
+		return particles;
 	}
 
 	public Vector2d getIntersectionPoint(final Particle particle) {
@@ -31,23 +33,26 @@ public class Silo {
 		Vector2d intersectionPoint;
 
 		//checks right intersection
-        intersectionPoint = distanceLinePoint(x, y , W, 0, ((W - D) / 2) + D, L);
+        intersectionPoint = distanceLinePoint(x, y , W, 0, W, L);
         if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
 		//checks left intersection
-		intersectionPoint = distanceLinePoint(x, y , 0 , 0, (W - D) / 2, L);
+		intersectionPoint = distanceLinePoint(x, y , 0 , 0, 0, L);
 		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
-		//checks bottom intersection
+		//checks bottom left intersection
+		intersectionPoint = distanceLinePoint(x, y , 0 , L, (W - D) / 2, L);
+		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
+
+		//checks bottom right intersection
+		intersectionPoint = distanceLinePoint(x, y , 0 , L, ((W - D) / 2) + D, L);
+		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
+
+		//checks end intersection
 		intersectionPoint = distanceLinePoint(x, y , -W , L + Main.BOTTOM_DISTANCE,  W * 2, L + Main.BOTTOM_DISTANCE);
 		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
 		return null;
-	}
-
-	//TODO Review
-    private boolean intersectsBottom(Particle particle) {
-        return particle.getPosition().y + particle.getRadius() > L + Main.BOTTOM_DISTANCE;
 	}
 
 	// El 0,0 esta arriba a la izq

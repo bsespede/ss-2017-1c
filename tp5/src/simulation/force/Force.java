@@ -14,9 +14,7 @@ public class Force {
 				totalForce = totalForce.add(Elastic.getForce(particle, otherParticle));
 			}
 		}
-		if (silo.getIntersectionPoint(particle)) {
-			totalForce = totalForce.add(Elastic.getForce(particle, silo));
-		}
+		totalForce = totalForce.add(Elastic.getForce(particle, silo));
 		return totalForce;
 	}
 	
