@@ -20,6 +20,7 @@ public class Main {
 	private final static double INTERVAL = 0.01;
 	private final static double INTERVAL_OUTPUT = 100;
 	private final static Integrator INTEGRATOR = new BeemanIntegrator();
+	public static final double BOTTOM_DISTANCE = L;
 
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulation");

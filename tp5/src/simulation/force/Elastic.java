@@ -14,8 +14,11 @@ public class Elastic {
 	}
 
 	public static Vector2d getForce(final Particle particle, final Silo silo) {
-		// TODO Auto-generated method stub
-		return null;
+		Vector2d intersectionPoint = silo.getIntersectionPoint(particle);
+		if (intersectionPoint != null){
+
+		}
+		return new Vector2d(0,0);
 	}
 
 	private static double getEny(Particle p, Particle particle) {

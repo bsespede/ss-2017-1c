@@ -2,6 +2,7 @@ package simulation.silo;
 
 import java.util.List;
 
+import main.Main;
 import math.Vector2d;
 import simulation.particle.Particle;
 
@@ -23,22 +24,30 @@ public class Silo {
 		return null;
 	}
 
-	public boolean collides(final Particle particle) {
-		final boolean atHole = isHole(particle.getPosition());
-        return !atHole && (intersectsBottom(particle) || intersectsLeft(particle) || intersectsRight(particle));
-	}
+	public Vector2d getIntersectionPoint(final Particle particle) {
+//		if(isHole(particle.getPosition())) return null;
+		double x = particle.getPosition().x;
+		double y = particle.getPosition().y;
+		Vector2d intersectionPoint;
 
-    private boolean intersectsRight(Particle particle) {
-        return particle.getPosition().x + particle.getRadius() > W;
-	}
+		//checks right intersection
+        intersectionPoint = distanceLinePoint(x, y , W, 0, ((W - D) / 2) + D, L);
+        if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
-    private boolean intersectsLeft(Particle particle) {
-        return particle.getPosition().x - particle.getRadius() < 0;
+		//checks left intersection
+		intersectionPoint = distanceLinePoint(x, y , 0 , 0, (W - D) / 2, L);
+		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
+
+		//checks bottom intersection
+		intersectionPoint = distanceLinePoint(x, y , -W , L + Main.BOTTOM_DISTANCE,  W * 2, L + Main.BOTTOM_DISTANCE);
+		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
+
+		return null;
 	}
 
 	//TODO Review
     private boolean intersectsBottom(Particle particle) {
-        return particle.getPosition().y + particle.getRadius() > L;
+        return particle.getPosition().y + particle.getRadius() > L + Main.BOTTOM_DISTANCE;
 	}
 
 	// El 0,0 esta arriba a la izq
@@ -66,4 +75,35 @@ public class Silo {
         return position.x >= holeFrom && position.x <= holeTo && Math.abs(position.y - L) < EPSILON;
 	}
 
+	//returns the line's point which is at minimum distance from the sphere's center
+	public Vector2d distanceLinePoint(double x,double y,double x1,double y1,double x2,double y2) {
+
+		double a = x - x1;
+		double b = y - y1;
+		double c = x2 - x1;
+		double d = y2 - y1;
+
+		double dot = a * c + b * d;
+		double lenSq = c * c + d * d;
+		double param = -1;
+		if (lenSq != 0) //in case of 0 length line
+			param = dot / lenSq;
+
+		double xx, yy;
+
+		if (param < 0) {
+			xx = x1;
+			yy = y1;
+		}
+		else if (param > 1) {
+			xx = x2;
+			yy = y2;
+		}
+		else {
+			xx = x1 + param * c;
+			yy = y1 + param * d;
+		}
+
+		return new Vector2d(xx, yy);
+	}
 }
