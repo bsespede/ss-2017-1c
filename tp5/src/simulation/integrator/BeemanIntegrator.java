@@ -14,7 +14,7 @@ public class BeemanIntegrator implements Integrator {
 		final Vector2d totalForce = Force.getTotalForce(particle, particles, silo);
         final Vector2d acceleration = totalForce.scale(1.0 / particle.getMass());
         
-        final Particle previous = new Particle(particle.getPrevPosition(), particle.getPrevVelocity(), particle.getRadius(), particle.getMass());
+        final Particle previous = new Particle(particle.getPrevPosition(), particle.getPrevVelocity(), particle.getRadius(), particle.getMass(), 0);
         final Vector2d prevAcceleration = Force.getTotalForce(previous, particles, silo).scale(1.0 / particle.getMass());
 
         final Vector2d nextPosition = particle.getPosition().add(particle.getVelocity().scale(dt)).add(acceleration.scale((2.0 / 3.0) * Math.pow(dt, 2))).substract(prevAcceleration.scale((1.0 / 6.0) * Math.pow(dt, 2)));

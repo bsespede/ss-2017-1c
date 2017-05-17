@@ -4,6 +4,7 @@ import math.Vector2d;
 
 public class Particle {
 
+	private int id;
 	private Vector2d position;
     private Vector2d velocity;
     private Vector2d prevPosition;
@@ -11,13 +12,14 @@ public class Particle {
     private final double mass;
     private final double radius;
     
-    public Particle(final Vector2d position, final Vector2d velocity, final double radius, final double mass) {
+    public Particle(final Vector2d position, final Vector2d velocity, final double radius, final double mass, int id) {
     	this.position = position;
 		this.velocity = velocity;
 		this.prevPosition = null;
 		this.prevVelocity = null;
 		this.radius = radius;
 		this.mass = mass;
+		this.id = id;
 	}
 
 	public Vector2d getPosition() {
@@ -129,6 +131,9 @@ public class Particle {
 
 	public boolean collides(final Particle particle) {
 		return distance(particle) < 0;
-	}	
-	
+	}
+
+	public int getId() {
+		return id;
+	}
 }

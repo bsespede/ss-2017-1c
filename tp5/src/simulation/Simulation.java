@@ -3,6 +3,7 @@ package simulation;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.FileProcessor;
 import io.OutputWriter;
 import math.Vector2d;
 import simulation.force.Gravity;
@@ -36,11 +37,15 @@ public class Simulation {
 	}
 
 	public Result simulate() {
+		FileProcessor.writeOutputParticlesFile(particles, "./output");
+		FileProcessor.printBorders(0, "./output");
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
-			checkParticles();
+//			checkParticles();
 			if (resultPath != null && time % dt2 < EPSILON) {
-				generateParticlesOutput(time);
+//				generateParticlesOutput(time);
+				FileProcessor.writeOutputParticlesFile(particles, "./output");
+				FileProcessor.printBorders(0, "./output");
 			}
 		}
 		return null;

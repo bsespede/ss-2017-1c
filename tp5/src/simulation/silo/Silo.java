@@ -22,7 +22,7 @@ public class Silo {
 
 	public List<Particle> generateParticles(final int N, final double maxRandGenTime) {
 		List<Particle> particles = new ArrayList<>();
-		particles.add(new Particle(new Vector2d(W/2,L), new Vector2d(0,0), 0.5, 1));
+		particles.add(new Particle(new Vector2d(W/2,0), new Vector2d(0,0), 0.5, 1, 0));
 		return particles;
 	}
 
