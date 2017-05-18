@@ -24,16 +24,16 @@ public class Elastic {
 				otherParticle = new Particle(new Vector2d(-particle.getRadius(), intersectionPoint.y), new Vector2d(0,0), particle.getRadius(), particle.getMass(), -1);
 			}
 			//right wall
-			if(intersectionPoint.x == silo.getWidth()){
+			else if(intersectionPoint.x == silo.getWidth()){
 				otherParticle = new Particle(new Vector2d(particle.getRadius() + silo.getWidth(), intersectionPoint.y), new Vector2d(0,0), particle.getRadius(), particle.getMass(), -1);
 			}
 			//bottom wall
-			if(intersectionPoint.y == silo.getHeight()){
+			else if(intersectionPoint.y == silo.getHeight()){
 				otherParticle = new Particle(new Vector2d(intersectionPoint.x, silo.getHeight() + particle.getRadius()), new Vector2d(0,0), particle.getRadius(), particle.getMass(), -1);
 			}
 			//end wall
 			else{
-				otherParticle = new Particle(new Vector2d(intersectionPoint.x, silo.getHeight() + Main.BOTTOM_DISTANCE + particle.getRadius()), new Vector2d(0,0), particle.getRadius(), particle.getMass(), -1);
+				otherParticle = new Particle(new Vector2d(intersectionPoint.x, silo.getHeight() + Main.BOTTOM_DISTANCE + particle.getRadius()), new Vector2d(0,0), particle.getRadius(), Double.MAX_VALUE, -1);
 			}
 			fX = getNf(particle, otherParticle) * getEnx(particle, otherParticle) + getTf(particle, otherParticle) * (-(getEny(particle, otherParticle)));
 			fY = getNf(particle, otherParticle) * getEny(particle, otherParticle) + getTf(particle, otherParticle) * getEnx(particle, otherParticle);
@@ -42,11 +42,11 @@ public class Elastic {
 	}
 
 	private static double getEny(Particle p, Particle particle) {
-		return (particle.getPosition().x - p.getPosition().y) / getDist(particle.getPosition().x, particle.getPosition().y, p.getPosition().x, p.getPosition().y);
+		return (particle.getPosition().y - p.getPosition().y) / particle.getPosition().distance(p.getPosition());
 	}
 
 	private static double getEnx(Particle p, Particle particle) {
-		return (particle.getPosition().x - p.getPosition().x) / getDist(particle.getPosition().x, particle.getPosition().y, p.getPosition().x, p.getPosition().y);
+		return (particle.getPosition().x - p.getPosition().x) / particle.getPosition().distance(p.getPosition());
 	}
 	private static double getTf(Particle p, Particle other) {
 		return -Main.kt * getEps(p, other) * (((p.getVelocity().x - other.getVelocity().x) * (-getEny(p, other)))

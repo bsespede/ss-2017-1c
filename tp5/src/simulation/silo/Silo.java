@@ -22,7 +22,7 @@ public class Silo {
 
 	public List<Particle> generateParticles(final int N, final double maxRandGenTime) {
 		List<Particle> particles = new ArrayList<>();
-		particles.add(new Particle(new Vector2d(W/2,0), new Vector2d(0,0), 0.5, 1, 0));
+		particles.add(new Particle(new Vector2d(W/2,0), new Vector2d(1,0), 0.05, 0.01, 0));
 		return particles;
 	}
 
@@ -45,7 +45,7 @@ public class Silo {
 		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
 		//checks bottom right intersection
-		intersectionPoint = distanceLinePoint(x, y , 0 , L, ((W - D) / 2) + D, L);
+		intersectionPoint = distanceLinePoint(x, y , ((W - D) / 2) + D , L, W, L);
 		if(intersectionPoint != null && intersectionPoint.distance(particle.getPosition()) <= particle.getRadius()) return intersectionPoint;
 
 		//checks end intersection

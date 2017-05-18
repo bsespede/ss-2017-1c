@@ -13,7 +13,7 @@ import simulation.silo.Silo;
 
 public class Simulation {
 	
-	private static final double EPSILON = 0.01;
+	private static final double EPSILON = 0.0001;
 
 	private final List<Particle> particles;
 	private final String resultPath;
@@ -37,15 +37,16 @@ public class Simulation {
 	}
 
 	public Result simulate() {
-		FileProcessor.writeOutputParticlesFile(particles, "./output");
-		FileProcessor.printBorders(0, "./output");
+//		FileProcessor.writeOutputParticlesFile(particles, "./output");
+//		FileProcessor.printBorders(0, "./output");
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
 //			checkParticles();
-			if (resultPath != null && time % dt2 < EPSILON) {
+			if (time % dt2 < EPSILON) {
 //				generateParticlesOutput(time);
-				FileProcessor.writeOutputParticlesFile(particles, "./output");
-				FileProcessor.printBorders(0, "./output");
+				System.out.println("time elapsed: " + time);
+//				FileProcessor.writeOutputParticlesFile(particles, "./output");
+//				FileProcessor.printBorders(0, "./output");
 			}
 		}
 		return null;

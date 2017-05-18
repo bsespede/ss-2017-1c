@@ -9,11 +9,11 @@ public class Force {
 
 	public static Vector2d getTotalForce(final Particle particle, final List<Particle> particles, final Silo silo) {
 		Vector2d totalForce = Gravity.getForce(particle);
-		for (Particle otherParticle: particles) {
-			if (particle.collides(otherParticle) && !particle.equals(otherParticle)) {
-				totalForce = totalForce.add(Elastic.getForce(particle, otherParticle));
-			}
-		}
+//		for (Particle otherParticle: particles) {
+//			if (particle.collides(otherParticle) && !particle.equals(otherParticle)) {
+//				totalForce = totalForce.add(Elastic.getForce(particle, otherParticle));
+//			}
+//		}
 		totalForce = totalForce.add(Elastic.getForce(particle, silo));
 		return totalForce;
 	}

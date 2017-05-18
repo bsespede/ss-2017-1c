@@ -71,13 +71,13 @@ public class FileProcessor {
                 e.printStackTrace();
             }
             try{
-                writeBorder(0, 0 , 0.1, w, 255, 255, 255);
-                writeBorder(Main.W, 0, 0.1, w, 255, 255, 255);
-                writeBorder((Main.W - Main.D)/2, Main.L , 0.1, w, 255, 255, 255);
-                writeBorder((Main.W - Main.D)/2 + Main.D, Main.L, 0.1, w, 255, 255, 255);
-                writeBorder(0, Main.L, 0.1, w, 255, 255, 255);
-                writeBorder(Main.W, Main.L, 0.1, w, 255, 255, 255);
-                writeBorder(Main.W / 2, Main.L + Main.BOTTOM_DISTANCE, 0.1, w, 255, 255, 255);
+                writeBorder(0, 0 , 0.01, w, 255, 255, 255);
+                writeBorder(Main.W, 0, 0.01, w, 255, 255, 255);
+                writeBorder((Main.W - Main.D)/2, Main.L , 0.01, w, 255, 255, 255);
+                writeBorder((Main.W - Main.D)/2 + Main.D, Main.L, 0.01, w, 255, 255, 255);
+                writeBorder(0, Main.L, 0.01, w, 255, 255, 255);
+                writeBorder(Main.W, Main.L, 0.01, w, 255, 255, 255);
+                writeBorder(Main.W / 2, Main.L + Main.BOTTOM_DISTANCE, 0.01, w, 255, 255, 255);
 
             }
             catch (IOException e){
