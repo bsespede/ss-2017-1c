@@ -2,7 +2,7 @@ package simulation.force;
 
 import math.Vector2d;
 import simulation.particle.Particle;
-import terrain.Walls;
+import terrain.Wall;
 
 public class Granular {
 
@@ -11,7 +11,7 @@ public class Granular {
 		return null;
 	}
 
-	public static Vector2d getForce(Particle particle, Walls walls) {
+	public static Vector2d getForce(Particle particle, Wall walls) {
 		// TODO Auto-generated method stub
 		return null;
 	}

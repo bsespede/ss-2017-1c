@@ -8,31 +8,35 @@ import math.Vector2d;
 import simulation.force.Force;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
-import terrain.Walls;
+import terrain.Terrain;
 
 public class Simulation {
 	
 	private static final double EPSILON = 0.0001;
-	
+	private static final double L = 20;
+	private static final double W = 20;
+	private static final double D = 1.2;	
+	private static final double MIN_DRIVING_SPEED = 0.8;
+	private static final double MAX_DRIVING_SPEED = 6;
 	private static final double MIN_DIAMETER = 0.5;
-	private static final double MAX_DIAMETER = 0.7;
+	private static final double MAX_DIAMETER = 0.58;
 	private static final double MASS = 80;
-
+	
+	private final Terrain terrain;
 	private final List<Particle> particles;
 	private final String resultPath;
 	private final Integrator integrator;
 	private final double dt;
 	private final double dt2;
 	private final double maxTime;
-	private final Walls walls;
 	
-	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final double L, final double W, final double D, final int N) {
+	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
 		this.resultPath = resultPath;
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
 		this.maxTime = maxTime;
-		this.walls = new Walls(L, W, D);
+		this.terrain = new Terrain(L, W, D);
 		this.particles = generateParticles(L, W, N);
 		calculatePrevious(particles, dt);
 	}
@@ -40,11 +44,12 @@ public class Simulation {
 	private List<Particle> generateParticles(double L, double W, int N) {
 		List<Particle> particles = new ArrayList<Particle>(N);
 		while (particles.size() < N) {
+			final double desiredVelocity = Math.random() * (MAX_DRIVING_SPEED - MIN_DRIVING_SPEED) + MIN_DRIVING_SPEED;
 			final double particleRadius = (Math.random() * (MAX_DIAMETER - MIN_DIAMETER) + MIN_DIAMETER) / 2;
 			final double particleX = Math.random() * (W - 2 * particleRadius) + particleRadius;
 			final double particleY = Math.random() * (L - 2 * particleRadius) + particleRadius;
 			final Vector2d position = new Vector2d(particleX, particleY);
-			final Particle newParticle = new Particle(position, null, particleRadius, MASS, particles.size());
+			final Particle newParticle = new Particle(particles.size(), position, null, desiredVelocity, MASS, particleRadius);
 			
 			boolean collidedAnotherParticle = false;
 			for (Particle particle: particles) {
@@ -75,7 +80,7 @@ public class Simulation {
 
 	public void move(final Integrator integrator, final double dt) {
 		for (Particle particle : particles) {
-			integrator.move(particle, particles, walls, dt);
+			integrator.move(particle, particles, terrain, dt);
 		}
 	}
 	
@@ -86,7 +91,7 @@ public class Simulation {
 	}
 	
 	private void calculatePrevious(final Particle particle, final double dt) {
-		final Vector2d force = Force.getTotalForce(particle, particles, walls);
+		final Vector2d force = Force.getTotalForce(particle, particles, terrain);
 		final Vector2d acceleration = force.scale(1.0 / particle.getMass());
 
 		final Vector2d prevPosition = particle.getPosition().substract(particle.getVelocity().scale(dt)).add(acceleration.scale(Math.pow(dt, 2) / 2));
@@ -95,9 +100,9 @@ public class Simulation {
 		particle.setPrevPosition(prevPosition);
 		particle.setPrevVelocity(prevVelocity);
 	}
-
+	
 	public void generateParticlesOutput(double time) {
-		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", particles, walls);
+		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", particles, terrain);
 	}
 	
 }

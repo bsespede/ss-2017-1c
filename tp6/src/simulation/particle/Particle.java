@@ -9,17 +9,19 @@ public class Particle {
     private Vector2d velocity;
     private Vector2d prevPosition;
     private Vector2d prevVelocity;
+    private final double desiredVelocity;
     private final double mass;
     private final double radius;
     
-    public Particle(final Vector2d position, final Vector2d velocity, final double radius, final double mass, int id) {
+    public Particle(int id, final Vector2d position, final Vector2d velocity, final double desiredVelocity, final double mass, final double radius) {
+    	this.id = id;
     	this.position = position;
 		this.velocity = velocity;
 		this.prevPosition = null;
 		this.prevVelocity = null;
-		this.radius = radius;
+		this.desiredVelocity = desiredVelocity;
 		this.mass = mass;
-		this.id = id;
+		this.radius = radius;
 	}
 
 	public Vector2d getPosition() {
@@ -52,6 +54,10 @@ public class Particle {
 
 	public void setPrevVelocity(final Vector2d prevVelocity) {
 		this.prevVelocity = prevVelocity;
+	}
+
+	public double getDesiredVelocity() {
+		return desiredVelocity;
 	}
 
 	public double getMass() {

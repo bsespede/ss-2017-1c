@@ -22,7 +22,7 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulation");
 		final OutputWriter writer = new OutputWriter("./results.dat");
-		final Simulation simulation = new Simulation("./output", INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, L, W, D, N);
+		final Simulation simulation = new Simulation("./output", INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, N);
 		final Result result = simulation.simulate();
 		writer.writeSimulationResult(result);
 		writer.close();
