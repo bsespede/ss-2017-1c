@@ -30,10 +30,13 @@ public class Wall {
 		return Math.max(p0.y, p1.y);
 	}
 
-	public boolean collides(final Particle particle) {
-		final Vector2d particlePosition = particle.getPosition();
-		final Vector2d intersectionPoint = Collision.distanceLinePoint(particlePosition, p0, p1);
-        return intersectionPoint != null && intersectionPoint.distance(particlePosition) <= particle.getRadius();
+	public Vector2d intersection(final Particle particle) {
+		return Collision.distanceLinePoint(particle.getPosition(), p0, p1);
+	}
+
+	@Override
+	public String toString() {
+		return "Wall [p0=" + p0 + ", p1=" + p1 + "]";
 	}
 	
 }

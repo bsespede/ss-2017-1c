@@ -5,9 +5,13 @@ import simulation.particle.Particle;
 
 public class Driving {
 
-	public static Vector2d getForce(Particle particle) {
-		// TODO Auto-generated method stub
-		return null;
+	private static final double TAU = 0.5;
+	
+	public static Vector2d getForce(final Particle particle, final Vector2d desiredPoint) {
+		final Vector2d drivingdDirection = desiredPoint.substract(particle.getPosition()).normalize();
+		final Vector2d drivingVelocity = drivingdDirection.scale(particle.getDesiredVelocity());
+		final Vector2d drivingForce = drivingVelocity.substract(particle.getVelocity()).scale(1 / TAU);		
+		return drivingForce;
 	}
 
 }

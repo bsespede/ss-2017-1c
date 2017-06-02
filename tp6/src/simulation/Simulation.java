@@ -49,7 +49,7 @@ public class Simulation {
 			final double particleX = Math.random() * (W - 2 * particleRadius) + particleRadius;
 			final double particleY = Math.random() * (L - 2 * particleRadius) + particleRadius;
 			final Vector2d position = new Vector2d(particleX, particleY);
-			final Particle newParticle = new Particle(particles.size(), position, null, desiredVelocity, MASS, particleRadius);
+			final Particle newParticle = new Particle(particles.size(), position, new Vector2d(0, 0), desiredVelocity, MASS, particleRadius);
 			
 			boolean collidedAnotherParticle = false;
 			for (Particle particle: particles) {
@@ -72,6 +72,7 @@ public class Simulation {
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
 			if (time % dt2 < EPSILON) {
+				System.out.println(time * 100 / maxTime + "%");
 				generateParticlesOutput(time);
 			}
 		}

@@ -6,14 +6,12 @@ import java.io.IOException;
 import java.util.List;
 
 import math.Vector2d;
-import simulation.Result;
 import simulation.particle.Particle;
 import terrain.Terrain;
 import terrain.Wall;
 
 public class OutputWriter {
 	
-	private static final int WALL_PARTICLES = 100;
 	private BufferedWriter results;
 	
 	public OutputWriter(final String path) {
@@ -22,15 +20,6 @@ public class OutputWriter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void writeSimulationResult(final Result result){
-		try {
-			//TODO write result output
-			results.write(String.format("%b %.2f %.2f %.2f %.2f %.2f %.2f\n", 1));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
 	}
 	
 	public void close() {
@@ -46,15 +35,14 @@ public class OutputWriter {
 		try {
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 			int count = 1;
+			writer.write(String.format("%d\n\n", particles.size() + 83));
 			for (Wall wall: terrain.getWalls()) {
 				final double minX = wall.getMinX();
 				final double maxX = wall.getMaxX();
 				final double minY = wall.getMinY();
 				final double maxY = wall.getMaxY();
-				final double xStep = (maxX - minX) / WALL_PARTICLES;
-				final double yStep = (maxY - minY) / WALL_PARTICLES;
-				for (double x = minX; x <= maxX; x += xStep) {
-					for (double y = minY; y <= maxY; y += yStep) {
+				for (double x = minX; x <= maxX; x += 0.5) {
+					for (double y = minY; y <= maxY; y += 0.5) {
 						writer.write(formatWall(count++, new Vector2d(x, y)));
 					}
 				}
