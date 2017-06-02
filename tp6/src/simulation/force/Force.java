@@ -13,12 +13,12 @@ public class Force {
 		Vector2d totalForce = Driving.getForce(particle, terrain.getEscapePoint());
 		for (Particle otherParticle: particles) {
 			if (!particle.equals(otherParticle)) {
-				totalForce = totalForce.add(Social.getForce(particle, otherParticle));
+				//totalForce = totalForce.add(Social.getForce(particle, otherParticle));
 				totalForce = totalForce.add(Granular.getForce(particle, otherParticle));
 			}
 		}
 		for (Wall wall: terrain.getWalls()) {
-			totalForce = totalForce.add(Social.getForce(particle, wall));
+			//totalForce = totalForce.add(Social.getForce(particle, wall));
 			totalForce = totalForce.add(Granular.getForce(particle, wall));
 		}
 		return totalForce;

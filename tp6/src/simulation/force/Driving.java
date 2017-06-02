@@ -10,7 +10,7 @@ public class Driving {
 	public static Vector2d getForce(final Particle particle, final Vector2d desiredPoint) {
 		final Vector2d drivingdDirection = desiredPoint.substract(particle.getPosition()).normalize();
 		final Vector2d drivingVelocity = drivingdDirection.scale(particle.getDesiredVelocity());
-		final Vector2d drivingForce = drivingVelocity.substract(particle.getVelocity()).scale(1 / TAU);		
+		final Vector2d drivingForce = drivingVelocity.substract(particle.getVelocity()).scale(particle.getMass() / TAU);		
 		return drivingForce;
 	}
 

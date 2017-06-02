@@ -82,6 +82,9 @@ public class Particle {
 		final int prime = 31;
 		int result = 1;
 		long temp;
+		temp = Double.doubleToLongBits(desiredVelocity);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + id;
 		temp = Double.doubleToLongBits(mass);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
@@ -93,6 +96,8 @@ public class Particle {
 		return result;
 	}
 
+	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -102,29 +107,7 @@ public class Particle {
 		if (getClass() != obj.getClass())
 			return false;
 		Particle other = (Particle) obj;
-		if (Double.doubleToLongBits(mass) != Double.doubleToLongBits(other.mass))
-			return false;
-		if (position == null) {
-			if (other.position != null)
-				return false;
-		} else if (!position.equals(other.position))
-			return false;
-		if (prevPosition == null) {
-			if (other.prevPosition != null)
-				return false;
-		} else if (!prevPosition.equals(other.prevPosition))
-			return false;
-		if (prevVelocity == null) {
-			if (other.prevVelocity != null)
-				return false;
-		} else if (!prevVelocity.equals(other.prevVelocity))
-			return false;
-		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius))
-			return false;
-		if (velocity == null) {
-			if (other.velocity != null)
-				return false;
-		} else if (!velocity.equals(other.velocity))
+		if (id != other.id)
 			return false;
 		return true;
 	}

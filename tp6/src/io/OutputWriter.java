@@ -12,6 +12,7 @@ import terrain.Wall;
 
 public class OutputWriter {
 	
+	private static final int PARTICLES_PER_WALL = 200;
 	private BufferedWriter results;
 	
 	public OutputWriter(final String path) {
@@ -35,21 +36,25 @@ public class OutputWriter {
 		try {
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 			int count = 1;
-			writer.write(String.format("%d\n\n", particles.size() + 83));
+			writer.write(String.format("%d\n\n", particles.size() + PARTICLES_PER_WALL * terrain.getWalls().size()));
+			for (Particle particle : particles) {
+				writer.write(formatParticle(count++, particle));
+			}
 			for (Wall wall: terrain.getWalls()) {
 				final double minX = wall.getMinX();
 				final double maxX = wall.getMaxX();
 				final double minY = wall.getMinY();
 				final double maxY = wall.getMaxY();
-				for (double x = minX; x <= maxX; x += 0.5) {
-					for (double y = minY; y <= maxY; y += 0.5) {
-						writer.write(formatWall(count++, new Vector2d(x, y)));
+				if (maxX - minX == 0) {
+					for (double y = minY; y <= maxY; y += (maxY - minY) / PARTICLES_PER_WALL) {
+						writer.write(formatWall(count++, new Vector2d(minX, y)));
+					}
+				} else {
+					for (double x = minX; x <= maxX; x += (maxX - minX) / PARTICLES_PER_WALL) {
+						writer.write(formatWall(count++, new Vector2d(x, minY)));
 					}
 				}
-			}
-			for (Particle particle : particles) {
-				writer.write(formatParticle(count++, particle));
-			}
+			}			
 			writer.flush();		
 			writer.close();
 		} catch (IOException e) {

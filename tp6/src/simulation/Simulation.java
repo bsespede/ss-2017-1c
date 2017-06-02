@@ -12,12 +12,11 @@ import terrain.Terrain;
 
 public class Simulation {
 	
-	private static final double EPSILON = 0.0001;
+	private static final double EPSILON = 0.00001;
 	private static final double L = 20;
 	private static final double W = 20;
-	private static final double D = 1.2;	
-	private static final double MIN_DRIVING_SPEED = 0.8;
-	private static final double MAX_DRIVING_SPEED = 6;
+	private static final double D = 1.2;
+	private static final double DRIVING_SPEED = 1;
 	private static final double MIN_DIAMETER = 0.5;
 	private static final double MAX_DIAMETER = 0.58;
 	private static final double MASS = 80;
@@ -44,7 +43,7 @@ public class Simulation {
 	private List<Particle> generateParticles(double L, double W, int N) {
 		List<Particle> particles = new ArrayList<Particle>(N);
 		while (particles.size() < N) {
-			final double desiredVelocity = Math.random() * (MAX_DRIVING_SPEED - MIN_DRIVING_SPEED) + MIN_DRIVING_SPEED;
+			final double desiredVelocity = Math.random() * 0.2 * (DRIVING_SPEED) + DRIVING_SPEED * 0.9;
 			final double particleRadius = (Math.random() * (MAX_DIAMETER - MIN_DIAMETER) + MIN_DIAMETER) / 2;
 			final double particleX = Math.random() * (W - 2 * particleRadius) + particleRadius;
 			final double particleY = Math.random() * (L - 2 * particleRadius) + particleRadius;
@@ -69,11 +68,13 @@ public class Simulation {
 	}
 
 	public Result simulate() {
+		int frame = 0;
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
+			
 			if (time % dt2 < EPSILON) {
 				System.out.println(time * 100 / maxTime + "%");
-				generateParticlesOutput(time);
+				generateParticlesOutput(frame++);
 			}
 		}
 		return null;
