@@ -71,7 +71,11 @@ public class Simulation {
 		int frame = 0;
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
-			
+			for (int i = 0; i < particles.size(); i++) {
+				if (terrain.escapedRoom(particles.get(i))) {
+					particles.remove(i);
+				}
+			}
 			if (time % dt2 < EPSILON) {
 				System.out.println(time * 100 / maxTime + "%");
 				generateParticlesOutput(frame++);

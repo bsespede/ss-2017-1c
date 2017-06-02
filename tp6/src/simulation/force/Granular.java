@@ -18,7 +18,7 @@ public class Granular {
 			final Vector2d tangentialDirection = new Vector2d(-normalDirection.y, normalDirection.x);
 			final double deltaVelocity = otherParticle.getVelocity().substract(particle.getVelocity()).dot(tangentialDirection);
 			final Vector2d tangentialForce = tangentialDirection.scale(KT * (totalRadius - distance) * deltaVelocity);			
-			return normalForce.add(tangentialForce);
+			return tangentialForce.add(normalForce);
 		} else {
 			return new Vector2d(0, 0);
 		}
@@ -29,10 +29,10 @@ public class Granular {
 		final double distance = intersectionPoint.distance(particle.getPosition());
 		if (distance < particle.getRadius()) {
 			final Vector2d normalDirection = particle.getPosition().substract(intersectionPoint).normalize();
-			final Vector2d normalForce = normalDirection.scale(KN * (particle.getRadius() - distance));			
+			final Vector2d normalForce = normalDirection.scale(KN * (particle.getRadius() - distance));		
 			final Vector2d tangentialDirection = new Vector2d(-normalDirection.y, normalDirection.x);
 			final double deltaVelocity = particle.getVelocity().dot(tangentialDirection);
-			final Vector2d tangentialForce = tangentialDirection.scale(KT * (particle.getRadius() - distance) * deltaVelocity);			
+			final Vector2d tangentialForce = tangentialDirection.scale(-KT * (particle.getRadius() - distance) * deltaVelocity);		
 			return normalForce.add(tangentialForce);
 		} else {
 			return new Vector2d(0, 0);

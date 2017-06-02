@@ -5,7 +5,7 @@ import simulation.integrator.Integrator;
 
 public class Main {
 
-	private final static int N = 1;
+	private final static int N = 5;
 	private final static double MAX_TIME = 75;
 	private final static double INTERVAL = 0.00001;
 	private final static double INTERVAL_OUTPUT = 0.1;
