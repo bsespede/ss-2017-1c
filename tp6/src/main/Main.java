@@ -1,7 +1,4 @@
 package main;
-import java.util.HashMap;
-import java.util.Map;
-
 import io.ResultWriter;
 import simulation.Result;
 import simulation.Simulation;
@@ -25,11 +22,16 @@ public class Main {
 		}
 		// Ejercicio D
 //		int runId = 0;
-//		final Map<Double, Double> evacTimes = new HashMap<>();
+//		final Map<Double, List<Double>> evacTimes = new HashMap<>();
 //		for (double drivingSpeed = 0.8; drivingSpeed <= 6; drivingSpeed += (6.0 - 0.8) / 10.0) {
-//			final Simulation simulation = new Simulation(runId++, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, N, drivingSpeed);
-//			final Result result = simulation.simulate();
-//			evacTimes.put(drivingSpeed, result.getEvacuationTime());
+//			int times = 10;
+//			final List<Double> evacuationTimeForSpeed = new ArrayList<>(times);
+//			for (int run = 0; run < times; run++) {
+//				final Simulation simulation = new Simulation(runId++, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, N, drivingSpeed);
+//				final Result result = simulation.simulate();
+//				evacuationTimeForSpeed.add(result.getEvacuationTime());
+//			}
+//			evacTimes.put(drivingSpeed, evacuationTimeForSpeed);
 //		}
 //		ResultWriter.writeEvacTimes("../", evacTimes);
 		System.out.println("[INFO] Simulations ended");

@@ -3,6 +3,7 @@ package io;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import simulation.Result;
@@ -26,23 +27,19 @@ public class ResultWriter {
 			}
 			flowWriter.flush();
 			flowWriter.close();
-			
-			BufferedWriter evacuationTimeWriter = new BufferedWriter(new FileWriter(path + "evacuation.dat"));
-			final double evactuationTime = result.getEvacuationTime();
-			evacuationTimeWriter.write(String.format("%.2f\n", evactuationTime));
-			evacuationTimeWriter.flush();
-			evacuationTimeWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void writeEvacTimes(final String path, final Map<Double, Double> evacTimes) {
+	public static void writeEvacTimes(final String path, final Map<Double, List<Double>> evacTimes) {
 		BufferedWriter evacuationTimeWriter;
 		try {
 			evacuationTimeWriter = new BufferedWriter(new FileWriter(path + "total-evacuations.dat"));
-			for (Double time: evacTimes.keySet()) {
-				evacuationTimeWriter.write(String.format("%.2f %.2f\n", time, evacTimes.get(time)));
+			for (Double speed: evacTimes.keySet()) {
+				for (Double evacTime: evacTimes.get(speed)) {
+					evacuationTimeWriter.write(String.format("%.2f %.2f\n", speed, evacTime));
+				}
 			}
 			evacuationTimeWriter.flush();
 			evacuationTimeWriter.close();
