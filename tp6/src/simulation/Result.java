@@ -2,6 +2,8 @@ package simulation;
 
 import java.util.Map;
 
+import io.ResultWriter;
+
 public class Result {
 
 	private final Map<Double, Integer> discharges;
@@ -24,6 +26,10 @@ public class Result {
 
 	public double getEvacuationTime() {
 		return evacuationTime;
+	}
+
+	public void writeResults(final int runId) {
+		ResultWriter.writeResult("../"+ runId +"-", this);
 	}
 	
 }

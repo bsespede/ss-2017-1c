@@ -37,8 +37,8 @@ public class Simulation {
 	private int currentFlow = 0;
 	private double evacuationTime = 0;
 	
-	public Simulation(final String output, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
-		this.writer = new OutputWriter(output);
+	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
+		this.writer = new OutputWriter("../"+ runId +"-result.xyz");
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
@@ -76,7 +76,7 @@ public class Simulation {
 	}
 
 	public Result simulate() {
-		int frame = 0;
+		final int maxParticles = particles.size();
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
 			for (int i = 0; i < particles.size(); i++) {				
@@ -95,8 +95,8 @@ public class Simulation {
 			}
 			if (time % dt2 < EPSILON) {
 				flow.put(time, currentFlow/time);
-				System.out.println(time * 100 / maxTime + "%");
-				generateParticlesOutput(frame++);
+				System.out.println("[INFO] Time:" + time * 100 / maxTime + "% Particles-left:" + particles.size() / maxParticles + "%");
+				generateParticlesOutput();
 			}
 		}
 		writer.close();
@@ -126,7 +126,7 @@ public class Simulation {
 		particle.setPrevVelocity(prevVelocity);
 	}
 	
-	public void generateParticlesOutput(double time) {
+	public void generateParticlesOutput() {
 		writer.writeOutput(particles, terrain);
 	}
 	
