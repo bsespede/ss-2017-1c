@@ -18,7 +18,7 @@ public class Main {
 		for (int runId = 0; runId < 10; runId++) {
 			final Simulation simulation = new Simulation(runId, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, N, 0.8d);
 			final Result result = simulation.simulate();
-			ResultWriter.writeResult("../" + runId++ + "-", result);
+			ResultWriter.writeResult("../" + runId + "-", result);
 		}
 		// Ejercicio D
 //		int runId = 0;
