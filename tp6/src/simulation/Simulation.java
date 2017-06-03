@@ -96,7 +96,7 @@ public class Simulation {
 			}
 			if (time % dt2 < EPSILON) {
 				flow.put(time, currentFlow/time);
-				System.out.println("[INFO] Time:" + time * 100 / maxTime + "% Particles-left:" + particles.size() / maxParticles + "%");
+				System.out.println("[INFO] Time:" + time * 100 / maxTime + "% Particles-left:" + particles.size() * 100 / maxParticles + "%");
 				generateParticlesOutput();
 			}
 		}
