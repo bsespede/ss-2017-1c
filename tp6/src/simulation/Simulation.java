@@ -18,7 +18,6 @@ public class Simulation {
 	private static final double L = 20;
 	private static final double W = 20;
 	private static final double D = 1.2;
-	private static final double DRIVING_SPEED = 0.8;
 	private static final double MIN_DIAMETER = 0.5;
 	private static final double MAX_DIAMETER = 0.58;
 	private static final double MASS = 80;
@@ -30,6 +29,7 @@ public class Simulation {
 	private final double dt;
 	private final double dt2;
 	private final double maxTime;
+	private final double drivingSpeed;
 	
 	private final Map<Double, Integer> discharges = new HashMap<>();
 	private final Map<Double, Double> flow = new HashMap<>();
@@ -37,12 +37,13 @@ public class Simulation {
 	private int currentFlow = 0;
 	private double evacuationTime = 0;
 	
-	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
+	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N, final double drivingSpeed) {
 		this.writer = new OutputWriter("../"+ runId +"-result.xyz");
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
 		this.maxTime = maxTime;
+		this.drivingSpeed = drivingSpeed;
 		this.terrain = new Terrain(L, W, D);
 		this.particles = generateParticles(L, W, N);
 		calculatePrevious(particles, dt);
@@ -51,7 +52,7 @@ public class Simulation {
 	private List<Particle> generateParticles(double L, double W, int N) {
 		List<Particle> particles = new ArrayList<Particle>(N);
 		while (particles.size() < N) {
-			final double desiredVelocity = Math.random() * 0.2 * (DRIVING_SPEED) + DRIVING_SPEED * 0.9;
+			final double desiredVelocity = Math.random() * 0.2 * (drivingSpeed) + drivingSpeed * 0.9;
 			final double particleRadius = (Math.random() * (MAX_DIAMETER - MIN_DIAMETER) + MIN_DIAMETER) / 2;
 			final double particleX = Math.random() * (W - 2 * particleRadius) + particleRadius;
 			final double particleY = Math.random() * (L - 2 * particleRadius) + particleRadius;

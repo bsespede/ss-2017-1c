@@ -1,4 +1,8 @@
 package main;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.ResultWriter;
 import simulation.Result;
 import simulation.Simulation;
 import simulation.integrator.BeemanIntegrator;
@@ -14,10 +18,21 @@ public class Main {
 
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulation");
-		final int runId = 0;
-		final Simulation simulation = new Simulation(runId, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, N);
-		final Result result = simulation.simulate();
-		result.writeResults(runId);
+		// Ejercicio A, B, C
+		for (int runId = 0; runId < 10; runId++) {
+			final Simulation simulation = new Simulation(runId++, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, N, 0.8d);
+			final Result result = simulation.simulate();
+			ResultWriter.writeResult("../" + runId + "-", result);
+		}
+		// Ejercicio D
+		//int runId = 0;
+		//final Map<Double, Double> evacTimes = new HashMap<>();
+		//for (double drivingSpeed = 0.8; drivingSpeed <= 6.0; drivingSpeed += (6.0 - 0.8) / 10.0) {
+		//	final Simulation simulation = new Simulation(runId++, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, MAX_TIME, N, drivingSpeed);
+		//	final Result result = simulation.simulate();
+		//	evacTimes.put(drivingSpeed, result.getEvacuationTime());
+		//}
+		//ResultWriter.writeEvacTimes("../", evacTimes);
 		System.out.println("[INFO] Simulations ended");
 	}
 
