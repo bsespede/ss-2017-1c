@@ -1,0 +1,9 @@
+TODO JULIAN:
+A) varios corridas con driving speed 0.8: cant q salen x tiempo. 5 corridas -> faltar correr e imprimir
+B) promediar curvas -> hacer funcion en Result que promedia en el momento del constructor
+C) caudal x tiempo -> falta imprimir nomas
+D) driving speed entre 0.8 y 6.0 (10 valores) x tiempo total de evac -> tiempo de evac ya esta, falta correr y anotar
+
+TODO BRAULIO:
+ADICONAL) eficiencia del movimiento
+ADICIONAL) energia cinetica 
