@@ -14,7 +14,7 @@ import terrain.Terrain;
 
 public class Simulation {
 	
-	private static final double EPSILON = 0.00001;
+	private static final double EPSILON = 0.001;
 	private static final double L = 20;
 	private static final double W = 20;
 	private static final double D = 1.2;
@@ -28,7 +28,6 @@ public class Simulation {
 	private final Integrator integrator;
 	private final double dt;
 	private final double dt2;
-	private final double maxTime;
 	private final double drivingSpeed;
 	
 	private final Map<Double, Integer> discharges = new HashMap<>();
@@ -37,12 +36,11 @@ public class Simulation {
 	private int currentFlow = 0;
 	private double evacuationTime = 0;
 	
-	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N, final double drivingSpeed) {
+	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final int N, final double drivingSpeed) {
 		this.writer = new OutputWriter("../"+ runId +"-result.xyz");
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
-		this.maxTime = maxTime;
 		this.drivingSpeed = drivingSpeed;
 		this.terrain = new Terrain(L, W, D);
 		this.particles = generateParticles(L, W, N);
@@ -77,8 +75,9 @@ public class Simulation {
 	}
 
 	public Result simulate() {
+		double time = 0;
 		final int maxParticles = particles.size();
-		for (double time = 0; time < maxTime; time += dt) {
+		while (particles.size() > 0) {
 			move(integrator, dt);
 			for (int i = 0; i < particles.size(); i++) {				
 				if (terrain.justCrossedDoor(particles.get(i))) {
@@ -89,17 +88,15 @@ public class Simulation {
 					particles.remove(i);
 				}
 			}
-			if (particles.isEmpty()) {
-				evacuationTime = time;
-				System.out.println("[INFO] Everyone left the room at time "+ time);
-				break;
-			}
 			if (time % dt2 < EPSILON) {
 				flow.put(time, currentFlow/time);
-				System.out.println("[INFO] Time:" + time * 100 / maxTime + "% Particles-left:" + particles.size() * 100 / maxParticles + "%");
+				System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / maxParticles, "%"));
 				generateParticlesOutput();
 			}
+			time += dt;
 		}
+		evacuationTime = time;
+		System.out.println(String.format("[INFO] Everyone left the room at %.2f seconds", time));
 		writer.close();
 		return new Result(discharges, flow, evacuationTime);
 	}
