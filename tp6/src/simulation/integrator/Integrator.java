@@ -7,6 +7,6 @@ import terrain.Terrain;
 
 public interface Integrator {
 
-	void move(final Particle particle, List<Particle> particles, final Terrain terrain, final double dt);
+	void move(final Particle particle, final List<Particle> particles, final Terrain terrain, final double dt);
 
 }

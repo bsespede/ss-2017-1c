@@ -9,7 +9,8 @@ import simulation.particle.Particle;
 
 public class Terrain {
 
-	private final double EPSILON = 0.001;
+	private static final double SECOND_ESCAPE_MULT = 1.25;
+	
 	private final double L;
 	private final double W;
 	private final double D;	
@@ -30,8 +31,8 @@ public class Terrain {
 	private List<Wall> generateWalls() {
 		final List<Wall> walls = new ArrayList<Wall>(5);		
 		walls.add(new Wall(new Vector2d(0, 0), new Vector2d(W, 0))); // upper wall
-		walls.add(new Wall(new Vector2d(0, 0), new Vector2d(0, L * 2))); // left wall
-		walls.add(new Wall(new Vector2d(W, 0), new Vector2d(W, L * 2))); // right wall
+		walls.add(new Wall(new Vector2d(0, 0), new Vector2d(0, L * SECOND_ESCAPE_MULT))); // left wall
+		walls.add(new Wall(new Vector2d(W, 0), new Vector2d(W, L * SECOND_ESCAPE_MULT))); // right wall
 		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W / 2 - D / 2, L))); // bottom left
 		walls.add(new Wall(new Vector2d(W / 2 + D / 2, L), new Vector2d(W, L))); // bottom right		
 //		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W, L))); // bottom right
@@ -60,11 +61,17 @@ public class Terrain {
 	}
 	
 	public boolean crossedDoor(final Particle particle) {
-		return particle.getPosition().y + particle.getRadius() >= L;
+		return particle.getPosition().y + particle.getRadius() > L;
 	}
 
 	public boolean escapedRoom(final Particle particle) {
-		return particle.getPosition().y + particle.getRadius() >= 2 * L;
+		return particle.getPosition().y + particle.getRadius() > SECOND_ESCAPE_MULT * L;
+	}
+
+	public boolean justCrossedDoor(final Particle particle) {
+		final Vector2d curPosition = particle.getPosition();
+		final Vector2d prevPosition = particle.getPrevPosition();
+		return curPosition.y > L && prevPosition.y <= L;
 	}
 	
 }

@@ -1,39 +1,29 @@
 package simulation;
 
+import java.util.Map;
+
 public class Result {
 
-	private final boolean passedMarsOrbit;
-	private final double launchDay;
-	private final double relativeSpeed;
-	private final double minDistance;
-	private final double travelDays;
+	private final Map<Double, Integer> discharges;
+	private final Map<Double, Double> flow;
+	private final double evacuationTime;
 	
-	public Result(boolean passedMarsOrbit, double launchDay, double relativeSpeed, double minDistance, double travelDays) {
-		this.passedMarsOrbit = passedMarsOrbit;
-		this.launchDay = launchDay;
-		this.relativeSpeed = relativeSpeed;
-		this.minDistance = minDistance;
-		this.travelDays = travelDays;
-	}
-	
-	public boolean hasPassedMarsOrbit() {
-		return passedMarsOrbit;
+	public Result(final Map<Double, Integer> discharges, final Map<Double, Double> flow, double evacuationTime) {
+		this.discharges = discharges;
+		this.flow = flow;
+		this.evacuationTime = evacuationTime;
 	}
 
-	public double getLaunchDay() {
-		return launchDay;
+	public Map<Double, Integer> getDischarges() {
+		return discharges;
 	}
 
-	public double getRelativeSpeed() {
-		return relativeSpeed;
+	public Map<Double, Double> getFlow() {
+		return flow;
 	}
 
-	public double getMinDistance() {
-		return minDistance;
-	}
-
-	public double getTravelDays() {
-		return travelDays;
+	public double getEvacuationTime() {
+		return evacuationTime;
 	}
 	
 }

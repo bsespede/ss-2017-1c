@@ -14,20 +14,12 @@ public class Wall {
 		this.p1 = p1;
 	}
 	
-	public double getMinX() {
-		return Math.min(p0.x, p1.x);
+	public Vector2d getP0() {
+		return p0;
 	}
 	
-	public double getMaxX() {
-		return Math.max(p0.x, p1.x);
-	}
-	
-	public double getMinY() {
-		return Math.min(p0.y, p1.y);
-	}
-	
-	public double getMaxY() {
-		return Math.max(p0.y, p1.y);
+	public Vector2d getP1() {
+		return p1;
 	}
 
 	public Vector2d intersection(final Particle particle) {

@@ -1,7 +1,9 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.OutputWriter;
 import math.Vector2d;
@@ -16,21 +18,27 @@ public class Simulation {
 	private static final double L = 20;
 	private static final double W = 20;
 	private static final double D = 1.2;
-	private static final double DRIVING_SPEED = 1;
+	private static final double DRIVING_SPEED = 0.8;
 	private static final double MIN_DIAMETER = 0.5;
 	private static final double MAX_DIAMETER = 0.58;
 	private static final double MASS = 80;
 	
+	private final OutputWriter writer;
 	private final Terrain terrain;
 	private final List<Particle> particles;
-	private final String resultPath;
 	private final Integrator integrator;
 	private final double dt;
 	private final double dt2;
 	private final double maxTime;
 	
-	public Simulation(final String resultPath, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
-		this.resultPath = resultPath;
+	private final Map<Double, Integer> discharges = new HashMap<>();
+	private final Map<Double, Double> flow = new HashMap<>();
+	private int currentDischarges = 0;
+	private int currentFlow = 0;
+	private double evacuationTime = 0;
+	
+	public Simulation(final String output, final Integrator integrator, final double dt, final double dt2, final double maxTime, final int N) {
+		this.writer = new OutputWriter(output);
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
@@ -71,17 +79,28 @@ public class Simulation {
 		int frame = 0;
 		for (double time = 0; time < maxTime; time += dt) {
 			move(integrator, dt);
-			for (int i = 0; i < particles.size(); i++) {
+			for (int i = 0; i < particles.size(); i++) {				
+				if (terrain.justCrossedDoor(particles.get(i))) {
+					currentFlow++;
+				}
 				if (terrain.escapedRoom(particles.get(i))) {
+					discharges.put(time, ++currentDischarges);
 					particles.remove(i);
 				}
 			}
+			if (particles.isEmpty()) {
+				evacuationTime = time;
+				System.out.println("[INFO] Everyone left the room at time "+ time);
+				break;
+			}
 			if (time % dt2 < EPSILON) {
+				flow.put(time, currentFlow/time);
 				System.out.println(time * 100 / maxTime + "%");
 				generateParticlesOutput(frame++);
 			}
 		}
-		return null;
+		writer.close();
+		return new Result(discharges, flow, evacuationTime);
 	}
 
 	public void move(final Integrator integrator, final double dt) {
@@ -108,7 +127,7 @@ public class Simulation {
 	}
 	
 	public void generateParticlesOutput(double time) {
-		OutputWriter.writeParticles(resultPath + "/" + (int) time + ".dat", particles, terrain);
+		writer.writeOutput(particles, terrain);
 	}
 	
 }
