@@ -15,7 +15,7 @@ public class ResultWriter {
 			BufferedWriter dischargesWriter = new BufferedWriter(new FileWriter(path + "discharges.dat"));
 			final Map<Double, Integer> discharges = result.getDischarges();
 			for (Double time: discharges.keySet()) {
-				dischargesWriter.write(String.format("%.2f %d\n", time, discharges.get(time)));
+				dischargesWriter.write(String.format("%d %.2f\n", discharges.get(time), time));
 			}
 			dischargesWriter.flush();
 			dischargesWriter.close();
@@ -27,6 +27,22 @@ public class ResultWriter {
 			}
 			flowWriter.flush();
 			flowWriter.close();
+			
+			BufferedWriter energyWriter = new BufferedWriter(new FileWriter(path + "energy.dat"));
+			final Map<Double, Double> energy = result.getKineticEnergy();
+			for (Double time: energy.keySet()) {
+				energyWriter.write(String.format("%.2f %.2f\n", time, energy.get(time)));
+			}
+			energyWriter.flush();
+			energyWriter.close();
+			
+			BufferedWriter efficiencyWriter = new BufferedWriter(new FileWriter(path + "efficiency.dat"));
+			final Map<Double, Double> efficiency = result.getMovementEfficiency();
+			for (Double time: efficiency.keySet()) {
+				efficiencyWriter.write(String.format("%.2f %.2f\n", time, efficiency.get(time)));
+			}
+			efficiencyWriter.flush();
+			efficiencyWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

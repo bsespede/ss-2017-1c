@@ -125,4 +125,10 @@ public class Particle {
 	public int getId() {
 		return id;
 	}
+
+	public double getEfficiency(final Vector2d desiredPoint) {
+		final Vector2d drivingdDirection = desiredPoint.substract(position).normalize();
+		return velocity.dot(drivingdDirection)/ desiredVelocity;
+	}
+	
 }

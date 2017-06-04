@@ -1,4 +1,4 @@
-function plotEvactuationSpeeds() 
+function ej4() 
 
   [speed time] = textread("../../results/4/total-evacuations.dat", "%f %f");
   
@@ -18,5 +18,3 @@ function plotEvactuationSpeeds()
   print("../../plots/ej4.png", "-dpng");
   
 endfunction
-
-plotEvactuationSpeeds();

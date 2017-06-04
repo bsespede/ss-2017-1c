@@ -1,7 +1,7 @@
 package simulation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +30,10 @@ public class Simulation {
 	private final double dt2;
 	private final double drivingSpeed;
 	
-	private final Map<Double, Integer> discharges = new HashMap<>();
-	private final Map<Double, Double> flow = new HashMap<>();
+	private final Map<Double, Integer> discharges = new LinkedHashMap<>();
+	private final Map<Double, Double> flow = new LinkedHashMap<>();
+	private final Map<Double, Double> kineticEnergy = new LinkedHashMap<>();
+	private final Map<Double, Double> movementEfficiency = new LinkedHashMap<>();
 	private int currentDischarges = 0;
 	private int currentFlow = 0;
 	private double evacuationTime = 0;
@@ -76,21 +78,34 @@ public class Simulation {
 
 	public Result simulate() {
 		double time = 0;
-		final int maxParticles = particles.size();
 		while (particles.size() > 0) {
 			move(integrator, dt);
-			for (int i = 0; i < particles.size(); i++) {				
-				if (terrain.justCrossedDoor(particles.get(i))) {
+			for (int i = 0; i < particles.size(); i++) {
+				final Particle particle = particles.get(i);
+				if (terrain.justCrossedDoor(particle)) {
 					currentFlow++;
 				}
-				if (terrain.escapedRoom(particles.get(i))) {
+				if (terrain.escapedRoom(particle)) {
 					discharges.put(time, ++currentDischarges);
 					particles.remove(i);
 				}
 			}
+			if (time % 1 < EPSILON) {
+				double totalEnergy = 0;
+				double totalEfficiency = 0;
+				for (int i = 0; i < particles.size(); i++) {
+					final Particle particle = particles.get(i);
+					totalEnergy += particle.getKineticEnergy();
+					totalEfficiency += particle.getEfficiency(terrain.getEscapePoint(particle));
+				}
+				kineticEnergy.put(time, totalEnergy / particles.size());
+				movementEfficiency.put(time, totalEfficiency / particles.size());
+				if (time > 0) {
+					flow.put(time, currentFlow / time);
+				}
+			}
 			if (time % dt2 < EPSILON) {
-				flow.put(time, currentFlow/time);
-				System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / maxParticles, "%"));
+				//System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / maxParticles, "%"));
 				generateParticlesOutput();
 			}
 			time += dt;
@@ -98,7 +113,7 @@ public class Simulation {
 		evacuationTime = time;
 		System.out.println(String.format("[INFO] Everyone left the room at %.2f seconds", time));
 		writer.close();
-		return new Result(discharges, flow, evacuationTime);
+		return new Result(discharges, flow, evacuationTime, kineticEnergy, movementEfficiency);
 	}
 
 	public void move(final Integrator integrator, final double dt) {
