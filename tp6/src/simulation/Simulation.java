@@ -2,6 +2,7 @@ package simulation;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ import terrain.Terrain;
 
 public class Simulation {
 	
+	private static final boolean OUTPUT_ON = false;
+	
+	private static final double STATS_WINDOW = 1;
 	private static final double EPSILON = 0.001;
 	private static final double L = 20;
 	private static final double W = 20;
@@ -26,16 +30,17 @@ public class Simulation {
 	private final Terrain terrain;
 	private final List<Particle> particles;
 	private final Integrator integrator;
+	private final int particlesNumber;
 	private final double dt;
 	private final double dt2;
 	private final double drivingSpeed;
 	
 	private final Map<Double, Integer> discharges = new LinkedHashMap<>();
 	private final Map<Double, Double> flow = new LinkedHashMap<>();
+	private final Map<Double, Double> meanFlow = new LinkedHashMap<>();
 	private final Map<Double, Double> kineticEnergy = new LinkedHashMap<>();
-	private final Map<Double, Double> movementEfficiency = new LinkedHashMap<>();
 	private int currentDischarges = 0;
-	private int currentFlow = 0;
+	private int currentWindowDischarges = 0;
 	private double evacuationTime = 0;
 	
 	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final int N, final double drivingSpeed) {
@@ -46,6 +51,7 @@ public class Simulation {
 		this.drivingSpeed = drivingSpeed;
 		this.terrain = new Terrain(L, W, D);
 		this.particles = generateParticles(L, W, N);
+		this.particlesNumber = particles.size();
 		calculatePrevious(particles, dt);
 	}
 
@@ -57,16 +63,14 @@ public class Simulation {
 			final double particleX = Math.random() * (W - 2 * particleRadius) + particleRadius;
 			final double particleY = Math.random() * (L - 2 * particleRadius) + particleRadius;
 			final Vector2d position = new Vector2d(particleX, particleY);
-			final Particle newParticle = new Particle(particles.size(), position, new Vector2d(0, 0), desiredVelocity, MASS, particleRadius);
-			
+			final Particle newParticle = new Particle(particles.size(), position, new Vector2d(0, 0), desiredVelocity, MASS, particleRadius);			
 			boolean collidedAnotherParticle = false;
 			for (Particle particle: particles) {
 				if (particle.collides(newParticle)) {
 					collidedAnotherParticle = true;
 					break;
 				}
-			}
-			
+			}			
 			if (collidedAnotherParticle) {
 				continue;
 			} else {
@@ -75,45 +79,47 @@ public class Simulation {
 		}
 		return particles;
 	}
-
+	
 	public Result simulate() {
 		double time = 0;
 		while (particles.size() > 0) {
 			move(integrator, dt);
-			for (int i = 0; i < particles.size(); i++) {
-				final Particle particle = particles.get(i);
+			final List<Particle> particlesToRemove = new LinkedList<Particle>();
+			for (Particle particle: particles) {
 				if (terrain.justCrossedDoor(particle)) {
-					currentFlow++;
+					currentWindowDischarges++;
+					currentDischarges++;
+					discharges.put(time, currentDischarges);
 				}
 				if (terrain.escapedRoom(particle)) {
-					discharges.put(time, ++currentDischarges);
-					particles.remove(i);
+					particlesToRemove.add(particle);					
 				}
 			}
-			if (time % 1 < EPSILON) {
+			particles.remove(particlesToRemove);
+			if (currentDischarges == particlesNumber) {
+				evacuationTime = time;
+			}
+			if (time % STATS_WINDOW < EPSILON) {
 				double totalEnergy = 0;
-				double totalEfficiency = 0;
-				for (int i = 0; i < particles.size(); i++) {
-					final Particle particle = particles.get(i);
+				for (Particle particle: particles) {
 					totalEnergy += particle.getKineticEnergy();
-					totalEfficiency += particle.getEfficiency(terrain.getEscapePoint(particle));
 				}
 				kineticEnergy.put(time, totalEnergy / particles.size());
-				movementEfficiency.put(time, totalEfficiency / particles.size());
 				if (time > 0) {
-					flow.put(time, currentFlow / time);
+					meanFlow.put(time, currentDischarges / time);
+					flow.put(time, currentWindowDischarges / STATS_WINDOW);
+					currentWindowDischarges = 0;
 				}
+				System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / particles.size(), "%"));
 			}
-			if (time % dt2 < EPSILON) {
-				//System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / maxParticles, "%"));
+			if (OUTPUT_ON && time % dt2 < EPSILON) {
 				generateParticlesOutput();
 			}
 			time += dt;
-		}
-		evacuationTime = time;
-		System.out.println(String.format("[INFO] Everyone left the room at %.2f seconds", time));
+		}		
+		System.out.println(String.format("[INFO] Simulation ended at %.2f seconds", time));
 		writer.close();
-		return new Result(discharges, flow, evacuationTime, kineticEnergy, movementEfficiency);
+		return new Result(discharges, meanFlow, evacuationTime, kineticEnergy, flow);
 	}
 
 	public void move(final Integrator integrator, final double dt) {
