@@ -39,6 +39,7 @@ public class Simulation {
 	private final Map<Double, Double> flow = new LinkedHashMap<>();
 	private final Map<Double, Double> meanFlow = new LinkedHashMap<>();
 	private final Map<Double, Double> kineticEnergy = new LinkedHashMap<>();
+	private final Map<Double, Double> pressure = new LinkedHashMap<>();
 	private int currentDischarges = 0;
 	private int currentWindowDischarges = 0;
 	private double evacuationTime = 0;
@@ -100,10 +101,12 @@ public class Simulation {
 				evacuationTime = time;
 			}
 			if (time % STATS_WINDOW < EPSILON) {
-				double totalEnergy = 0;
+				double totalEnergy = 0, totalPressure = 0;
 				for (Particle particle: particles) {
 					totalEnergy += particle.getKineticEnergy();
+					totalPressure += Force.getTotalForce(particle, particles, terrain).module() / (Math.PI * particle.getRadius());
 				}
+				pressure.put(time, totalPressure);
 				kineticEnergy.put(time, totalEnergy / particles.size());
 				if (time > 0) {
 					meanFlow.put(time, currentDischarges / time);
@@ -119,7 +122,7 @@ public class Simulation {
 		}		
 		System.out.println(String.format("[INFO] Simulation ended at %.2f seconds", time));
 		writer.close();
-		return new Result(discharges, meanFlow, evacuationTime, kineticEnergy, flow);
+		return new Result(discharges, meanFlow, evacuationTime, kineticEnergy, flow, pressure);
 	}
 
 	public void move(final Integrator integrator, final double dt) {

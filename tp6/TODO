@@ -1,5 +1,5 @@
-- en ovito mostrar presion coloreada en ves de velocidad (hacer la suma de fuerzas divido el radio de la part) -> JULIAN
-- hacer un plot de la presion total (meterlo en el stat window y correrlo sobre el script de octave que esta hecho) -> JULIAN
-- las barras de error hacer con desviasion estandar (ver como hacer esto sobre el script de octave) -> JULIAN
+- en ovito mostrar presion coloreada en ves de velocidad (hacer la suma de fuerzas divido el perimetro de la part) -> BRAULIO [HECHO]
+- hacer un plot de la presion total (meterlo en el stat window y correrlo sobre el script de octave que esta hecho) -> BRAULIO [HECHO]
+- las barras de error hacer con desviasion estandar, vease error cuadratico medio (ver como hacer esto sobre el script de octave) -> JULIAN
 - ademas del flujo medio que es el que esta hecho, hacer flujo en una ventana de peatones (cada 3 peatones que pasan resetear flujo y calcular en esa ventana) -> BRAULIO [HECHO]
 - revisar lo de faster is slower en el grafico de velocidad deseada vs tiempo (no es salida de la simulacion, es salida por la 1er puerta y meter 250 part en vez de 100) -> BRAULIO [HECHO, FALTA CORRER TODO DE NUEVO]

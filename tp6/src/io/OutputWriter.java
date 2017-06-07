@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import math.Vector2d;
+import simulation.force.Force;
 import simulation.particle.Particle;
 import terrain.Terrain;
 import terrain.Wall;
@@ -36,7 +37,9 @@ public class OutputWriter {
 			int count = 0;
 			buffer.write(String.format("%d\n\n", particles.size() + 2 * terrain.getWalls().size()));
 			for (Particle particle : particles) {
-				buffer.write(formatParticle(count++, particle));
+				final double particlePerimeter = Math.PI * particle.getRadius();
+				final double particlePressure = Force.getTotalForce(particle, particles, terrain).module() / particlePerimeter;
+				buffer.write(formatParticle(count++, particle, particlePressure));
 			}
 			int wallId = 1;
 			for (Wall wall: terrain.getWalls()) {
@@ -51,9 +54,9 @@ public class OutputWriter {
 		}
 	}
 
-	private static String formatParticle(final int id, final Particle particle) {
+	private static String formatParticle(final int id, final Particle particle, final double particlePressure) {
 		final Vector2d particlePosition = particle.getPosition();
-		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f\n", id, particlePosition.x, particlePosition.y, particle.getRadius(), 255, 0, 0, 0, particle.getVelocity().module());
+		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f\n", id, particlePosition.x, particlePosition.y, particle.getRadius(), 255, 0, 0, 0, particlePressure);
 	}
 	
 	private static String formatWall(final int id, final Vector2d wallPosition, final int wallId) {

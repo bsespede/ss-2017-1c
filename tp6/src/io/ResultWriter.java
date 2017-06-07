@@ -43,6 +43,14 @@ public class ResultWriter {
 			}
 			energyWriter.flush();
 			energyWriter.close();
+			
+			BufferedWriter pressureWriter = new BufferedWriter(new FileWriter(path + "energy.dat"));
+			final Map<Double, Double> pressure = result.getPressure();
+			for (Double time: pressure.keySet()) {
+				pressureWriter.write(String.format("%.2f %.2f\n", time, pressure.get(time)));
+			}
+			pressureWriter.flush();
+			pressureWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
