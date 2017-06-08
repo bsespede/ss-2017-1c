@@ -15,9 +15,7 @@ import terrain.Terrain;
 
 public class Simulation {
 	
-	private static final boolean OUTPUT_ON = false;
-	
-	private static final double STATS_WINDOW = 1;
+	private static final double STATS_WINDOW = 5;
 	private static final double EPSILON = 0.001;
 	private static final double L = 20;
 	private static final double W = 20;
@@ -96,7 +94,7 @@ public class Simulation {
 					particlesToRemove.add(particle);					
 				}
 			}
-			particles.remove(particlesToRemove);
+			particles.removeAll(particlesToRemove);
 			if (currentDischarges == particlesNumber) {
 				evacuationTime = time;
 			}
@@ -113,9 +111,9 @@ public class Simulation {
 					flow.put(time, currentWindowDischarges / STATS_WINDOW);
 					currentWindowDischarges = 0;
 				}
-				System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / particles.size(), "%"));
 			}
-			if (OUTPUT_ON && time % dt2 < EPSILON) {
+			if (time % dt2 < EPSILON) {
+				System.out.println(String.format("[INFO] Time: %.2f Particles-left: %.2f%s", time, particles.size() * 100.0 / particlesNumber, "%"));
 				generateParticlesOutput();
 			}
 			time += dt;
@@ -123,6 +121,30 @@ public class Simulation {
 		System.out.println(String.format("[INFO] Simulation ended at %.2f seconds", time));
 		writer.close();
 		return new Result(discharges, meanFlow, evacuationTime, kineticEnergy, flow, pressure);
+	}
+	
+	public double simulationOnlyEvacuation() {
+		double time = 0;
+		while (particles.size() > 0) {
+			move(integrator, dt);
+			final List<Particle> particlesToRemove = new LinkedList<Particle>();
+			for (Particle particle: particles) {
+				if (terrain.justCrossedDoor(particle)) {
+					currentDischarges++;
+				}
+				if (terrain.escapedRoom(particle)) {
+					particlesToRemove.add(particle);			
+				}
+			}
+			particles.removeAll(particlesToRemove);
+			if (currentDischarges == particlesNumber) {
+				evacuationTime = time;
+			}
+			time += dt;
+		}
+		System.out.println(String.format("[INFO] Simulation ended at %.2f seconds", time));
+		writer.close();
+		return evacuationTime;
 	}
 
 	public void move(final Integrator integrator, final double dt) {
