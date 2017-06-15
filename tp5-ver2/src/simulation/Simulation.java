@@ -10,6 +10,7 @@ import io.OutputWriter;
 import math.Collision;
 import math.Vector2d;
 import simulation.force.Force;
+import simulation.force.Gravitational;
 import simulation.integrator.Integrator;
 import simulation.particle.Particle;
 import terrain.Terrain;
@@ -18,12 +19,12 @@ public class Simulation {
 	
 	private static final double STATS_WINDOW = 5;
 	private static final double EPSILON = 0.001;
-	private static final double L = 20;
-	private static final double W = 10;
-	private static final double D = 3;
-	private static final double MIN_DIAMETER = D/7;
-	private static final double MAX_DIAMETER = D/5;
-	private static final double MASS = 50;
+	private static double L;
+	private static final double W = 5;
+	private static final double D = 2;
+	private static final double MIN_DIAMETER = D/8;
+	private static final double MAX_DIAMETER = D/6;
+	private static final double MASS = 20;
 	
 	private final OutputWriter writer;
 	private final Terrain terrain;
@@ -43,11 +44,12 @@ public class Simulation {
 	private int currentWindowDischarges = 0;
 	private double evacuationTime = 0;
 	
-	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final int N, final long simulationTime) {
+	public Simulation(final int runId, final Integrator integrator, final double dt, final double dt2, final int N, final long simulationTime, final long L) {
 		this.writer = new OutputWriter("../"+ runId +"-result.xyz");
 		this.integrator = integrator;
 		this.dt = dt;
 		this.dt2 = dt2;
+		this.L = L;
 		this.terrain = new Terrain(L, W, D);
 		this.particles = generateParticles(L, W, N);
 		this.particlesNumber = particles.size();
@@ -101,7 +103,7 @@ public class Simulation {
 				double totalEnergy = 0, totalPressure = 0;
 				for (Particle particle: particles) {
 					totalEnergy += particle.getKineticEnergy();
-					totalPressure += Force.getTotalForce(particle, particles, terrain).module() / (Math.PI * particle.getRadius());
+					totalPressure += (Force.getTotalForce(particle, particles, terrain).module() - Gravitational.getForce(particle).module()) / (Math.PI * particle.getRadius());
 				}
 				pressure.put(time, totalPressure);
 				kineticEnergy.put(time, totalEnergy / particles.size());

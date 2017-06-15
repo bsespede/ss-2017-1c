@@ -12,19 +12,22 @@ import simulation.integrator.Integrator;
 
 public class Main {
 
-	private final static int N = 200;
-	private final static double INTERVAL = 0.001;
+	private static long L = 10;
+	private static int N = 250;
+	private final static double INTERVAL = 0.0005;
 	private final static double INTERVAL_OUTPUT = 0.1;
 	private final static Integrator INTEGRATOR = new BeemanIntegrator();
-	private static final long SIMULATION_TIME = 10;
+	private static final long SIMULATION_TIME = 30;
 
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulation");
 //		 Ejercicio A, B, C
-		for (int runId = 1; runId <= 1; runId++) {
-			final Simulation simulation = new Simulation(runId, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, N, SIMULATION_TIME);
+		for (int runId = 4; runId <= 6; runId++) {
+			final Simulation simulation = new Simulation(runId, INTEGRATOR, INTERVAL, INTERVAL_OUTPUT, N, SIMULATION_TIME, L);
 			final Result result = simulation.simulate();
 			ResultWriter.writeResult("../" + runId + "-", result);
+			L += 5;
+			N += 50;
 		}
 		// Ejercicio D
 //		int runId = 0;

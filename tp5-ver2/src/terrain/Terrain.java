@@ -33,9 +33,9 @@ public class Terrain {
 		walls.add(new Wall(new Vector2d(0, 0), new Vector2d(W, 0))); // upper wall
 		walls.add(new Wall(new Vector2d(0, 0), new Vector2d(0, L * SECOND_ESCAPE_MULT))); // left wall
 		walls.add(new Wall(new Vector2d(W, 0), new Vector2d(W, L * SECOND_ESCAPE_MULT))); // right wall
-		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W / 2 - D / 2, L))); // bottom left
-		walls.add(new Wall(new Vector2d(W / 2 + D / 2, L), new Vector2d(W, L))); // bottom right		
-//		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W, L))); // bottom right
+//		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W / 2 - D / 2, L))); // bottom left
+//		walls.add(new Wall(new Vector2d(W / 2 + D / 2, L), new Vector2d(W, L))); // bottom right
+		walls.add(new Wall(new Vector2d(0, L), new Vector2d(W, L))); // bottom right
 		return walls;
 	}	
 

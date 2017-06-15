@@ -56,11 +56,11 @@ public class OutputWriter {
 
 	private static String formatParticle(final int id, final Particle particle, final double particlePressure) {
 		final Vector2d particlePosition = particle.getPosition();
-		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f\n", id, particlePosition.x, particlePosition.y, particle.getRadius(), 255, 0, 0, 0, particlePressure);
+		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f %.2f\n", id, particlePosition.x, particlePosition.y, particle.getRadius(), 255, 0, 0, 0, particlePressure, particle.getVelocity().module());
 	}
 	
 	private static String formatWall(final int id, final Vector2d wallPosition, final int wallId) {
-		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f\n", id, wallPosition.x, wallPosition.y , 0.01, 255, 255, 255, wallId, 0.0);
+		return String.format("%d %.2f %.2f %.2f %d %d %d %d %.2f %.2f\n", id, wallPosition.x, wallPosition.y , 0.01, 255, 255, 255, wallId, 0.0, 0.0);
 	}
 
 }

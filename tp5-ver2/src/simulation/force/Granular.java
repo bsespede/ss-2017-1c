@@ -6,8 +6,8 @@ import terrain.Wall;
 
 public class Granular {
 
-	private static final double KN = 120000;
-	private static final double KT = 240000;
+	private static final double KN = 100000;
+	private static final double KT = 200000;
 	
 	public static Vector2d getForce(final Particle particle, final Particle otherParticle) {
 		if (particle.collides(otherParticle)) {
