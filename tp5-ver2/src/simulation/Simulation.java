@@ -17,7 +17,7 @@ import terrain.Terrain;
 
 public class Simulation {
 	
-	private static final double STATS_WINDOW = 5;
+	private static final double STATS_WINDOW = 1;
 	private static final double EPSILON = 0.001;
 	private static double L;
 	private static final double W = 5;
@@ -87,11 +87,6 @@ public class Simulation {
 			move(integrator, dt);
 			final List<Particle> particlesToReallocate = new LinkedList<Particle>();
 			for (Particle particle: particles) {
-//				if (terrain.justCrossedDoor(particle)) {
-//					currentWindowDischarges++;
-//					currentDischarges++;
-//					discharges.put(time, currentDischarges);
-//				}
 				if (terrain.escapedRoom(particle)) {
 					particlesToReallocate.add(particle);
 				}

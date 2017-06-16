@@ -14,10 +14,10 @@ public class Main {
 
 	private static long L = 10;
 	private static int N = 250;
-	private final static double INTERVAL = 0.0005;
+	private final static double INTERVAL = 0.0001;
 	private final static double INTERVAL_OUTPUT = 0.1;
 	private final static Integrator INTEGRATOR = new BeemanIntegrator();
-	private static final long SIMULATION_TIME = 30;
+	private static final long SIMULATION_TIME = 20;
 
 	public static void main(String[] args) {
 		System.out.println("[INFO] Starting simulation");
